@@ -1,0 +1,57 @@
+#!/bin/bash
+#Funciones genericas
+
+function trim {
+    echo $*
+}
+
+function userChoice() {
+
+	local limite=$1
+	local cadena="$2"
+	local reply
+	let reply=0
+
+	echo > /dev/tty
+	echo "$cadena" > /dev/tty
+	read reply < /dev/tty
+	echo > /dev/tty
+
+	#We see if the user entered a number such as we need
+	while [[ "$reply" -lt 0 ]] || [[ "$reply" -gt  $limite ]]; do
+
+		#We give advice to the user and exit
+		echo "Tiene que introducir un número de entre los indicados:" > /dev/tty
+		read reply < /dev/tty
+		#echo "Reply es: $reply" > /dev/tty
+
+	done
+
+	echo $reply
+}
+
+function callFuncion() {
+	local tupla="$1"
+
+	$DEBUG && echo "Tupla: $tupla" >> /dev/tty
+	IFS=':' read -a aux <<< "$tupla"; IFS=" "
+	local funcion="${aux[0]}"
+	$DEBUG && echo "Función: $funcion" > /dev/tty
+
+	local args="${aux[1]}"
+	$DEBUG && echo "Argumentos: $args" > /dev/tty
+
+	eval set -- "$args"
+	$DEBUG && echo "Argumentos procesados: $@" > /dev/tty
+
+	$DEBUG && echo "A ejecutar: $funcion $@" > /dev/tty
+	local res=`$funcion $@`
+	echo "$res"
+}
+
+function listFunciones() {
+	declare -F | while read line; do
+		echo "${line:11}"
+	done
+	#echo "$(declare -F)"
+}

@@ -1,0 +1,150 @@
+#!/bin/bash
+#Gestión de películas de sintel
+
+declare -A PELICULA
+
+
+PELICULA=( ["id"]="" ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["esvisto"]="" )
+
+function film.add() {
+	local titulo="$1"
+	local fichero="$2"
+	local torrent="$3"
+
+	$DEBUG && echo "> film.add" > /dev/tty
+	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0)"
+	$DEBUG && echo "< film.add" > /dev/tty
+}
+
+function film.add2() {
+	local datos="$1"
+	film.parse "$datos"
+	local titulo="${PELICULA[titulo]}"
+	local fichero="${PELICULA[fichero]}"
+	local torrent="${PELICULA[torrent]}"
+
+	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0)"
+}
+
+function film.getById() {
+	local id="$1"
+
+	$DEBUG && echo "> film.getById" > /dev/tty
+	local res=$(db.executeQuery "select * from medio where id = $id")
+	$DEBUG && echo "< film.getById" > /dev/tty
+	echo "$res"
+}
+
+function film.getIdByTitulo() {
+	local titulo="$1"
+
+	$DEBUG && echo "> film.getByTitulo" > /dev/tty
+	local res=$(db.executeQuery "select id from medio where esserie=0 and titulo = \"$titulo\"")
+	$DEBUG && echo "< film.getByTitulo" > /dev/tty
+	echo "$res"
+}
+
+function film.getByTitulo() {
+	local titulo="$1"
+
+	$DEBUG && echo "> film.getByTitulo" > /dev/tty
+	local res=$(db.executeQuery "select * from medio where esserie=0 and titulo = \"$titulo\"")
+	$DEBUG && echo "< film.getByTitulo" > /dev/tty
+	echo "$res"
+}
+
+function film.getByFichero() {
+	local fichero="$1"
+
+	local res=$(db.executeQuery "select * from medio where esserie = 0 and fichero = \"$fichero\"")
+	echo "$res"
+}
+
+function film.find() {
+	local busqueda="$1"
+
+	local res=$(db.executeQuery "select * from medio where esserie = 0 and titulo like \"%${busqueda}%\"")
+	echo "$res"	
+}
+
+function film.getId() {
+	local titulo="$1"
+
+	local id=$(db.executeQuery "select id from medio where esserie = 0 and titulo = \"$titulo\"")
+}
+
+function film.remove() {
+	local id="$1"
+
+	db.executeUpdate "delete from medio where esserie = 0 and id = $id"
+}
+
+function film.updateFichero() {
+	local id="$1"
+	local fichero="$2"
+
+	db.executeUpdate "update medio set fichero=\"$fichero\" where id = $id"
+}
+
+function film.updateTorrent() {
+	local id="$1"
+	local torrent="$2"
+
+	db.executeUpdate "update medio set torrent=$torrent where id = $id"
+}
+
+function film.setVista() {
+	local id="$1"
+
+	db.executeUpdate "update medio set esvisto=1 where id = $id"
+}
+
+function film.setNoVista() {
+	local id="$1"
+
+	db.executeUpdate "update medio set esvisto=0 where id = $id"
+}
+
+function film.parse() {
+	local datos="$1"
+
+	IFS='|' read -a datosa <<< "$datos"; IFS=" "
+	PELICULA[id]="${datosa[0]}"
+	PELICULA[titulo]="${datosa[1]}"
+	PELICULA[fichero]="${datosa[2]}"
+	PELICULA[torrent]="${datosa[3]}"
+	PELICULA[esserie]="${datosa[4]}"
+	PELICULA[esvisto]="${datosa[5]}"
+}
+
+function film.parseToFile() {
+	local datos="$1"
+
+	film.parse "$datos"
+
+	echo > /tmp/PELICULA
+	let i=0
+	for key in ${!PELICULA[@]}; do
+		echo "$key ${PELICULA[$key]}" >> /tmp/PELICULA
+	done
+}
+
+function film.getField() {
+	local field="$1"
+
+	let i=0
+	for key in "${!PELICULA[@]}"; do
+		if [[ "$key" == "$field" ]]; then
+			$DEBUG && echo "Coincide con $key. Salimos" > /dev/tty
+			break
+		fi
+		(( i++ ))
+	done
+	$DEBUG && echo "El valor de i es $i" > /dev/tty
+	if [[ $i < ${#PELICULA[@]} ]]; then
+		local res=$(grep "^$field" /tmp/PELICULA | awk '{ print $2 };')
+		echo "$res"
+	else
+		echo "-1"
+	fi
+}

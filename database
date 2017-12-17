@@ -1,0 +1,51 @@
+#!/bin/bash
+#Módulo para trabajar con la base de datos
+
+#Localización de la base de datos. Debe incluir el nombre del fichero
+database_DB="/home/mhyst/bin/scripts/sintel/sintel.db"
+
+#Si la base de datos no existe, la creamos
+if ! [ -f "$database_DB" ]; then
+	echo "La base de datos no existe"
+	init
+fi
+
+#En adelante esta variable se usará para ejecutar sqlite3 con nuestra base de datos
+database_SQLITE="sqlite3 $database_DB"
+
+#Si ĺa última operación fue un insert, ROWID contendrá el id del registro insertado.
+#Si este valor es -1 debe entenderse que su contenido no sirve o que ha habido un error.
+ROWID=-1
+
+#Hacer consultas a la base de datos
+#Nótese que he utilizado transacciones para evitar que la base de datos quede bloqueada
+function db.executeQuery() {
+	sql="$1"
+
+	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
+	local res=`$database_SQLITE "BEGIN; $sql; END TRANSACTION"`
+	if [ $? != 0 ]; then
+		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
+	fi	
+	echo "$res"
+}
+
+#Inserciones y actualizaciones de la base de datos
+#Igual que en la función anterior, se han usado transacciones
+#Si la operación es un insert, una vez insertado se obtendrá el ROWID
+#Esto sucederá también con los updates, pero no haremos caso a ese dato.
+function db.executeUpdate() {
+	sql="$1"
+
+	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
+	if [[ "${sql,,}" == "insert"* ]]; then
+		local res=`$database_SQLITE "BEGIN; $sql; select last_insert_rowid(); END TRANSACTION"`
+		ROWID=$res
+	else
+		local res=`$database_SQLITE "BEGIN; $sql; END TRANSACTION"`
+		ROWID=-1
+	fi
+	if [ $? != 0 ]; then
+		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
+	fi
+}

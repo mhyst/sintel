@@ -1,0 +1,27 @@
+#!/bin/bash
+#Modularity: introduce la posibilidad de cargar modulos en bash
+#
+#Para mejor utilización del espacio de nombres, cada módulo debería utilizar un prefijo propio para
+#variables y funciones. Para funciones se recomienda delimitar con el punto, pero este no es posible usarlo
+#en variables, por lo que en variables se recomienda utilizar "_"
+
+#Directorio donde se encuentran almacenados los módulos
+modularity_DIR=~/bin/scripts/sintel
+
+#Esta variable debe especificarse en el script principal antes de cargar modularity mediante source
+#MODS=( "help" "init" "database" "peliculas" "series" )
+
+#Bucle que recorre el array de módulos y probará a cargar uno tras otro
+for mod in "${MODS[@]}"; do
+	#Si hemos activado la depuración, se mostrarán mensajes indicativos
+	#$DEBUG && echo -n "Iniciando $mod..." > /dev/tty
+	#Carga del módulo
+	source "$modularity_DIR/$mod"
+	#Si la carga resultó en error, debe indicarse
+	if [[ $? == 0 ]]; then
+		#$DEBUG && echo "Hecho!" > /dev/tty
+		:
+	else
+		echo "Módulo $mod no se pudo cargar." > /dev/tty
+	fi
+done

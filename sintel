@@ -1,0 +1,141 @@
+#!/bin/bash
+#Inteligencia sobre series y películas. Lleva una base de datos a la que los demás scripts podrán consultar e insertar tados.
+
+#Directorio global del script
+global_DIR=~/bin/scripts/sintel
+DEBUG=true
+
+#Cargamos los módulos
+#Esta opción no funcionaba porque creaba un subshell, impidiendo acceso en las dos direcciones a variables y funciones
+#"$global_DIR/modularity" "help" "init" "database" "peliculas" "series"
+MODS=( "help" "generic" "init" "database" "peliculas" "series" "medios" )
+
+source "$global_DIR/modularity"
+
+# for mod in "${MODS[@]}"; do
+# 	echo -n "Iniciando $mod..."
+# 	source "$modulos_DIR/$mod"
+# 	if [[ $? == 0 ]]; then
+# 		echo "Hecho!"
+# 	else
+# 		echo "Falló!"
+# 	fi
+# done
+
+#################################################################################################
+# P R O G R A M A      P R I N C I P A L
+#################################################################################################
+
+#Configuramos como queremos los argumentos de entrada
+TEMP=`getopt -o hd:f:s:li: --long "help,add-serie:,add-pelicula:,add-alter:,find-peliculas:,find-series:,list-all,list-series,list-peliculas,ver-pelicula:,list-episodios:,detectar:,function-call:list-functions,determine-series:,is-downloaded:" -- "$@"`
+
+
+#Si no se han introducido argumentos, mostrar la ayuda y salir
+if [ $# == 0 ]; then help; exit 1; fi
+
+#Evaluar la cadena de argumentos obtenida con getopt
+eval set -- "$TEMP"
+
+
+# Debug
+#echo "$TEMP"
+
+busqueda=""
+directorio=""
+funcion=""
+
+#Procesamos los argumentos
+while true; do
+  case "$1" in
+  	-h | --help ) help; exit ;;
+	--list-all ) medios.listAll ;;
+	--list-series ) medios.listSeries ;;
+	--list-peliculas ) medios.listPeliculas ;;
+	--find-series ) busqueda="$2"; shift; medios.findSeries $busqueda ;; 
+	--find-peliculas ) busqueda="$2"; shift; medios.findPeliculas $busqueda ;;
+	--add-pelicula ) registro="$2"; shift; film.add2 "$registro" ;;
+	--list-episodios ) idmedio="$2"; shift; medios.listEpisodios "$idmedio" ;;
+	-d | --detectar ) directorio="$2"; shift; medios.detectar "$directorio" ;;
+	-f | --function-call ) funcion="$2"; shift; callFuncion "$funcion" ;;
+	-l | --list-functions ) listFunciones ;;
+	-s | --determine-series ) busqueda="$2"; shift; medios.determineSeries "$busqueda" ;;
+	-i | --is-downloaded ) funcion="$2"; shift; callFuncion "medios.isDownloaded:$funcion" ;;
+#	-t | --temporada ) temporada=$2; shift ;;
+#	-c | --capitulo ) capitulo=$2; shift ;;
+#	-s | --servicio ) servicio=$2; shift ;;
+#	-l | --limit ) limit=true ;;
+#	-v ) vervistos=true ;;
+#	-n | --next ) gonext=true ;;
+#	-b | --back ) let back++ ;;
+#	-f | --forth ) let forth_number++ ;;
+#	--forth-by ) forth_number=$2; shift ;;
+#	-a | --forth-all ) forth_all=true ;;
+#	--back-by ) back=$2; shift ;;
+    # -v ) VER_VISTOS=true ;;
+#	-r | --reset ) reset=true ;;
+#	-o | --only ) only=true ;;
+#	-g | --first ) first=true ;;
+#	-e | --exit ) salir=true ;;
+	# -m | --mreset ) reset_data+=("$2"); shift ;;
+	# --reset-by ) reset_by=true; bydata=$2; shift ;;
+    * ) break ;;
+  esac
+  shift
+done
+
+if [[ $1 = "--" ]]; then
+	shift
+fi
+
+
+function testPeliculas() {
+	#Añadimos película
+	local titulo=""
+	read -p "Introduce el título de la película: " titulo
+	film.add "$titulo" "" 0
+	echo "ID: $ROWID"
+
+	#Obtenemos la película
+	local datos=$(film.getById "$ROWID")
+	echo "$datos"
+
+	#La procesamos y la mostramos
+	film.parse "$datos"
+	echo "Pelicula:"
+	echo "Id: ${PELICULA[id]}"
+	echo "Título: ${PELICULA[titulo]}"
+	echo "Fichero: ${PELICULA[fichero]}"
+	echo "torrent: ${PELICULA[torrent]}"
+	echo "¿Es una serie?: $([ ${PELICULA[esserie]} == 0 ] && echo "No" || echo "Sí")"
+	echo "¿La he visto?: $([ ${PELICULA[esvisto]} == 0 ] && echo "No" || echo "Sí")"
+
+	datos=$(film.getByTitulo "$titulo")
+
+	#La procesamos y la mostramos
+	film.parse "$datos"
+	echo "Pelicula:"
+	echo "Id: ${PELICULA[id]}"
+	echo "Título: ${PELICULA[titulo]}"
+	echo "Fichero: ${PELICULA[fichero]}"
+	echo "torrent: ${PELICULA[torrent]}"
+	echo "¿Es una serie?: $([ ${PELICULA[esserie]} == 0 ] && echo "No" || echo "Sí")"
+	echo "¿La he visto?: $([ ${PELICULA[esvisto]} == 0 ] && echo "No" || echo "Sí")"
+
+
+	read -p "Introduce el patron a buscar: " titulo
+	datos=$(film.find "$titulo")
+	echo "Resultado de la búsqueda"
+	echo "$datos"
+
+	local id=""
+	read -p "Qué id quieres borrar? " id
+	film.remove $id
+	echo "Borrado"
+}
+
+#testPeliculas
+#medios.listAll
+#echo
+#echo
+#medios.listSeries
+#medios.findPeliculas "$*"

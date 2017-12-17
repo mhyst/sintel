@@ -1,0 +1,269 @@
+#!/bin/bash
+#Gestión de series
+#
+#Básicamente queremos utilizar la base de datos de momento como elemento adicional de dxtotal y mt o mtf y quizá 
+#en el futuro, se use con exclusividad, sustituyendo al método de la carpeta de series.
+#
+#Se deben poder añadir series a seguir y episodios conforme se vayan descargando.
+#Así mismo servirá para llevar la cuenta de los vistos en "ver".
+
+declare -A SERIE
+SERIE=( ["id"]=""  ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["esvisto"]="")
+declare -A EPISODIO
+EPISODIO=( ["id"]="" ["idmedio"]="" ["temporada"]="" ["episodio"]="" ["fichero"]="" ["torrent"]="" ["esvisto"]="")
+
+function series.add() {
+	local titulo="$1"
+
+	$DEBUG && echo "> series.add" > /dev/tty
+	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"\",-1,1,0)"	
+	$DEBUG && echo "< series.add" > /dev/tty
+	echo "$ROWID"
+}
+
+function series.getById() {
+	local id="$1"
+
+	$DEBUG && echo "> series.getById" > /dev/tty
+	local res=$(db.executeQuery "select * from medio where id = $id where esserie=1")
+	$DEBUG && echo "< series.getById" > /dev/tty
+	echo "$res"
+}
+
+function series.getIdByTitulo() {
+	local titulo="$1"
+
+	$DEBUG && echo "> series.getByTitulo" > /dev/tty
+	local res=$(db.executeQuery "select id from medio where esserie=1 and titulo = \"$titulo\"")
+	# if [[ $? != 0 ]]; then
+	# 	echo "SQL: $sql"
+	# fi
+	$DEBUG && echo "< series.getByTitulo" > /dev/tty
+	echo "$res"
+}
+
+function series.getByTitulo() {
+	local titulo="$1"
+
+	$DEBUG && echo "> series.getByTitulo" > /dev/tty
+	local res=$(db.executeQuery "select * from medio where esserie=1 and titulo = \"$titulo\"")
+	$DEBUG && echo "< series.getByTitulo" > /dev/tty
+	echo "$res"
+}
+
+function series.getByFichero() {
+	local fichero="$1"
+
+	local res=$(db.executeQuery "select * from medio where esserie = 1 and fichero = \"$fichero\"")
+	echo "$res"
+}
+
+function series.find() {
+	local busqueda="$1"
+
+	local res=$(db.executeQuery "select * from medio where esserie = 1 and titulo like \"%${busqueda}%\"")
+	echo "$res"	
+}
+
+function series.getId() {
+	local titulo="$1"
+
+	local id=$(db.executeQuery "select id from medio where esserie = 1 and titulo = \"$titulo\"")
+}
+
+function series.remove() {
+	local id="$1"
+
+	db.executeUpdate "delete from medio where esserie = 1 and id = $id"
+}
+
+function series.updateFichero() {
+	local id="$1"
+	local fichero="$2"
+
+	db.executeUpdate "update medio set fichero=\"$fichero\" where id = $id"
+}
+
+function series.updateTorrent() {
+	local id="$1"
+	local torrent="$2"
+
+	db.executeUpdate "update medio set torrent=$torrent where id = $id"
+}
+
+function series.setVista() {
+	local id="$1"
+
+	db.executeUpdate "update medio set esvisto=1 where id = $id"
+}
+
+function series.setNoVista() {
+	local id="$1"
+
+	db.executeUpdate "update medio set esvisto=0 where id = $id"
+}
+
+function series.parse() {
+	local datos="$1"
+
+	echo ">Entra en series.parse" > /dev/tty
+	IFS='|' read -a datosa <<< "$datos"; IFS=" "
+	SERIE[id]="${datosa[0]}"
+	SERIE[titulo]="${datosa[1]}"
+	SERIE[fichero]="${datosa[2]}"
+	SERIE[torrent]="${datosa[3]}"
+	SERIE[esserie]="${datosa[4]}"
+	SERIE[esvisto]="${datosa[5]}"
+	echo "<Sale en series.parse" > /dev/tty
+}
+
+function series.parseToFile() {
+	local datos="$1"
+
+	series.parse "$datos"
+
+	echo > /tmp/SERIE
+	let i=0
+	for key in ${!SERIE[@]}; do
+		echo "$key ${SERIE[$key]}" >> /tmp/SERIE
+	done
+}
+
+function series.getField() {
+	local field="$1"
+
+	let i=0
+	for key in "${!SERIE[@]}"; do
+		if [[ "$key" == "$field" ]]; then
+			$DEBUG && echo "Coincide con $key. Salimos" > /dev/tty
+			break
+		fi
+		(( i++ ))
+	done
+	$DEBUG && echo "El valor de i es $i" > /dev/tty
+	if [[ $i < ${#SERIE[@]} ]]; then
+		local res=$(grep "^$field" /tmp/SERIE | awk '{ print $2 };')
+		echo "$res"
+	else
+		echo "-1"
+	fi
+}
+
+function series.addEpisodio() {
+	local idmedio="$1"
+	local temporada="$2"
+	local episodio="$3"
+	local fichero="$4"
+	local torrent="$5"
+
+	db.executeUpdate "insert into episodio (idmedio, temporada, episodio, fichero, torrent, esvisto)\
+	 values ($idmedio,$temporada,$episodio,\"$fichero\",$torrent,0)"
+}
+
+function series.getEpisodioById() {
+	local id="$1"
+
+	local res=$(db.executeQuery "select * from episodio where id = $id")
+	echo "$res"
+}
+
+function series.getEpisodioByFichero() {
+	local fichero="$1"
+
+	local res=$(db.executeQuery "select * from episodio where fichero = \"$fichero\"")
+	echo "$res"
+}
+
+function series.findEpisodio() {
+	local busqueda="$1"
+
+	local res=$(db.executeQuery "select * from episodio where fichero like \"%${busqueda}%\"")
+	echo "$res"	
+}
+
+function series.getEpisodioId() {
+	local idmedio="$1"
+	local temporada="$2"
+	local episodio="$3"
+
+	local id=$(db.executeQuery "select id from episodio where idmedio = $idmedio and temporada = $temporada and episodio = $episodio")
+	echo "$id"
+}
+
+function series.removeEpisodio() {
+	local id="$1"
+
+	db.executeUpdate "delete from episodio where id = $id"
+}
+
+function series.updateEpisodioFichero() {
+	local id="$1"
+	local fichero="$2"
+
+	db.executeUpdate "update episodio set fichero=\"$fichero\" where id = $id"
+}
+
+function series.updateEpisodioTorrent() {
+	local id="$1"
+	local torrent="$2"
+
+	db.executeUpdate "update episodio set torrent=$torrent where id = $id"
+}
+
+function series.setEpisodioVista() {
+	local id="$1"
+
+	db.executeUpdate "update episodio set esvisto=1 where id = $id"
+}
+
+function series.setEpisodioNoVista() {
+	local id="$1"
+
+	db.executeUpdate "update episodio set esvisto=0 where id = $id"
+}
+
+function series.parseEpisodio() {
+	local datos="$1"
+
+	IFS='|' read -a datosa <<< "$datos"; IFS=" "
+
+	EPISODIO[id]="${datosa[0]}"
+	EPISODIO[idmedio]=${datosa[1]}
+	EPISODIO[temporada]="${datosa[2]}"
+	EPISODIO[episodio]="${datosa[3]}"
+	EPISODIO[fichero]="${datosa[4]}"
+	EPISODIO[torrent]="${datosa[5]}"
+	EPISODIO[esvisto]="${datosa[6]}"
+}
+
+function series.parseEpisodioToFile() {
+	local datos="$1"
+
+	series.parseEpisodio "$datos"
+
+	echo > /tmp/EPISODIO
+	let i=0
+	for key in ${!EPISODIO[@]}; do
+		echo "$key ${EPISODIO[$key]}" >> /tmp/EPISODIO
+	done
+}
+
+function series.getEpisodioField() {
+	local field="$1"
+
+	let i=0
+	for key in "${!EPISODIO[@]}"; do
+		if [[ "$key" == "$field" ]]; then
+			$DEBUG && echo "Coincide con $key. Salimos" > /dev/tty
+			break
+		fi
+		(( i++ ))
+	done
+	$DEBUG && echo "El valor de i es $i" > /dev/tty
+	if [[ $i < ${#EPISODIO[@]} ]]; then
+		local res=$(grep "^$field " /tmp/EPISODIO | awk '{ print $2 };')
+		echo "$res"
+	else
+		echo "-1"
+	fi
+}

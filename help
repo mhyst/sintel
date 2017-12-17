@@ -1,0 +1,9 @@
+#!/bin/bash
+#Módulo de ayuda de sintel
+
+function help() {
+	echo "sintel (Inteligencia sobre series) @Copyleft Julio Serrano 2017"
+	echo
+	echo "sintel -i | sintel -init"
+	echo "	Inicializar la base de datos"
+}

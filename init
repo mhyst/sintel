@@ -1,0 +1,42 @@
+#!/bin/bash
+#Módulo de inicialización de la base de datos
+#
+#Tablas: medio, episodio, alternativo
+#
+#medio={id,nombre,fichero,torrent,streaming,esserie,esvisto}
+#episodio={idmedio,temporada,episodio,fichero,torrent,streaming,esvisto}
+#alternativo={idmedio,nombre}
+
+init_SQL=$(cat << END
+CREATE TABLE medio(
+		id integer primary key,
+		titulo varchar,
+		fichero varchar,
+		torrent integer,
+		esserie integer,
+		esvisto integer);
+CREATE TABLE episodio (
+		id integer primary key,
+		idmedio integer,
+		temporada integer,
+		episodio integer,
+		fichero varchar,
+		torrent integer,
+		esvisto integer,
+		foreign key (idmedio) references medio(id));
+CREATE TABLE alternativo (
+		idmedio integer,
+		nombre varchar,
+		foreign key(idmedio) references medio(id));
+END
+)
+
+function init () {
+	if [ -f "${global_DIR}/sintel.db" ]; then
+		echo "La base de datos ya existe."
+		exit
+	fi
+	echo "Inicializando la base de datos..."
+	sqlite3 ${global_DIR}/sintel.db <<< "$init_SQL"
+	echo "Base de datos inicializada."
+}
