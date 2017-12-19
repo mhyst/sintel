@@ -1,0 +1,71 @@
+#!/bin/bash
+#Gestión de reemplazo de rutas servidor/cliente
+
+#Si tenemos transmission en un ordenador distinto, se hace necesario utilizar dos rutas distintas
+#a los archivos de medios. Una desde el punto de vista del servidor y otra desde el del cliente.
+#Este módulo permite gestionar los necesarios reemplazos.
+
+function rutas.add() {
+	local ruta="$1"
+	local reemplazo="$2"
+
+	db.executeUpdate "insert into ruta values (\"$ruta\",\"$reemplazo\")"
+}
+
+function rutas.remove() {
+	local ruta="$1"
+
+	db.executeUpdate "delete from ruta where ruta=\"$ruta\""
+}
+
+function rutas.get() {
+	local ruta="$1"
+
+	local res=$(db.executeQuery "select reemplazo from ruta where ruta=\"$ruta\"")
+}
+
+function rutas.extraer() {
+	local path="$1"
+
+	local res=$(db.executeQuery "select ruta from ruta")
+
+	readarray -t datosa <<< "$res"
+	for ruta in "${datosa[@]}"; do
+		if [[ "$path" == "$ruta*" ]]; then
+			echo "$ruta"
+			exit 0
+		fi
+	done
+}
+
+function rutas.getReemplazo() {
+	local ruta="$1"
+
+	local reemplazo=$(db.executeQuery "select reemplazo from ruta where ruta = \"$ruta\"")
+	echo "$reemplazo"
+}
+
+function rutas.replace() {
+	local path="$1"
+	local reemplazo=""
+	local ruta=""
+
+	local res=$(db.executeQuery "select ruta from ruta")
+
+	readarray -t datosa <<< "$res"
+	for r in "${datosa[@]}"; do
+		if [[ ${path} == ${r}* ]]; then
+			reemplazo=$(rutas.getReemplazo "$r")
+			ruta="$r"
+			break
+		fi
+	done
+
+	if [[ "$reemplazo" == "" ]]; then
+		echo "-1"
+		exit
+	else
+		local filename="${path##*$ruta}"
+		echo "$reemplazo$filename"
+	fi
+}

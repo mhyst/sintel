@@ -16,7 +16,7 @@ function series.add() {
 	local titulo="$1"
 
 	$DEBUG && echo "> series.add" > /dev/tty
-	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"\",-1,1,0)"	
+	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"\",-1,1,0,0)"	
 	$DEBUG && echo "< series.add" > /dev/tty
 	echo "$ROWID"
 }
@@ -106,7 +106,7 @@ function series.setNoVista() {
 function series.parse() {
 	local datos="$1"
 
-	echo ">Entra en series.parse" > /dev/tty
+	$DEBUG && echo ">Entra en series.parse" > /dev/tty
 	IFS='|' read -a datosa <<< "$datos"; IFS=" "
 	SERIE[id]="${datosa[0]}"
 	SERIE[titulo]="${datosa[1]}"
@@ -114,7 +114,8 @@ function series.parse() {
 	SERIE[torrent]="${datosa[3]}"
 	SERIE[esserie]="${datosa[4]}"
 	SERIE[esvisto]="${datosa[5]}"
-	echo "<Sale en series.parse" > /dev/tty
+	SERIE[esdescargado]="{datosa[6]}"
+	$DEBUG && echo "<Sale en series.parse" > /dev/tty
 }
 
 function series.parseToFile() {
@@ -157,7 +158,7 @@ function series.addEpisodio() {
 	local torrent="$5"
 
 	db.executeUpdate "insert into episodio (idmedio, temporada, episodio, fichero, torrent, esvisto)\
-	 values ($idmedio,$temporada,$episodio,\"$fichero\",$torrent,0)"
+	 values ($idmedio,$temporada,$episodio,\"$fichero\",$torrent,0,0)"
 }
 
 function series.getEpisodioById() {
@@ -222,6 +223,18 @@ function series.setEpisodioNoVista() {
 	db.executeUpdate "update episodio set esvisto=0 where id = $id"
 }
 
+function series.setEpisodioDescargado() {
+	local id="$1"
+
+	db.executeUpdate "update episodio set esdescargado=1 where id = $id"
+}
+
+function series.setEpisodioNoDescargado() {
+	local id="$1"
+
+	db.executeUpdate "update episodio set esdescargado=0 where id = $id"
+}
+
 function series.parseEpisodio() {
 	local datos="$1"
 
@@ -234,6 +247,7 @@ function series.parseEpisodio() {
 	EPISODIO[fichero]="${datosa[4]}"
 	EPISODIO[torrent]="${datosa[5]}"
 	EPISODIO[esvisto]="${datosa[6]}"
+	EPISODIO[esdescargado]="{datosa[7]}"
 }
 
 function series.parseEpisodioToFile() {
@@ -266,4 +280,18 @@ function series.getEpisodioField() {
 	else
 		echo "-1"
 	fi
+}
+
+function series.parseTemporada() {
+	local te="$1"
+
+	IFS='x' read -a aux <<< "$te"; IFS=" "
+	echo "${aux[0]}"
+}
+
+function series.parseEpisodioNum() {
+	local te="$1"
+
+	IFS='x' read -a aux <<< "$te"; IFS=" "
+	echo "${aux[1]}"
 }

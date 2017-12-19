@@ -4,7 +4,7 @@
 declare -A PELICULA
 
 
-PELICULA=( ["id"]="" ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["esvisto"]="" )
+PELICULA=( ["id"]="" ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["esvisto"]="" ["esdescargado"]="" )
 
 function film.add() {
 	local titulo="$1"
@@ -12,7 +12,7 @@ function film.add() {
 	local torrent="$3"
 
 	$DEBUG && echo "> film.add" > /dev/tty
-	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0)"
+	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0,0)"
 	$DEBUG && echo "< film.add" > /dev/tty
 }
 
@@ -23,7 +23,7 @@ function film.add2() {
 	local fichero="${PELICULA[fichero]}"
 	local torrent="${PELICULA[torrent]}"
 
-	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0)"
+	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0,0)"
 }
 
 function film.getById() {
@@ -102,6 +102,18 @@ function film.setVista() {
 function film.setNoVista() {
 	local id="$1"
 
+	db.executeUpdate "update medio set esdescargado=0 where id = $id"
+}
+
+function film.setDescargada() {
+	local id="$1"
+
+	db.executeUpdate "update medio set esdescargado=1 where id = $id"
+}
+
+function film.setNoDescargada() {
+	local id="$1"
+
 	db.executeUpdate "update medio set esvisto=0 where id = $id"
 }
 
@@ -115,6 +127,7 @@ function film.parse() {
 	PELICULA[torrent]="${datosa[3]}"
 	PELICULA[esserie]="${datosa[4]}"
 	PELICULA[esvisto]="${datosa[5]}"
+	PELICULA[esdescargado]="{datosa[6]}"
 }
 
 function film.parseToFile() {

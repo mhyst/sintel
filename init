@@ -14,7 +14,8 @@ CREATE TABLE medio(
 		fichero varchar,
 		torrent integer,
 		esserie integer,
-		esvisto integer);
+		esvisto integer,
+		esdescargado integer);
 CREATE TABLE episodio (
 		id integer primary key,
 		idmedio integer,
@@ -23,11 +24,15 @@ CREATE TABLE episodio (
 		fichero varchar,
 		torrent integer,
 		esvisto integer,
+		esdescargado integer,
 		foreign key (idmedio) references medio(id));
 CREATE TABLE alternativo (
 		idmedio integer,
 		nombre varchar,
 		foreign key(idmedio) references medio(id));
+CREATE TABLE ruta (
+		ruta varchar primary key,
+		reemplazo varchar);
 END
 )
 

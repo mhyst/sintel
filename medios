@@ -172,7 +172,7 @@ function medios.listEpisodios() {
 	for episodio in "${datosa[@]}"; do
 		series.parseEpisodio "$episodio"
 
-		e="${EPISODIO[id]} ${EPISODIO[temporada]} ${EPISODIO[episodio]} ${EPISODIO[fichero]} ${EPISODIO[torrent]} ${EPISODIO[esvisto]}"
+		e="${EPISODIO[id]} ${EPISODIO[temporada]} ${EPISODIO[episodio]} ${EPISODIO[fichero]} ${EPISODIO[torrent]} ${EPISODIO[esvisto]} ${EPISODIO[esdescargado]}"
 		echo "$e"
 	done
 }
