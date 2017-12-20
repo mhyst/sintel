@@ -157,7 +157,7 @@ function series.addEpisodio() {
 	local fichero="$4"
 	local torrent="$5"
 
-	db.executeUpdate "insert into episodio (idmedio, temporada, episodio, fichero, torrent, esvisto)\
+	db.executeUpdate "insert into episodio (idmedio, temporada, episodio, fichero, torrent, esvisto, esdescargado)\
 	 values ($idmedio,$temporada,$episodio,\"$fichero\",$torrent,0,0)"
 }
 
