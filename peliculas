@@ -6,6 +6,7 @@ declare -A PELICULA
 
 PELICULA=( ["id"]="" ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["esvisto"]="" ["esdescargado"]="" )
 
+#@ film.add titulo fichero torrent
 function film.add() {
 	local titulo="$1"
 	local fichero="$2"
@@ -16,6 +17,7 @@ function film.add() {
 	$DEBUG && echo "< film.add" > /dev/tty
 }
 
+#@ film.add2 registro (Formato: titulo|fichero|torrent)
 function film.add2() {
 	local datos="$1"
 	film.parse "$datos"
@@ -26,6 +28,7 @@ function film.add2() {
 	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0,0)"
 }
 
+#@ film-getById id
 function film.getById() {
 	local id="$1"
 
@@ -35,6 +38,7 @@ function film.getById() {
 	echo "$res"
 }
 
+#@ film.getIdByTitulo titulo
 function film.getIdByTitulo() {
 	local titulo="$1"
 
@@ -44,6 +48,7 @@ function film.getIdByTitulo() {
 	echo "$res"
 }
 
+#@ film.getByTitulo titulo
 function film.getByTitulo() {
 	local titulo="$1"
 
@@ -53,6 +58,7 @@ function film.getByTitulo() {
 	echo "$res"
 }
 
+#@  film-getByFichero fichero
 function film.getByFichero() {
 	local fichero="$1"
 
@@ -60,6 +66,7 @@ function film.getByFichero() {
 	echo "$res"
 }
 
+#@ film-find busqueda
 function film.find() {
 	local busqueda="$1"
 
@@ -67,18 +74,21 @@ function film.find() {
 	echo "$res"	
 }
 
+#@ film-getId titulo (sinonimo de getIdByTitulo)
 function film.getId() {
 	local titulo="$1"
 
 	local id=$(db.executeQuery "select id from medio where esserie = 0 and titulo = \"$titulo\"")
 }
 
+#@ film.remove id
 function film.remove() {
 	local id="$1"
 
 	db.executeUpdate "delete from medio where esserie = 0 and id = $id"
 }
 
+#@ film-updateFichero id fichero
 function film.updateFichero() {
 	local id="$1"
 	local fichero="$2"
@@ -86,6 +96,7 @@ function film.updateFichero() {
 	db.executeUpdate "update medio set fichero=\"$fichero\" where id = $id"
 }
 
+#@ film.updateTorrent id torrent
 function film.updateTorrent() {
 	local id="$1"
 	local torrent="$2"
@@ -93,30 +104,35 @@ function film.updateTorrent() {
 	db.executeUpdate "update medio set torrent=$torrent where id = $id"
 }
 
+#@ film.setVista id
 function film.setVista() {
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=1 where id = $id"
 }
 
+#@ film.setNoVista id
 function film.setNoVista() {
 	local id="$1"
 
 	db.executeUpdate "update medio set esdescargado=0 where id = $id"
 }
 
+#@ film.setDescargada id
 function film.setDescargada() {
 	local id="$1"
 
 	db.executeUpdate "update medio set esdescargado=1 where id = $id"
 }
 
+#@ film.SetNoDescargada id
 function film.setNoDescargada() {
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=0 where id = $id"
 }
 
+#@ film.parse datos (Formato: (id|titulo|fichero|torrent|esserie|esvisto|esdescargado))
 function film.parse() {
 	local datos="$1"
 
@@ -130,6 +146,7 @@ function film.parse() {
 	PELICULA[esdescargado]="{datosa[6]}"
 }
 
+#@ film.parseToFile datos
 function film.parseToFile() {
 	local datos="$1"
 
@@ -142,6 +159,7 @@ function film.parseToFile() {
 	done
 }
 
+#@ film.getField field
 function film.getField() {
 	local field="$1"
 

@@ -25,7 +25,7 @@ function series.getById() {
 	local id="$1"
 
 	$DEBUG && echo "> series.getById" > /dev/tty
-	local res=$(db.executeQuery "select * from medio where id = $id where esserie=1")
+	local res=$(db.executeQuery "select * from medio where id = $id and esserie=1")
 	$DEBUG && echo "< series.getById" > /dev/tty
 	echo "$res"
 }
@@ -294,4 +294,12 @@ function series.parseEpisodioNum() {
 
 	IFS='x' read -a aux <<< "$te"; IFS=" "
 	echo "${aux[1]}"
+}
+
+function series.screenEpisodio() {
+	echo "${EPISODIO[id]} ${EPISODIO[idmedio]} ${EPISODIO[temporada]} ${EPISODIO[episodio]}" > /dev/tty
+	# ${EPISODIO[fichero]}
+	# ${EPISODIO[torrent]}
+	# ${EPISODIO[esvisto]}
+	# ${EPISODIO[esdescargado]}
 }
