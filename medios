@@ -182,11 +182,18 @@ function medios.getTituloSerie() {
 
 	local aux="${medio##*/}"
 	aux="${aux%.*}"
-	aux="${aux%%[0-9]*}"
+	aux=$(tr '_' ' ' <<< "$aux")
+	aux=$(tr '.' ' ' <<< "$aux")
+	local te1=$(grep -oE '[0-9]{1,2}x[0-9]{1,3}' <<< $medio)
+	local te2=$(grep -oE 'S[0-9]{1,2}E[0-9]{1,3}' <<< ${medio^^})
+	if [[ "$te1" == "" ]]; then
+		aux="${aux%%[sS][0-9]*}"
+	else
+		aux="${aux%% [0-9]*}"
+	fi
 	aux="${aux%%(*}"
 	aux="${aux%%[*}"
 	# aux="${aux%%HDTV*}"
-	aux=$(tr '.' ' ' <<< $aux)
 	aux=$(tr -d '-' <<< $aux)
 	echo $(trim "$aux")
 }
@@ -233,6 +240,14 @@ function medios.detectar() {
 		fichero="$folder$medio"
 
 		te=$(grep -oE '[0-9]{1,2}x[0-9]{1,3}' <<< $medio)
+		if [[ "$te" == "" ]]; then
+			#Intentemos detectar este otro formato: S01E01 
+			te=$(grep -oE 'S[0-9]{1,2}E[0-9]{1,3}' <<< ${medio^^})
+			if [[ "$te" != "" ]]; then
+				te="${te:1}"
+				te=$(tr 'E' 'x' <<< $te)
+			fi
+		fi
 		if [[ "$te" != "" ]]; then
 			titulo=$(medios.getTituloSerie "$medio")
 			echo "Serie: $titulo"
@@ -275,7 +290,7 @@ function medios.detectar() {
 				id="$ROWID"
 			else
 				echo "La película ya existe en la base de datos"
-			fi			
+			fi	
 		fi
 	done
 }
@@ -287,6 +302,12 @@ function medios.determineSeries() {
 	local busqueda="$1"
 
 	local res=$(series.find "$busqueda")
+
+	if [[ "$res" == "" ]]; then
+		#echo "No se ha encontrado ninguna serie" > /dev/tty
+		echo "-1"
+		exit
+	fi
 	readarray -t devueltos <<< $res
 
 	if [[ ${#devueltos[@]} == 0 ]]; then
@@ -298,12 +319,12 @@ function medios.determineSeries() {
 		series.parse "${devueltos[0]}"
 		echo "${SERIE[id]}"
 	else
-		echo "Series coincidentes:" > /dev/tty
-		echo "--------------------" > /dev/tty
+		echo -e "\e[47m\e[31m Series coincidentes \e[0m\n" > /dev/tty
+		#echo "--------------------" > /dev/tty
 		let i=0
 		for reg in "${devueltos[@]}"; do
 			series.parse "$reg"
-			echo "$i -  ${SERIE[titulo]}" > /dev/tty
+			echo " $i:	${SERIE[titulo]}" > /dev/tty
 			(( i++ ))
 		done
 		local LIMITE=$(( ${#devueltos[*]} - 1 ))

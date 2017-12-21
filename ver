@@ -41,7 +41,7 @@ function ver.pelicula() {
 	film.setVista "${PELICULA[id]}"
 }
 
-function ver.serie() {
+function ver.serieOld() {
 	local busqueda="$1"
 
 	local datos=$(db.executeQuery "select * from medio where esserie = 1 and esvisto = 0 and titulo like \"%$busqueda%\"")
@@ -85,9 +85,12 @@ function ver.serie() {
 
 function ver.cache() {
 	local idserie="$1"
-
+	local titulo="$2"
+	local nepisodios="$3"
 
 	clear > /dev/tty
+
+	echo -e "\e[92mSerie:\e[0m  \e[1m$titulo\e[0m - $nepisodios episodios" > /dev/tty
 	echo > /dev/tty
 	echo > /dev/tty
 	local next=$(head.next "$idserie")
@@ -98,7 +101,7 @@ function ver.cache() {
 	if [[ "$next" == "-1" ]]; then
 		echo "No hay episodios" > /dev/tty
 		exit
-	fi
+	fi 
 
 	local datos=$(db.executeQuery "select * from episodio where idmedio=$idserie order by temporada, episodio")
 
@@ -122,6 +125,11 @@ function ver.cache() {
 				(( ini = 0 ))
 			fi
 			(( fin = i+5 ))
+			if (( fin-ini < 10 )); then
+				let count=fin-ini
+				let inc=10-count
+				(( fin = fin + inc ))
+			fi
 			#if (( fin >= ${#datosa[@]} )); then
 			#	(( fin = ${#datosa[@]}-1 ))
 			#fi
@@ -150,11 +158,11 @@ function ver.cache() {
 			series.parseEpisodio "$episodio"
 			#series.screenEpisodio
 			if [[ "${EPISODIO[id]}" == "$next" ]]; then
-				echo -n "> " > /dev/tty
+				echo -e -n "> \e[38;5;196m\e[47m" > /dev/tty
 			else
 				echo -n "  " > /dev/tty
 			fi
-			echo "${EPISODIO[temporada]}x${EPISODIO[episodio]}:		${EPISODIO[fichero]}" > /dev/tty
+			echo -e "${EPISODIO[temporada]}x${EPISODIO[episodio]}:		${EPISODIO[fichero]}\e[0m" > /dev/tty
 		fi
 		(( i++ ))
 	done
@@ -176,27 +184,29 @@ function ver.play() {
 	db.executeUpdate "update episodio set esvisto=1 where id=$idepisodio"
 }
 
-function ver.serie2() {
+function ver.serie() {
 	local busqueda="$1"
 
 	local idserie=$(medios.determineSeries "$busqueda")
 	
-
 	if [[ "$idserie" == "-1" ]]; then
 		echo "No hay series que se correspondan con la cadena de búsqueda: $busqueda" > /dev/tty
 		exit
 	fi
 
+	local titulo=$(db.executeQuery "select titulo from medio where id=$idserie")
+	local nepisodios=$(db.executeQuery "select count(id) from episodio where idmedio=$idserie")
+
 	local correcto=false
 	while ! $correcto; do
-		local next=$(ver.cache "$idserie")
+		local next=$(ver.cache "$idserie" "$titulo" "$nepisodios")
 		#echo "ver.serie2 Next: >$next<"
 		echo > /dev/tty
 		echo > /dev/tty
 		#echo "p - reproducir | r - reset | f - adelante | b - atras " > /dev/tty
 
-		echo "p - reproducir | r - reset | f - adelante | ff - adelante N | b - atras | bb - atrás N" > /dev/tty
-		echo "rt - reset temporada | ft - marcar temporada | q - salir" > /dev/tty
+		echo -e " \e[47m\e[30m p - reproducir \e[0m \e[47m\e[30m r - reset \e[0m \e[47m\e[30m f - adelante \e[0m \e[47m\e[30m b - atras\e[0m \e[47m\e[30m ff - adelante N \e[0m \e[47m\e[30m bb - atrás N \e[0m\n" > /dev/tty
+		echo -e " \e[47m\e[30m rt - reset temporada \e[0m \e[47m\e[30m ft - marcar temporada \e[0m \e[47m\e[30m q - salir \e[0m" > /dev/tty
 
 		read -p "> " action
 		eval set -- "$action"
@@ -238,7 +248,7 @@ function ver.serie2() {
 				fi
 				;;
 			q ) echo "Hasta otra!" > /dev/tty; correcto=true ;;
-			* ) echo "Acción incorrecta" > /dev/tty ;;
+			* ) echo "Acción incorrecta. Pulse enter para continuar..." > /dev/tty; read ;;
 		esac
 
 		if [[ "$action" == "p" ]]; then
@@ -249,42 +259,4 @@ function ver.serie2() {
 		#read
 		
 	done
-
-	exit
-
-
-	# local t="${EPISODIO[temporada]}"
-
-	# local datos="select * from episodio where idserie=$idserie"
-
-	# readarray -t datosa <<< "$datos"
-
-	# echo "Series encontradas: ${#datosa[@]}" > /dev/tty
-	# echo "----------------------------------" > /dev/tty
-	# if [[ ${#datosa[@]} == 0 ]]; then
-	# 	echo "No hay series que se correspondan con la cadena de búsqueda: $busqueda" > /dev/tty
-	# 	exit
-	# fi
-
-	# let i=0
-	# for medio in "${datosa[@]}"; do
-	# 	film.parse "$medio"
-		
-	# 	echo "$i:	${PELICULA[titulo]}" > /dev/tty
-	# 	(( i++ ))
-	# done
-
-	# readarray -t datosa <<< "$datos"
-	# local LIMITE=$(( ${#datosa[@]} - 1 ))
-	# local CHOSENID=$(userChoice $LIMITE "Seleccione la película:")
-	
-	# film.parse "${datosa[$CHOSENID]}"
-	# local idmedio="${PELICULA[id]}"
-
-	# local t=$(db.executeQuery "select min(temporada) from episodio where idmedio=$idmedio and esvisto=0")
-	# local idepisodio=$(db.executeQuery "select min(id) from episodio where idmedio = $idmedio and temporada = $t and esvisto = 0")
-	# local filename=$(db.executeQuery "select fichero from episodio where id = $idepisodio")
-
-	# $PLAYER "$filename"
-	# db.executeUpdate "update episodio set esvisto=1 where id=$idepisodio"
 }

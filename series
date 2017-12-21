@@ -16,7 +16,7 @@ function series.add() {
 	local titulo="$1"
 
 	$DEBUG && echo "> series.add" > /dev/tty
-	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"\",-1,1,0,0)"	
+	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto,esdescargado) values (\"$titulo\",\"\",-1,1,0,0)"	
 	$DEBUG && echo "< series.add" > /dev/tty
 	echo "$ROWID"
 }
@@ -34,7 +34,7 @@ function series.getIdByTitulo() {
 	local titulo="$1"
 
 	$DEBUG && echo "> series.getByTitulo" > /dev/tty
-	local res=$(db.executeQuery "select id from medio where esserie=1 and titulo = \"$titulo\"")
+	local res=$(db.executeQuery "select id from medio where esserie=1 and lower(titulo) = \"${titulo,,}\"")
 	# if [[ $? != 0 ]]; then
 	# 	echo "SQL: $sql"
 	# fi
