@@ -177,6 +177,56 @@ function medios.listEpisodios() {
 	done
 }
 
+function medios.extractTe() {
+	local medio="$1"
+	local te=""
+
+	local EXPS=( '[0-9]{1,3}[xX][0-9]{1,4}' '[sS][0-9]{1,3}[eE][0-9]{1,4}' '[0-9]{1,3}[oO][fF][0-9]{1,4}' )
+
+	for exp in "${EXPS[@]}"; do
+		te=$(grep -oE $exp <<< "$medio")
+		if [[ "$te" != "" ]]; then
+			break
+		fi
+	done
+
+	echo "$te"
+}
+
+function medios.fixTitulo() {
+	local medio="$*"
+
+	medio="$(tr -d '[\[\]]' <<< $medio)"
+	medio="$(tr -d '[\(\)]' <<< $medio)"
+
+	local EXPS=( '[hH][dD][tT][vV]' '[xX][vV][iI][dD]' '[dD][iI][vV][xX]' '[dD][vV][dD]' '[bB][dD][rR][iI][pP]' '[hH][dD][rR][iI][pP]' '[tT][sS]' '[sS][cC][rR][eE][eE][nN][eE][rR]' 'www.*.["com""net""es"]' )
+	local f=""
+
+	for exp in "${EXPS[@]}"; do
+		echo "Exp: >$exp<" > /dev/tty
+		f=$(grep -oE "$exp" <<< "$medio")
+		while [[ "$f" != "" ]]; do
+			readarray -t af <<< "$f"
+			for c in "${af[@]}"; do
+				echo "F: >$c<" > /dev/tty	
+				medio="${medio/$c/}"
+				echo "Medio: $medio" > /dev/tty
+			done
+			f=$(grep -oE "$exp" <<< "$medio")
+		done
+	done
+
+	echo "$medio"
+}
+
+function medios.test() {
+	local medio="La casa de la pradera 1x01 [www.DiVXTotal.net] (dvdscreener) DIVX [HdTV] XViD xViD"
+
+	 #echo "$(medios.fixTitulo $medio)"
+	 echo "$(medios.getTituloSerie "$medio")"
+	 #echo $(medios.extractTe "$medio")
+}
+
 function medios.getTituloSerie() {
 	local medio="$1"
 
@@ -184,13 +234,22 @@ function medios.getTituloSerie() {
 	aux="${aux%.*}"
 	aux=$(tr '_' ' ' <<< "$aux")
 	aux=$(tr '.' ' ' <<< "$aux")
-	local te1=$(grep -oE '[0-9]{1,2}x[0-9]{1,3}' <<< $medio)
-	local te2=$(grep -oE 'S[0-9]{1,2}E[0-9]{1,3}' <<< ${medio^^})
-	if [[ "$te1" == "" ]]; then
-		aux="${aux%%[sS][0-9]*}"
-	else
-		aux="${aux%% [0-9]*}"
+
+	local te=$(medios.extractTe "$medio")
+	if [[ "$te" == "" ]]; then
+		echo "Esto no debería pasar. ERROR: No es una serie"
+		exit
 	fi
+	aux="${aux/$te/}"
+
+	# aux="${aux%%[sS][0-9]*}"
+	# elif [[ "$te2" != "" ]]; then
+	# elif [[ "$te3" != "" ]]; then
+	# elif [[ "$te4" != "" ]]; then
+	# elif [[ "$te5" != "" ]]; then
+	# elif [[ "$te6" != "" ]]; then
+	# 	aux="${aux%% [0-9]*}"
+	# fi
 	aux="${aux%%(*}"
 	aux="${aux%%[*}"
 	# aux="${aux%%HDTV*}"
@@ -239,15 +298,17 @@ function medios.detectar() {
 		#aux=`sed "s/&apos;/\'/g" <<< $medio`
 		fichero="$folder$medio"
 
-		te=$(grep -oE '[0-9]{1,2}x[0-9]{1,3}' <<< $medio)
-		if [[ "$te" == "" ]]; then
-			#Intentemos detectar este otro formato: S01E01 
-			te=$(grep -oE 'S[0-9]{1,2}E[0-9]{1,3}' <<< ${medio^^})
-			if [[ "$te" != "" ]]; then
-				te="${te:1}"
-				te=$(tr 'E' 'x' <<< $te)
-			fi
-		fi
+		te=$(medios.extractTe "$medio")
+
+		# te=$(grep -oE '[0-9]{1,2}x[0-9]{1,3}' <<< $medio)
+		# if [[ "$te" == "" ]]; then
+		# 	#Intentemos detectar este otro formato: S01E01 
+		# 	te=$(grep -oE 'S[0-9]{1,2}E[0-9]{1,3}' <<< ${medio^^})
+		# 	if [[ "$te" != "" ]]; then
+		# 		te="${te:1}"
+		# 		te=$(tr 'E' 'x' <<< $te)
+		# 	fi
+		# fi
 		if [[ "$te" != "" ]]; then
 			titulo=$(medios.getTituloSerie "$medio")
 			echo "Serie: $titulo"
