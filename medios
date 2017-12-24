@@ -180,14 +180,42 @@ function medios.listEpisodios() {
 function medios.extractTe() {
 	local medio="$1"
 	local te=""
+	local rem=""
+	local aux=""
 
 	local EXPS=( '[0-9]{1,3}[xX][0-9]{1,4}' '[sS][0-9]{1,3}[eE][0-9]{1,4}' '[0-9]{1,3}[oO][fF][0-9]{1,4}' )
 
+	let i=0
 	for exp in "${EXPS[@]}"; do
 		te=$(grep -oE $exp <<< "$medio")
 		if [[ "$te" != "" ]]; then
-			break
+			case "$i" in
+				0 )
+					break
+					;;
+				1 )
+					aux=${te:1}
+					rem=$(grep -oE '[eE]' <<< "$aux")
+					$DEBUG && echo "rem: $rem" > /dev/tty
+					aux=${aux/$rem/x}
+					$DEBUG && echo "aux: $aux" > /dev/tty
+					te="$aux"
+					break
+					;;
+				2 )
+					rem=$(grep -oE '[oO][fF]' <<< $te)
+					$DEBUG && echo "rem: $rem" > /dev/tty
+					aux=${te/$rem/x}
+					$DEBUG && echo "aux: $aux" > /dev/tty
+					te="$aux"
+					break
+					;;
+				* )
+					echo "ERROR: Esto no debería suceder 2" > /dev/tty
+					break
+			esac
 		fi
+		(( i++ ))
 	done
 
 	echo "$te"
@@ -199,18 +227,18 @@ function medios.fixTitulo() {
 	medio="$(tr -d '[\[\]]' <<< $medio)"
 	medio="$(tr -d '[\(\)]' <<< $medio)"
 
-	local EXPS=( '[hH][dD][tT][vV]' '[xX][vV][iI][dD]' '[dD][iI][vV][xX]' '[dD][vV][dD]' '[bB][dD][rR][iI][pP]' '[hH][dD][rR][iI][pP]' '[tT][sS]' '[sS][cC][rR][eE][eE][nN][eE][rR]' 'www.*.["com""net""es"]' )
+	local EXPS=( '[0-9]{1,3}[xX][0-9]{1,4}' '[sS][0-9]{1,3}[eE][0-9]{1,4}' '[0-9]{1,3}[oO][fF][0-9]{1,4}' '[hH][dD][tT][vV]' '[xX][vV][iI][dD]' '[dD][iI][vV][xX]' '[dD][vV][dD]' '[bB][dD][rR][iI][pP]' '[hH][dD][rR][iI][pP]' '[tT][sS]' '[sS][cC][rR][eE][eE][nN][eE][rR]' 'www.*.["com""net""es"]' )
 	local f=""
 
 	for exp in "${EXPS[@]}"; do
-		echo "Exp: >$exp<" > /dev/tty
+		$DEBUG && echo "Exp: >$exp<" > /dev/tty
 		f=$(grep -oE "$exp" <<< "$medio")
 		while [[ "$f" != "" ]]; do
 			readarray -t af <<< "$f"
 			for c in "${af[@]}"; do
-				echo "F: >$c<" > /dev/tty	
+				$DEBUG && echo "F: >$c<" > /dev/tty	
 				medio="${medio/$c/}"
-				echo "Medio: $medio" > /dev/tty
+				$DEBUG && echo "Medio: $medio" > /dev/tty
 			done
 			f=$(grep -oE "$exp" <<< "$medio")
 		done
@@ -219,28 +247,36 @@ function medios.fixTitulo() {
 	echo "$medio"
 }
 
-function medios.test() {
-	local medio="La casa de la pradera 1x01 [www.DiVXTotal.net] (dvdscreener) DIVX [HdTV] XViD xViD"
-
-	 #echo "$(medios.fixTitulo $medio)"
-	 echo "$(medios.getTituloSerie "$medio")"
-	 #echo $(medios.extractTe "$medio")
-}
-
 function medios.getTituloSerie() {
 	local medio="$1"
 
+	# Extraemos el nombre del archivo sin su ruta
 	local aux="${medio##*/}"
-	aux="${aux%.*}"
+	# Eliminamos la extensión
+	aux="${aux%.*}"	
+
+	# Eliminamos todo a partir de temporadaxepisodio
+	local te=$(medios.extractTe "$aux")
+	local aux2=${aux%%$te*}
+	if [[ "$aux2" == "" ]]; then
+		aux2="$aux"
+	fi
+
+	# Eliminamos elementos no deseados del título
+	aux=$(medios.fixTitulo "$aux2")
+
+
+
+	# Trocamos posibles guiones bajos y puntos, en espacios
 	aux=$(tr '_' ' ' <<< "$aux")
 	aux=$(tr '.' ' ' <<< "$aux")
 
-	local te=$(medios.extractTe "$medio")
-	if [[ "$te" == "" ]]; then
-		echo "Esto no debería pasar. ERROR: No es una serie"
-		exit
-	fi
-	aux="${aux/$te/}"
+	# local te=$(medios.extractTe "$medio")
+	# if [[ "$te" == "" ]]; then
+	# 	echo "Esto no debería pasar. ERROR: No es una serie"
+	# 	exit
+	# fi
+	# aux="${aux/$te/}"
 
 	# aux="${aux%%[sS][0-9]*}"
 	# elif [[ "$te2" != "" ]]; then
@@ -250,10 +286,14 @@ function medios.getTituloSerie() {
 	# elif [[ "$te6" != "" ]]; then
 	# 	aux="${aux%% [0-9]*}"
 	# fi
-	aux="${aux%%(*}"
-	aux="${aux%%[*}"
+	#aux="${aux%%(*}"
+	#aux="${aux%%[*}"
 	# aux="${aux%%HDTV*}"
+
+	# Eliminamos guiones
 	aux=$(tr -d '-' <<< $aux)
+
+	# Se devuelve el resultado
 	echo $(trim "$aux")
 }
 
@@ -262,9 +302,12 @@ function medios.getTituloPelicula() {
 
 	local aux="${medio##*/}"
 	aux="${aux%.*}"
+
+	# Eliminamos elementos no deseados del título
+	aux=$(medios.fixTitulo "$aux")
 	#aux="${aux%%[0-9]*}"
-	aux="${aux%%(*}"
-	aux="${aux%%[*}"
+	#aux="${aux%%(*}"
+	#aux="${aux%%[*}"
 	# aux="${aux%%HDTV*}"
 	aux=$(tr '.' ' ' <<< $aux)
 	aux=$(tr -d '-' <<< $aux)
