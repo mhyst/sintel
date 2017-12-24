@@ -1,0 +1,99 @@
+#!/bin/bash
+#Funciones de prueba
+
+function testDetectar() {
+	local ubicacion="$1"
+
+	
+}
+
+function test.detectar() {
+	local folder="/home/mhyst/Extra/Peliculas"
+	#local re='[0-9]{1,2}x[0-9]{1,3}'
+	local te=""
+	local temporada=""
+	local episodio=""
+	local titulo=""
+	local fichero=""
+	local torrent=""
+	local aux=""
+	local id=""
+	local epid=""
+
+	if [ ! -d "$folder" ]; then
+	 	echo "El directorio >$folder< no existe"
+	 	exit
+	fi
+	cd "$folder"
+	find * -name '*.avi' -o -name '*.mp4' -o -name '*.mkv' -type f | sort > /tmp/films.txt
+
+	readarray -t datosa < /tmp/films.txt
+	for medio in "${datosa[@]}"; do
+
+		#aux=`sed "s/&apos;/\'/g" <<< $medio`
+		fichero="$folder$medio"
+
+		te=$(medios.extractTe "$medio")
+
+		if [[ "$te" != "" ]]; then
+			titulo=$(medios.getTituloSerie "$medio")
+			echo "Serie: $titulo"
+			#Es una serie tenemos que crear la serie si no existe y crear el episodio correspondiente
+			#Extraemos el episodio y la temporada que es
+			IFS='x' read -a aux <<< "$te"; IFS=" "
+			temporada="${aux[0]}"
+			episodio="${aux[1]}"
+			if [[ "$temporada" == "" ]] || [[ "$episodio" == "" ]]; then
+				echo "ERROR: No se pudo obtener te2 en >$medio<"; continue;
+			else
+				echo "Temporada: $temporada, Episodio: $episodio"
+			fi
+			#id=$(series.getIdByTitulo "$titulo")
+			# if [[ "$id" == "" ]]; then
+			# 	#No existe, la creamos
+			# 	series.add "$titulo" "null" "-1"
+			# 	id="$ROWID"
+			# fi
+
+			$DEBUG && echo "Comprobando si el episodio existe"
+			#epid=$(series.getEpisodioId "$id" "$temporada" "$episodio")
+			$DEBUG && echo "Comprobado $epid"
+			# if [[ "$epid" == "" ]]; then
+			# 	$DEBUG && echo "Intentando insertar episodio..."
+			# 	#Puesto que ya existe, añadimos el episodio
+			# 	series.addEpisodio "$id" "$temporada" "$episodio" "$fichero" "-1"
+			# 	$DEBUG && echo "Intentado!"
+			# else
+			# 	echo "Ep episodio ya está en la base de datos."
+			# fi
+		else
+			#Si es una película, simplemente añadimos la película
+			titulo=$(medios.getTituloPelicula "$medio")
+			echo "Pelicula: $titulo"
+			# id=$(film.getByTitulo "$titulo")
+			# if [[ "$id" == "" ]]; then
+			# 	#No existe, la creamos
+			# 	film.add "$titulo" "$fichero" "-1"
+			# 	id="$ROWID"
+			# else
+			# 	echo "La película ya existe en la base de datos"
+			# fi	
+		fi
+	done
+}
+
+function test.getTituloSerie() {
+	local medio="La casa de la pradera 1of01 [www.DiVXTotal.net] (dvdscreener) DIVX [HdTV] XViD xViD"
+
+	 #echo "$(medios.fixTitulo $medio)"
+	 echo "$(medios.getTituloSerie "$medio")"
+	 #echo $(medios.extractTe "$medio")
+}
+
+function test.extractTe() {
+	local medio="La casa de la pradera 1x01 [www.DiVXTotal.net] (dvdscreener) DIVX [HdTV] XViD xViD"
+
+	 #echo "$(medios.fixTitulo $medio)"
+	 #echo "$(medios.getTituloSerie "$medio")"
+	 echo $(medios.extractTe "$medio")
+}
