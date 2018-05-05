@@ -158,7 +158,7 @@ function medios.findPeliculas() {
 	for medio in "${datosa[@]}"; do
 		film.parse "$medio"
 		e=""
-		e="${PELICULA[id]} ${PELICULA[titulo]}"
+		e="${PELICULA[id]} ${PELICULA[titulo]} ${PELICULA[fichero]}"
 		echo "$e"
 	done
 }
