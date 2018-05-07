@@ -4,7 +4,7 @@
 PLAYER="vlc -f --no-loop --play-and-exit"
 
 function ver.pelicula() {
-	local busqueda="$1"
+	local busqueda="$@"
 
 	local datos=$(db.executeQuery "select * from medio where esserie = 0 and esvisto = 0 and titulo like \"%$busqueda%\"")
 
@@ -42,7 +42,7 @@ function ver.pelicula() {
 }
 
 function ver.serieOld() {
-	local busqueda="$1"
+	local busqueda="$@"
 
 	local datos=$(db.executeQuery "select * from medio where esserie = 1 and esvisto = 0 and titulo like \"%$busqueda%\"")
 
@@ -185,7 +185,7 @@ function ver.play() {
 }
 
 function ver.serie() {
-	local busqueda="$1"
+	local busqueda="$@"
 
 	local idserie=$(medios.determineSeries "$busqueda")
 	

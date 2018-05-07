@@ -68,8 +68,9 @@ function film.getByFichero() {
 
 #@ film-find busqueda
 function film.find() {
-	local busqueda="$1"
+	local busqueda="$@"
 
+	echo "Busqueda: $busqueda" > /dev/tty
 	local res=$(db.executeQuery "select * from medio where esserie = 0 and titulo like \"%${busqueda}%\"")
 	echo "$res"	
 }

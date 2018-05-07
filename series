@@ -59,7 +59,7 @@ function series.getByFichero() {
 }
 
 function series.find() {
-	local busqueda="$1"
+	local busqueda="$@"
 
 	local res=$(db.executeQuery "select * from medio where esserie = 1 and titulo like \"%${busqueda}%\"")
 	echo "$res"	
@@ -176,7 +176,7 @@ function series.getEpisodioByFichero() {
 }
 
 function series.findEpisodio() {
-	local busqueda="$1"
+	local busqueda="$@"
 
 	local res=$(db.executeQuery "select * from episodio where fichero like \"%${busqueda}%\"")
 	echo "$res"	

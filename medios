@@ -112,7 +112,7 @@ function medios.listPeliculas() {
 }
 
 function medios.findSeries() {
-	local busqueda="$1"
+	local busqueda="$@"
 	local datos=$(db.executeQuery "select * from medio where esserie = 1 and titulo like \"%$busqueda%\"")
 	local e=""
 	local e2=""
@@ -148,7 +148,7 @@ function medios.findSeries() {
 }
 
 function medios.findPeliculas() {
-	local busqueda="$1"
+	local busqueda="$@"
 	local datos=$(db.executeQuery "select * from medio where esserie = 0 and titulo like \"%$busqueda%\"")
 	local e=""
 	local e2=""
@@ -403,7 +403,7 @@ function medios.detectar() {
 #En algunos casos es posible que haya varias series con nombres similares.
 #Esta función permitirá al usuario seleccionar entre ellas la que quiere.
 function medios.determineSeries() {
-	local busqueda="$1"
+	local busqueda="$@"
 
 	local res=$(series.find "$busqueda")
 

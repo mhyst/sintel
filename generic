@@ -45,7 +45,7 @@ function callFuncion() {
 	$DEBUG && echo "Argumentos procesados: $@" > /dev/tty
 
 	$DEBUG && echo "A ejecutar: $funcion $@" > /dev/tty
-	local res=`$funcion $@`
+	local res=`$funcion "$@"`
 	echo "$res"
 }
 
