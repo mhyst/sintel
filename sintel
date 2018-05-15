@@ -3,7 +3,7 @@
 
 #Directorio global del script
 global_DIR=~/bin/scripts/sintel
-DEBUG=false
+DEBUG=true
 
 #Cargamos los módulos
 #Esta opción no funcionaba porque creaba un subshell, impidiendo acceso en las dos direcciones a variables y funciones
@@ -27,7 +27,7 @@ source "$global_DIR/modularity"
 #################################################################################################
 
 #Configuramos como queremos los argumentos de entrada
-TEMP=`getopt -o hd:f:s:li: --long "help,add-serie:,add-pelicula:,add-alter:,find-peliculas:,find-series:,list-all,list-series,list-peliculas,ver-pelicula:,list-episodios:,detectar:,function-call:list-functions,determine-series:,is-downloaded:" -- "$@"`
+TEMP=`getopt -o hd:f:s:li:n: --long "help,add-serie:,add-pelicula:,add-alter:,find-peliculas:,find-series:,list-all,list-series,list-peliculas,ver-pelicula:,list-episodios:,detectar:,function-call:,function-call2:,list-functions,determine-series:,is-downloaded:" -- "$@"`
 
 
 #Si no se han introducido argumentos, mostrar la ayuda y salir
@@ -57,6 +57,7 @@ while true; do
 	--list-episodios ) idmedio="$2"; shift; medios.listEpisodios "$idmedio" ;;
 	-d | --detectar ) directorio="$2"; shift; medios.detectar "$directorio" ;;
 	-f | --function-call ) funcion="$2"; shift; callFuncion "$funcion" ;;
+	-n | --function-call2 ) funcion="$2"; shift; callFuncion2 "$funcion" ;;
 	-l | --list-functions ) listFunciones ;;
 	-s | --determine-series ) busqueda="$2"; shift; medios.determineSeries "$busqueda" ;;
 	-i | --is-downloaded ) funcion="$2"; shift; callFuncion "medios.isDownloaded:$funcion" ;;

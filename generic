@@ -41,6 +41,25 @@ function callFuncion() {
 	local args="${aux[1]}"
 	$DEBUG && echo "Argumentos: $args" > /dev/tty
 
+	eval set -- "$args"
+	$DEBUG && echo "Argumentos procesados: $@" > /dev/tty
+
+	$DEBUG && echo "A ejecutar: $funcion $@" > /dev/tty
+	local res=`$funcion "$@"`
+	echo "$res"
+}
+
+function callFuncion2() {
+	local tupla="$1"
+
+	$DEBUG && echo "Tupla: $tupla" >> /dev/tty
+	IFS=':' read -a aux <<< "$tupla"; IFS=" "
+	local funcion="${aux[0]}"
+	$DEBUG && echo "Función: $funcion" > /dev/tty
+
+	local args="${aux[1]}"
+	$DEBUG && echo "Argumentos: $args" > /dev/tty
+
 	declare -a preargs
 	IFS='|' read -r -a preargs <<< "$args"; IFS=" "
 
