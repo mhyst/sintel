@@ -4,22 +4,10 @@
 torrents_SERVER="192.168.0.64:9091 --auth admin:admin"
 
 function torrents.lastId(){
-	local id=$(transmission-remote $torrents_SERVER -l | awk '\
-	BEGIN {
-	   max=0
-	}
-	
-	{
-	   if ($1 == "Sum:" || $1 == "ID")
-	      next
-
-	   if ($1 > max)
-	      max=$1
-	}
-
-	END {
-	   print max
-	}')
+	local preid=$(transmission-remote $torrents_SERVER -l | tac | grep -Em 1 '^ [0-9]{1,5}' | awk '{print $1}')
+	echo "Preid: $preid" > /dev/tty
+	local id=$(trim "$preid")
+	echo "Id: $id" > /dev/tty
 	echo "$id"
 }
 
