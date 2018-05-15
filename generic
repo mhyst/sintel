@@ -41,11 +41,21 @@ function callFuncion() {
 	local args="${aux[1]}"
 	$DEBUG && echo "Argumentos: $args" > /dev/tty
 
-	eval set -- "$args"
-	$DEBUG && echo "Argumentos procesados: $@" > /dev/tty
+	declare -a preargs
+	IFS='|' read -r -a preargs <<< "$args"; IFS=" "
 
-	$DEBUG && echo "A ejecutar: $funcion $@" > /dev/tty
-	local res=`$funcion "$@"`
+	local postargs=""
+	for arg in "${preargs[@]}"; do
+		postargs="$postargs \"$arg\""
+	done
+	postargs=$(trim "$postargs")
+
+	#eval set -- "$args"
+	$DEBUG && echo "Argumentos procesados: $postargs" > /dev/tty
+
+	$DEBUG && echo "A ejecutar: $funcion $postargs" > /dev/tty
+
+	local res=`eval "$funcion" $postargs`
 	echo "$res"
 }
 

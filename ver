@@ -188,7 +188,7 @@ function ver.serie() {
 	local busqueda="$@"
 
 	local idserie=$(medios.determineSeries "$busqueda")
-	
+
 	if [[ "$idserie" == "-1" ]]; then
 		echo "No hay series que se correspondan con la cadena de búsqueda: $busqueda" > /dev/tty
 		exit
