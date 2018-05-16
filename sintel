@@ -3,7 +3,7 @@
 
 #Directorio global del script
 global_DIR=~/bin/scripts/sintel
-DEBUG=true
+DEBUG=false
 
 #Cargamos los módulos
 #Esta opción no funcionaba porque creaba un subshell, impidiendo acceso en las dos direcciones a variables y funciones
