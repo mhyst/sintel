@@ -51,3 +51,32 @@ Para que el comando funcione debemos estar dentro de la carpeta sintel. Y ya est
 
 ## Usos de sintel
 
+- Popular la base de datos: Esto se puede hacer tantas veces como se quiera con distintas localizaciones del sistema de archivos o con las mismas. Sintel es capaz de detectar medios y episodios que ya están en la base de datos para evitar almacenarlos repetidamente.
+
+---
+
+sintel -d /home/mhyst/Peliculas
+sintel -d /mnt/series
+
+---
+
+- Listar medios
+
+---
+
+sintel --list-all        # Lista todos los medios
+sintel --list-series     # Lista series
+sintel --list-peliculas  # Lista las películas
+
+---
+
+- Buscar medios
+
+---
+
+sintel --find-series poirot
+sintel --find-peliculas "400 golpes"
+
+---
+
+- 
