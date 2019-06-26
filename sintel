@@ -8,7 +8,7 @@ DEBUG=false
 #Cargamos los módulos
 #Esta opción no funcionaba porque creaba un subshell, impidiendo acceso en las dos direcciones a variables y funciones
 #"$global_DIR/modularity" "help" "init" "database" "peliculas" "series"
-MODS=( "help" "generic" "init" "database" "peliculas" "series" "medios" "torrents" "rutas" "head" "ver" "test" )
+MODS=( "help" "generic" "init" "database" "peliculas" "series" "medios" "torrents" "rutas" "head" "ver" "test" "anime" )
 
 source "$global_DIR/modularity"
 

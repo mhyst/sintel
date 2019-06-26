@@ -1,0 +1,195 @@
+#!/bin/bash
+#Gestión de anime
+#
+#Básicamente queremos utilizar la base de datos de momento como elemento adicional de dxtotal y mt o mtf y quizá 
+#en el futuro, se use con exclusividad, sustituyendo al método de la carpeta de anime.
+#
+#Se deben poder añadir anime a seguir y ANIMEs conforme se vayan descargando.
+#Así mismo servirá para llevar la cuenta de los vistos en "ver".
+
+declare -A ANIME
+ANIME=( ["id"]=""  ["titulo"]="" ["url"]="" ["alias"]="" ["episodio"]="" )
+
+function anime.add() {
+	local titulo="$1"
+	local url="$2"
+
+	$DEBUG && echo "> anime.add" > /dev/tty
+	db.executeUpdate "insert into anime (titulo, url, alias, episodio) values (\"$titulo\",\"$url\",\"\",1)"	
+	$DEBUG && echo "< anime.add" > /dev/tty
+	echo "$ROWID"
+}
+
+function anime.getById() {
+	local id="$1"
+
+	$DEBUG && echo "> anime.getById" > /dev/tty
+	local res=$(db.executeQuery "select * from anime where id = $id")
+	$DEBUG && echo "< anime.getById" > /dev/tty
+	echo "$res"
+}
+
+function anime.getIdByTitulo() {
+	local titulo="$1"
+
+	$DEBUG && echo "> anime.getByTitulo" > /dev/tty
+	local res=$(db.executeQuery "select id from anime where lower(titulo) = \"${titulo,,}\"")
+	# if [[ $? != 0 ]]; then
+	# 	echo "SQL: $sql"
+	# fi
+	$DEBUG && echo "< anime.getByTitulo" > /dev/tty
+	echo "$res"
+}
+
+function anime.getByTitulo() {
+	local titulo="$1"
+
+	$DEBUG && echo "> anime.getByTitulo" > /dev/tty
+	local res=$(db.executeQuery "select * from anime where titulo = \"$titulo\"")
+	$DEBUG && echo "< anime.getByTitulo" > /dev/tty
+	echo "$res"
+}
+
+function anime.find() {
+	local busqueda="$@"
+
+	local res=$(db.executeQuery "select * from anime where titulo like \"%${busqueda}%\"")
+	echo "$res"	
+}
+
+function anime.list() {
+	local id="$1"
+
+	$DEBUG && echo "> anime.getById" > /dev/tty
+	local res=$(db.executeQuery "select * from anime")
+	$DEBUG && echo "< anime.getById" > /dev/tty
+	echo "$res"
+}
+
+function anime.delete() {
+	local id="$1"
+
+	$DEBUG && echo "> anime.delete" > /dev/tty
+	$(db.executeUpdate "delete from anime where id = $id")
+	$DEBUG && echo "< anime.delete" > /dev/tty
+	echo "$ROWID"
+}
+
+function anime.setAlias() {
+	local id="$1"
+	local alias="$2"
+
+	$DEBUG && echo "> anime.setAlias" > /dev/tty
+	$(db.executeUpdate "update anime set alias=\"$alias\" where id = $id")
+	$DEBUG && echo "< anime.setAlias" > /dev/tty
+	echo "$ROWID"	
+}
+
+function anime.getId() {
+	local titulo="$1"
+
+	local id=$(db.executeQuery "select id from anime where titulo = \"$titulo\"")
+}
+
+function anime.remove() {
+	local id="$1"
+
+	db.executeUpdate "delete from anime where id = $id"
+}
+
+function anime.updateTitulo() {
+	local id="$1"
+	local titulo="$2"
+
+	db.executeUpdate "update anime set titulo=\"$titulo\" where id = $id"
+}
+
+function anime.updateURL() {
+	local id="$1"
+	local url="$2"
+
+	db.executeUpdate "update anime set url=\"$url\" where id = $id"
+}
+
+function anime.updateEpisodio() {
+	local id="$1"
+	local episodio="$2"
+
+	db.executeUpdate "update anime set episodio=$episodio where id = $id"
+}
+
+function anime.next() {
+	local id="$1"
+
+	db.executeUpdate "update anime set episodio=episodio+1 where id = $id"
+}
+
+function anime.previous() {
+	local id="$1"
+
+	db.executeUpdate "update anime set episodio=episodio-1 where id = $id"
+}
+
+function anime.parse() {
+	local datos="$1"
+
+	$DEBUG && echo ">Entra en anime.parse" > /dev/tty
+	IFS='|' read -a datosa <<< "$datos"; IFS=" "
+	ANIME[id]="${datosa[0]}"
+	ANIME[titulo]="${datosa[1]}"
+	ANIME[url]="${datosa[2]}"
+	ANIME[alias]="${datosa[3]}"
+	ANIME[episodio]="${datosa[4]}"
+	$DEBUG && echo "<Sale en anime.parse" > /dev/tty
+}
+
+function anime.parseToFile() {
+	local datos="$1"
+
+	anime.parse "$datos"
+
+	echo > /tmp/ANIME
+	let i=0
+	for key in ${!ANIME[@]}; do
+		echo "$key ${ANIME[$key]}" >> /tmp/ANIME
+	done
+}
+
+function anime.getField() {
+	local field="$1"
+
+	let i=0
+	for key in "${!ANIME[@]}"; do
+		if [[ "$key" == "$field" ]]; then
+			$DEBUG && echo "Coincide con $key. Salimos" > /dev/tty
+			break
+		fi
+		(( i++ ))
+	done
+	$DEBUG && echo "El valor de i es $i" > /dev/tty
+	if [[ $i < ${#ANIME[@]} ]]; then
+		local res=$(grep "^$field" /tmp/ANIME | awk '{ print $2 };')
+		echo "$res"
+	else
+		echo "-1"
+	fi
+}
+
+function anime.screenAnime() {
+	echo "${ANIME[id]} ${ANIME[titulo]} ${ANIME[url]} ${ANIME[alias]} ${ANIME[episodio]}" > /dev/tty
+}
+
+function anime.watch() {
+	local id="$1"
+
+	$DEBUG && echo "> anime.watch" > /dev/tty
+	local res=$(db.executeQuery "select * from anime where id = $id")
+	anime.parse "$res"
+
+	anime.screenAnime
+
+	firefox http://${ANIME[url]}$(trim ${ANIME[episodio]})
+	anime.next ${ANIME[id]}
+
+	$DEBUG && echo "< anime.watch" > /dev/tty
+}
