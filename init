@@ -33,6 +33,12 @@ CREATE TABLE alternativo (
 CREATE TABLE ruta (
 		ruta varchar primary key,
 		reemplazo varchar);
+CREATE TABLE anime (
+		id integer primary key,
+		titulo varchar,
+		url varchar,
+		alias varchar,
+		episodio integer);
 END
 )
 
