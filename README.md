@@ -53,30 +53,47 @@ Para que el comando funcione debemos estar dentro de la carpeta sintel. Y ya est
 
 - Popular la base de datos: Esto se puede hacer tantas veces como se quiera con distintas localizaciones del sistema de archivos o con las mismas. Sintel es capaz de detectar medios y episodios que ya están en la base de datos para evitar almacenarlos repetidamente.
 
----
+```
 
 sintel -d /home/mhyst/Peliculas
 sintel -d /mnt/series
 
----
+```
 
 - Listar medios
 
----
+```
 
-sintel --list-all        # Lista todos los medios
-sintel --list-series     # Lista series
-sintel --list-peliculas  # Lista las películas
+sintel --list-all            # Lista todos los medios
+sintel --list-series         # Lista series
+sintel --list-peliculas      # Lista las películas
+sintel --list-episodios 120  # Lista los episodios de la serie con el id 1
 
----
+```
 
 - Buscar medios
 
----
-
+```
 sintel --find-series poirot
 sintel --find-peliculas "400 golpes"
 
+```
+
+- Listar funciones: permite echar un ojo a las funciones disponibles para invocar
+
 ---
 
-- 
+sintel -l
+
+---
+
+- Invocar una función
+
+Es posible invocar cualquiera de las funciones que aparecen en el resultado del comando anterior. El problema es que apenas si hay documentación, lo que hace complicado su uso para otra persona que no sea yo mismo. Habrá que tener un poco de paciencia hasta que diseñe una documentación apropiada. Estoy en ello.
+---
+
+sintel -n ver.serie:goliath
+
+---
+
+
