@@ -11,9 +11,23 @@ Además este script está diseñado para ser modular y extensible de forma senci
 
 ## Instalación
 
+### Método 1
+
+Desgargamos el paquete deb de la última release y ejecutamos un comando similar a este:
+
+---
+
+sudo dpkg -i sintel2.0.1.deb
+
+---
+
+Este método no requiere de configuración adicional.
+
+### Método 2
+
 La instalación se efectúa clonando el repositorio y modificando algunas variables dentro de algunos archivos del script.
 
-### Clonamos el repositorio
+#### Clonamos el repositorio
 
 Si vamos a tener nuestros scripts en la carpeta bin que reside en la carpeta personal. Es decir, en vuestra home, lo que yo recomiendo para no ensuciar esta carpeta es crear una carpeta dentro de ella que se llame 'scripts', por ejemplo. Nos metemoe en ella y clonamos con el siguiente comando:
 
@@ -25,7 +39,7 @@ git clone https://github.com/mhyst/sintel.git
 
 El clonado creará una carpeta llamada 'sintel' que deberemos conservar pues dentro están los diversos archivos que conforman este complejo script.
 
-### Ajustamos las variables del script
+#### Ajustamos las variables del script
 
 Entramos en 'sintel' y deberemos modificar el contenido de las siguientes variables:
 
@@ -33,11 +47,13 @@ Entramos en 'sintel' y deberemos modificar el contenido de las siguientes variab
 
 - database_DB: Ubicada en el archivo database. Contendrá la ruta completa del archivo de la base de datos. Este archivo debe estar dentro de la carpeta indicada en global-DIR. Debe incluir el nombre del fichero.
 
+- modularity_DIR: Ubicada en el archivo modularity. Contendrá lo mismo que global_DIR.
+
 - torrents_SERVER: Ubicada en torrents. Contiene la ip y el puerto del control remoto de transmission. Solo es necesario modificar esta variable si vamos a usar el módulo que permite comunicarse con el gestor de torrents transmission.
 
 - PLAYER: Ubicada en ver. Permite configurar con qué reproductor queremos reproducir las películas y series.
 
-### Copiamos el archivo sintel a la carpeta bin
+#### Copiamos el archivo sintel a la carpeta bin
 
 Una vez que todas las variables han sido modificadas solo nos resta copiar únicamente el archivo sintel a la carpeta bin que habíamos seleccionado previamente para poder invocar sintel desde cualquier carpeta. Si nuestra carpeta bin va a estar dentro de nuestra carpeta personal, siendo el usuario en mi caso 'mhyst', el comando quedaría como sigue:
 
@@ -90,6 +106,7 @@ sintel -l
 - Invocar una función
 
 Es posible invocar cualquiera de las funciones que aparecen en el resultado del comando anterior. El problema es que apenas si hay documentación, lo que hace complicado su uso para otra persona que no sea yo mismo. Habrá que tener un poco de paciencia hasta que diseñe una documentación apropiada. Estoy en ello.
+
 ---
 
 sintel -n ver.serie:goliath
