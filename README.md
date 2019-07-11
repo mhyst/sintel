@@ -5,11 +5,13 @@ Inteligencia sobre series y otros medios
 
 Sintel es un script complejo que está pensado para servir de apoyo a otros scripts que serán mucho más sencillos precisamente porque sintel hace el trabajo sucio.
 
-Básicamente sintel maneja una base de datos de medios. Cuando hablo de medios me refiero a archivos de vídeo mayormente y en concreto películas y series. Este script permite llevar la gestión de todas las películas y series que tenemos descargadas en nuestro ordenador. 
+Básicamente sintel maneja una base de datos de medios. Cuando hablo de medios me refiero a archivos de vídeo mayormente y en concreto películas y series. Este script permite llevar la gestión de todas las películas y series que tenemos descargadas en nuestro ordenador. Además hay dos módulos: anime y veronline que permiten hacer seguimiento del anime o series que vemos online sin descargarnos los archivos. Estos dos módulos cuentan con sendos frontend que se pueden encontrar en [este repositorio](https://github.com/mhyst/anime).
 
 Además este script está diseñado para ser modular y extensible de forma sencilla.
 
 ## Instalación
+
+**¡ATENCIÓN!**: Si ya tenía una copia de sintel instalada, antes de efectuar la actualización haga una copia de seguridad de la base de datos que se encuentra en /usr/local/share/sintel/sintel.db. Entonces actualice y restaure su copia de la base de datos. Después ejecute el comando 'sintel -f init' para actualizar la base de datos a la nueva versión.
 
 ### Método 1
 
@@ -29,7 +31,7 @@ La instalación se efectúa clonando el repositorio y modificando algunas variab
 
 #### Clonamos el repositorio
 
-Si vamos a tener nuestros scripts en la carpeta bin que reside en la carpeta personal. Es decir, en vuestra home, lo que yo recomiendo para no ensuciar esta carpeta es crear una carpeta dentro de ella que se llame 'scripts', por ejemplo. Nos metemoe en ella y clonamos con el siguiente comando:
+Si vamos a tener nuestros scripts en la carpeta bin que reside en la carpeta personal. Es decir, en vuestra home, lo que yo recomiendo para no ensuciar esta carpeta es crear una carpeta dentro de ella que se llame 'scripts', por ejemplo. Nos metemos en ella y clonamos con el siguiente comando:
 
 ---
 
@@ -44,10 +46,6 @@ El clonado creará una carpeta llamada 'sintel' que deberemos conservar pues den
 Entramos en 'sintel' y deberemos modificar el contenido de las siguientes variables:
 
 - global-DIR: Ubicada en el archivo sintel. Si tienes el script en ~/bin/scripts/sintel tal como explico en el párrafo de arriba, no es necesario modificarla. Si no es así, debemos indicar la ruta completa en la que residen los archivos de sintel.
-
-- database_DB: Ubicada en el archivo database. Contendrá la ruta completa del archivo de la base de datos. Este archivo debe estar dentro de la carpeta indicada en global-DIR. Debe incluir el nombre del fichero.
-
-- modularity_DIR: Ubicada en el archivo modularity. Contendrá lo mismo que global_DIR.
 
 - torrents_SERVER: Ubicada en torrents. Contiene la ip y el puerto del control remoto de transmission. Solo es necesario modificar esta variable si vamos a usar el módulo que permite comunicarse con el gestor de torrents transmission.
 
