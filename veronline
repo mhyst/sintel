@@ -1,0 +1,197 @@
+#!/bin/bash
+# Gestión de series online
+#
+# Básicamente este módulo es una copia de veronline, pero dirigido a series online.
+#
+# Si ves una serie en servicios online básicamente o dejas montones de webs como pepecine abiertas por el 
+# último episodio para continuar el día que te apetezcas. Al final te juntas con muchas páginas abiertas
+# y terminas por cerrarlas, perdiendo así el hilo de por qué episodio te llegabas de tal serie.
+#
+# Este módulo pretende resolver ese problema
+
+declare -A SERIE
+SERIE=( ["id"]="" ["titulo"]="" ["url"]="" ["etiquetas"]="" ["episodio"]="" )
+
+function veronline.add() {
+	local titulo="$1"
+	local url="$2"
+
+	$DEBUG && echo "> veronline.add" > /dev/tty
+	db.executeUpdate "insert into veronline (titulo, url, episodio) values (\"$titulo\",\"$url\",1)"	
+	$DEBUG && echo "< veronline.add" > /dev/tty
+	echo "$ROWID"
+}
+
+function veronline.getById() {
+	local id="$1"
+
+	$DEBUG && echo "> veronline.getById" > /dev/tty
+	local res=$(db.executeQuery "select * from veronline where id = $id")
+	$DEBUG && echo "< veronline.getById" > /dev/tty
+	echo "$res"
+}
+
+function veronline.getIdByTitulo() {
+	local titulo="$1"
+
+	$DEBUG && echo "> veronline.getByTitulo" > /dev/tty
+	local res=$(db.executeQuery "select id from veronline where lower(titulo) = \"${titulo,,}\"")
+	# if [[ $? != 0 ]]; then
+	# 	echo "SQL: $sql"
+	# fi
+	$DEBUG && echo "< veronline.getByTitulo" > /dev/tty
+	echo "$res"
+}
+
+function veronline.getByTitulo() {
+	local titulo="$1"
+
+	$DEBUG && echo "> veronline.getByTitulo" > /dev/tty
+	local res=$(db.executeQuery "select * from veronline where titulo = \"$titulo\"")
+	$DEBUG && echo "< veronline.getByTitulo" > /dev/tty
+	echo "$res"
+}
+
+function veronline.find() {
+	local busqueda="$@"
+
+	local res=$(db.executeQuery "select * from veronline where titulo like \"%${busqueda}%\"")
+	echo "$res"	
+}
+
+function veronline.list() {
+	local id="$1"
+
+	$DEBUG && echo "> veronline.getById" > /dev/tty
+	local res=$(db.executeQuery "select * from veronline")
+	$DEBUG && echo "< veronline.getById" > /dev/tty
+	echo "$res"
+}
+
+function veronline.delete() {
+	local id="$1"
+
+	$DEBUG && echo "> veronline.delete" > /dev/tty
+	$(db.executeUpdate "delete from veronline where id = $id")
+	$DEBUG && echo "< veronline.delete" > /dev/tty
+	echo "$ROWID"
+}
+
+function veronline.setEtiquetas() {
+	local id="$1"
+	local etiquetas="$2"
+
+	$DEBUG && echo "> veronline.setAlias" > /dev/tty
+	$(db.executeUpdate "update veronline set etiquetas=\"$etiquetas\" where id = $id")
+	$DEBUG && echo "< veronline.setAlias" > /dev/tty
+	echo "$ROWID"
+}
+
+function veronline.getId() {
+	local titulo="$1"
+
+	local id=$(db.executeQuery "select id from veronline where titulo = \"$titulo\"")
+}
+
+function veronline.remove() {
+	local id="$1"
+
+	db.executeUpdate "delete from veronline where id = $id"
+}
+
+function veronline.updateTitulo() {
+	local id="$1"
+	local titulo="$2"
+
+	db.executeUpdate "update veronline set titulo=\"$titulo\" where id = $id"
+}
+
+function veronline.updateURL() {
+	local id="$1"
+	local url="$2"
+
+	db.executeUpdate "update veronline set url=\"$url\" where id = $id"
+}
+
+function veronline.updateEpisodio() {
+	local id="$1"
+	local episodio="$2"
+
+	db.executeUpdate "update veronline set episodio=$episodio where id = $id"
+}
+
+function veronline.next() {
+	local id="$1"
+
+	db.executeUpdate "update veronline set episodio=episodio+1 where id = $id"
+}
+
+function veronline.previous() {
+	local id="$1"
+
+	db.executeUpdate "update veronline set episodio=episodio-1 where id = $id"
+}
+
+function veronline.parse() {
+	local datos="$1"
+
+	$DEBUG && echo ">Entra en veronline.parse" > /dev/tty
+	IFS='|' read -a datosa <<< "$datos"; IFS=" "
+	SERIE[id]="${datosa[0]}"
+	SERIE[titulo]="${datosa[1]}"
+	SERIE[url]="${datosa[2]}"
+	SERIE[etiquetas]="${datosa[3]}"
+	SERIE[episodio]="${datosa[4]}"
+	$DEBUG && echo "<Sale en veronline.parse" > /dev/tty
+}
+
+function veronline.parseToFile() {
+	local datos="$1"
+
+	veronline.parse "$datos"
+
+	echo > /tmp/SERIE
+	let i=0
+	for key in ${!SERIE[@]}; do
+		echo "$key ${SERIE[$key]}" >> /tmp/SERIE
+	done
+}
+
+function veronline.getField() {
+	local field="$1"
+
+	let i=0
+	for key in "${!SERIE[@]}"; do
+		if [[ "$key" == "$field" ]]; then
+			$DEBUG && echo "Coincide con $key. Salimos" > /dev/tty
+			break
+		fi
+		(( i++ ))
+	done
+	$DEBUG && echo "El valor de i es $i" > /dev/tty
+	if [[ $i < ${#SERIE[@]} ]]; then
+		local res=$(grep "^$field" /tmp/SERIE | awk '{ print $2 };')
+		echo "$res"
+	else
+		echo "-1"
+	fi
+}
+
+function veronline.screenAnime() {
+	echo "${SERIE[id]} ${SERIE[titulo]} ${SERIE[url]} ${SERIE[etiquetas]} ${SERIE[episodio]}" > /dev/tty
+}
+
+function veronline.watch() {
+	local id="$1"
+
+	$DEBUG && echo "> veronline.watch" > /dev/tty
+	local res=$(db.executeQuery "select * from veronline where id = $id")
+	veronline.parse "$res"
+
+	veronline.screenAnime
+
+	x-www-browser http://${SERIE[url]}$(trim ${SERIE[episodio]})
+	veronline.next ${SERIE[id]}
+
+	$DEBUG && echo "< veronline.watch" > /dev/tty
+}

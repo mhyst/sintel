@@ -188,7 +188,7 @@ function anime.watch() {
 
 	anime.screenAnime
 
-	firefox http://${ANIME[url]}$(trim ${ANIME[episodio]})
+	x-www-browser http://${ANIME[url]}$(trim ${ANIME[episodio]})
 	anime.next ${ANIME[id]}
 
 	$DEBUG && echo "< anime.watch" > /dev/tty

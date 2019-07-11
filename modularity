@@ -6,7 +6,7 @@
 #en variables, por lo que en variables se recomienda utilizar "_"
 
 #Directorio donde se encuentran almacenados los módulos
-modularity_DIR=~/bin/scripts/sintel
+modularity_DIR="$global_DIR"
 
 #Esta variable debe especificarse en el script principal antes de cargar modularity mediante source
 #MODS=( "help" "init" "database" "peliculas" "series" )

@@ -2,7 +2,7 @@
 #Módulo para trabajar con la base de datos
 
 #Localización de la base de datos. Debe incluir el nombre del fichero
-database_DB="/home/mhyst/bin/scripts/sintel/sintel.db"
+database_DB="$global_DIR/sintel.db"
 
 #Si la base de datos no existe, la creamos
 if ! [ -f "$database_DB" ]; then

@@ -8,7 +8,7 @@
 #alternativo={idmedio,nombre}
 
 init_SQL=$(cat << END
-CREATE TABLE medio(
+CREATE TABLE if not exists medio(
 		id integer primary key,
 		titulo varchar,
 		fichero varchar,
@@ -16,7 +16,7 @@ CREATE TABLE medio(
 		esserie integer,
 		esvisto integer,
 		esdescargado integer);
-CREATE TABLE episodio (
+CREATE TABLE if not exists episodio (
 		id integer primary key,
 		idmedio integer,
 		temporada integer,
@@ -26,25 +26,49 @@ CREATE TABLE episodio (
 		esvisto integer,
 		esdescargado integer,
 		foreign key (idmedio) references medio(id));
-CREATE TABLE alternativo (
+CREATE TABLE if not exists alternativo (
 		idmedio integer,
 		nombre varchar,
 		foreign key(idmedio) references medio(id));
-CREATE TABLE ruta (
+CREATE TABLE if not exists ruta (
 		ruta varchar primary key,
 		reemplazo varchar);
-CREATE TABLE anime (
+CREATE TABLE if not exists anime (
 		id integer primary key,
 		titulo varchar,
 		url varchar,
 		alias varchar,
+		episodio integer);
+CREATE TABLE if not exists veronline (
+		id integer primary key,
+		titulo varchar,
+		url varchar,
+		etiquetas varchar,
+		episodio integer);
+END
+)
+
+# Creación de tablas nuevas
+upd_SQL=$(cat << END
+CREATE TABLE if not exists anime (
+		id integer primary key,
+		titulo varchar,
+		url varchar,
+		alias varchar,
+		episodio integer);
+CREATE TABLE if not exists veronline (
+		id integer primary key,
+		titulo varchar,
+		url varchar,
+		etiquetas varchar,
 		episodio integer);
 END
 )
 
 function init () {
 	if [ -f "${global_DIR}/sintel.db" ]; then
-		echo "La base de datos ya existe."
+		sqlite3 ${global_DIR}/sintel.db <<< "$upd_SQL"	
+		# echo "La base de datos ya existe."
 		exit
 	fi
 	echo "Inicializando la base de datos..."
