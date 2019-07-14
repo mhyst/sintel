@@ -79,8 +79,13 @@ function callFuncion2() {
 }
 
 function listFunciones() {
-	declare -F | while read line; do
-		echo "${line:11}"
+    if [[ $# == 0 ]]; then
+        declare -F | while read line; do
+	   echo "${line:11}"
 	done
-	#echo "$(declare -F)"
+    else
+	declare -F | grep "$1\." | while read line; do
+	   echo "${line:11}"
+	done
+    fi
 }
