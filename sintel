@@ -18,7 +18,7 @@ source "$global_DIR/modularity"
 #################################################################################################
 
 #Configuramos como queremos los argumentos de entrada
-TEMP=`getopt -o hd:f:s:li:n:x: --long "help,add-serie:,add-pelicula:,add-alter:,find-peliculas:,find-series:,list-all,list-series,list-peliculas,ver-pelicula:,list-episodios:,detectar:,function-call:,function-call2:,list-functions,determine-series:,is-downloaded:" -- "$@"`
+TEMP=`getopt -o hd:f:s:li:n:x: --long "help,add-serie:,add-pelicula:,add-alter:,find-peliculas:,find-series:,list-all,list-series,list-peliculas,ver-pelicula:,list-episodios:,detectar:,function-call:,function-call2:,list-functions,determine-series:,is-downloaded:,info:" -- "$@"`
 
 
 #Si no se han introducido argumentos, mostrar la ayuda y salir
@@ -53,6 +53,7 @@ while true; do
 	-x ) busqueda="$2"; shift; listFunciones "$busqueda" ;;
 	-s | --determine-series ) busqueda="$2"; shift; medios.determineSeries "$busqueda" ;;
 	-i | --is-downloaded ) funcion="$2"; shift; callFuncion "medios.isDownloaded:$funcion" ;;
+	--info ) funcion="$2"; shift; functionInfo "$funcion" ;;
     * ) break ;;
   esac
   shift

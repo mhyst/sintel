@@ -89,3 +89,14 @@ function listFunciones() {
 	done
     fi
 }
+
+function functionInfo() {
+    local funcion="$1"
+
+    declare -F | grep "${funcion}.info" > /dev/null 2>&1
+    if [[ $? != 0 ]]; then
+	echo -e "La función '$funcion' no tiene documentación de momento."
+    else
+	"${funcion}.info"
+    fi
+}
