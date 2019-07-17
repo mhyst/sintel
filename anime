@@ -20,6 +20,15 @@ function anime.add() {
 	echo "$ROWID"
 }
 
+function anime.add.info() {
+    echo "anime.add - Añade una serie anime a la base de datos"
+    echo
+    echo -e "\tArgumentos: titulo, url"
+    echo -e "\tDevuelve el id del anime en la base de datos"
+    echo
+    echo "La URL debe indicarse sin la parte http:// o https://"
+}
+
 function anime.getById() {
 	local id="$1"
 

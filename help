@@ -7,3 +7,16 @@ function help() {
 	echo "sintel -i | sintel -init"
 	echo "	Inicializar la base de datos"
 }
+
+
+function help.info() {
+    echo "help->help - Ayuda de sintel"
+    echo
+    echo -e "\tArgumentos: -"
+    echo
+    echo "La ayuda provista por esta función debería dar un listado extensivo"
+    echo "de las opciones de sintel. Pero todavía está pendiente de escribirse."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -h"
+}

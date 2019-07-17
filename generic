@@ -1,8 +1,15 @@
 #!/bin/bash
 #Funciones genericas
 
-function trim {
+function trim() {
     echo $*
+}
+
+function trim.info() {
+    echo "generic->trim - Elimina espacios sobrantes por la izquierda y por la derecha"
+    echo "                a una cadena."
+    echo
+    echo -e "\t Argumentos: cadena"
 }
 
 function userChoice() {
@@ -30,6 +37,16 @@ function userChoice() {
 	echo $reply
 }
 
+function userChoice.info() {
+    echo "generic->userChoice - Da a elegir al usuario un número entre rango de 0 a n"
+    echo
+    echo -e "\tArgumentos:limite, cadena"
+    echo
+    echo "El límite establece el límite superior del rango, es decir n."
+    echo "La cadena es el mensaje que se mostrará al usuario antes de introducir"
+    echo "un número por teclado."
+}
+
 function callFuncion() {
 	local tupla="$1"
 
@@ -47,6 +64,20 @@ function callFuncion() {
 	$DEBUG && echo "A ejecutar: $funcion $@" > /dev/tty
 	local res=`$funcion "$@"`
 	echo "$res"
+}
+
+
+function callFuncion.info() {
+    echo "generic->callFuncion - Llama a una funcion integrada de sintel"
+    echo
+    echo -e "\tArgumentos: tupla"
+    echo
+    echo "La tupla es el nombre de la función que queremos llamar y un argumento"
+    echo "separados por el caracter dos puntos ':'. El argumento es opcional."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f series.list"
+    echo -e "\tsintel -f series.find:poirot"
 }
 
 function callFuncion2() {
@@ -78,6 +109,19 @@ function callFuncion2() {
 	echo "$res"
 }
 
+function callFuncion2.info() {
+    echo "generic->callFuncion2 - Llama a una función con varios argumentos"
+    echo
+    echo -e "\tArgumentos: tupla-avanzada"
+    echo
+    echo "Tupla-avanzada consiste en 'funcion:argumento-avanzado'"
+    echo "mientras que argumento avanzado es una cadena entrecomillada que admite "
+    echo "varios argumentos separados por el caracter tubería '|'."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -n anime.add:\"Detective Conan|www.veranimes.tv/detective-conan-capitulo-||199\""
+}
+
 function listFunciones() {
     if [[ $# == 0 ]]; then
         declare -F | while read line; do
@@ -90,6 +134,27 @@ function listFunciones() {
     fi
 }
 
+
+function listFunciones.info() {
+    echo "generic->listFunciones - Lista las funciones integradas en sintel."
+    echo
+    echo -e "\tArgumentos: [módulo]"
+    echo
+    echo "Si no se indican argumentos se listan todas las funciones definidas"
+    echo "dentro de los diversos módulos de sintel."
+    echo
+    echo "Si se indica el nombre de un módulo se listan todas las funciones"
+    echo "de ese módulo."
+    echo
+    echo "Si no se requiere argumento puede ahorrarse tiempo invocando el comando"
+    echo "'sintel -l'. Si por el contrario se quieren ver solo las funciones de"
+    echo "un módulo, podemos usar el atajo 'sintel -x anime'."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f listFunciones"
+    echo -e "\tsintel -f listFunciones:series"
+}
+
 function functionInfo() {
     local funcion="$1"
 
@@ -99,4 +164,20 @@ function functionInfo() {
     else
 	"${funcion}.info"
     fi
+}
+
+
+function functionInfo.info() {
+    echo "generic->functionInfo - Mostrar la documentación de una función de sintel."
+    echo
+    echo -e "\tArgumentos: función"
+    echo
+    echo "La documentación de sintel está todavía escribiéndose. Puede haber funciones"
+    echo "que no estén documentadas todavía."
+    echo
+    echo "Se puede llamar a esta función con el atajo 'sintel --info funcion'."
+    echo
+    echo "Ejemplos:"
+    echo -e "\t sintel --info functionInfo"
+    echo -e "\t sintel --info ver.serie"
 }

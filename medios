@@ -2,9 +2,6 @@
 #Listar series y películas existentes en la base de datos de varias formas
 
 #Lugar donde están almacenados los medios que queremos detectar
-#medios_DIR="/home/mhyst/NAS/Download/transmission/completed/"
-medios_DIR="/home/mhyst/Extra/Peliculas/"
-
 
 #Listar todos los medios
 #En el formato siguiente:
@@ -48,6 +45,17 @@ function medios.listAll() {
 		fi
 		echo "$e"
 	done
+}
+
+function medios.listAll.info() {
+    echo "medios.listAll - Listar todos los medios. Películas y series."
+    echo
+    echo -e "\tArgumentos: -"
+    echo
+    echo "Si el medio es una serie se muestra el episodio por el que llega el usuario."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f medios.listAll"
 }
 
 #Listar todas las series
@@ -94,6 +102,17 @@ function medios.listSeries() {
 	done
 }
 
+function medios.listSeries.info() {
+    echo "medios.listSeries - Lista solo las series."
+    echo
+    echo -e "\tArgumentos: -"
+    echo
+    echo "De cada serie se muestra el episodio por el que se llega el usuario."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f medios.listSeries"
+}
+
 #Listar todas las películas
 #En el formato id titulo
 function medios.listPeliculas() {
@@ -109,6 +128,15 @@ function medios.listPeliculas() {
 		e="${PELICULA[id]} ${PELICULA[titulo]}"
 		echo "$e"
 	done
+}
+
+function medios.listPeliculas.info() {
+    echo "medios.listPeliculas - Lista las películas que están en la base de datos."
+    echo
+    echo -e "\tArgumentos: -"
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f medios.listPeliculas"
 }
 
 function medios.findSeries() {
@@ -147,6 +175,19 @@ function medios.findSeries() {
 	done
 }
 
+function medios.findSeries.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
+}
+
 function medios.findPeliculas() {
 	local busqueda="$@"
 	local datos=$(db.executeQuery "select * from medio where esserie = 0 and titulo like \"%$busqueda%\"")
@@ -163,6 +204,19 @@ function medios.findPeliculas() {
 	done
 }
 
+function medios.findPeliculas.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
+}
+
 function medios.listEpisodios() {
 	local idmedio="$1"
 	local e=""
@@ -175,6 +229,19 @@ function medios.listEpisodios() {
 		e="${EPISODIO[id]} ${EPISODIO[temporada]} ${EPISODIO[episodio]} ${EPISODIO[fichero]} ${EPISODIO[torrent]} ${EPISODIO[esvisto]} ${EPISODIO[esdescargado]}"
 		echo "$e"
 	done
+}
+
+function medios.listEpisodios.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
 }
 
 function medios.extractTe() {
@@ -221,6 +288,19 @@ function medios.extractTe() {
 	echo "$te"
 }
 
+function medios.extractTe.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
+}
+
 function medios.fixTitulo() {
 	local medio="$*"
 
@@ -245,6 +325,19 @@ function medios.fixTitulo() {
 	done
 
 	echo "$medio"
+}
+
+function medios.fixTitulo.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
 }
 
 function medios.getTituloSerie() {
@@ -297,6 +390,19 @@ function medios.getTituloSerie() {
 	echo $(trim "$aux")
 }
 
+function medios.getTituloSerie.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
+}
+
 function medios.getTituloPelicula() {
 	local medio="$1"
 
@@ -313,6 +419,19 @@ function medios.getTituloPelicula() {
 	aux=$(tr -d '-' <<< $aux)
 	#aux=$(tr -d "'" <<< $aux)
 	echo $(trim "$aux")
+}
+
+function medios.getTituloPelicula.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
 }
 
 function medios.detectar() {
@@ -399,6 +518,19 @@ function medios.detectar() {
 	done
 }
 
+function medios.detectar.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
+}
+
 #Determinar el id de la serie que estamos buscando.
 #En algunos casos es posible que haya varias series con nombres similares.
 #Esta función permitirá al usuario seleccionar entre ellas la que quiere.
@@ -436,6 +568,19 @@ function medios.determineSeries() {
 		series.parse "${devueltos[$CHOSENID]}"
 		echo "${SERIE[id]}"
 	fi
+}
+
+function medios.determineSeries.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
 }
 
 #Determinar si un episodio de una serie está ya descargado
@@ -482,6 +627,19 @@ function medios.isDownloaded () {
 	fi
 }
 
+function medios.isDownloaded.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
+}
+
 #Determinar si un episodio de una serie está ya descargado
 function medios.isDownloaded2 () {
 
@@ -524,4 +682,17 @@ function medios.isDownloaded2 () {
 			echo "true"
 		fi
 	fi
+}
+
+function medios.isDownloaded2.info() {
+    echo "medios. - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\t"
+    echo -e "\t"
 }
