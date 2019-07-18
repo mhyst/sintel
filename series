@@ -8,9 +8,9 @@
 #Así mismo servirá para llevar la cuenta de los vistos en "ver".
 
 declare -A SERIE
-SERIE=( ["id"]=""  ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["esvisto"]="")
+SERIE=( ["id"]=""  ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["esvisto"]="" )
 declare -A EPISODIO
-EPISODIO=( ["id"]="" ["idmedio"]="" ["temporada"]="" ["episodio"]="" ["fichero"]="" ["torrent"]="" ["esvisto"]="")
+EPISODIO=( ["id"]="" ["idmedio"]="" ["temporada"]="" ["episodio"]="" ["fichero"]="" ["torrent"]="" ["esvisto"]="" ["esdescargado"]="" )
 
 function series.add() {
 	local titulo="$1"
@@ -114,7 +114,7 @@ function series.parse() {
 	SERIE[torrent]="${datosa[3]}"
 	SERIE[esserie]="${datosa[4]}"
 	SERIE[esvisto]="${datosa[5]}"
-	SERIE[esdescargado]="{datosa[6]}"
+	# SERIE[esdescargado]="${datosa[6]}"
 	$DEBUG && echo "<Sale en series.parse" > /dev/tty
 }
 
@@ -247,7 +247,7 @@ function series.parseEpisodio() {
 	EPISODIO[fichero]="${datosa[4]}"
 	EPISODIO[torrent]="${datosa[5]}"
 	EPISODIO[esvisto]="${datosa[6]}"
-	EPISODIO[esdescargado]="{datosa[7]}"
+	EPISODIO[esdescargado]="${datosa[7]}"
 }
 
 function series.parseEpisodioToFile() {
