@@ -1,7 +1,6 @@
 #!/bin/bash
 #Listar series y películas existentes en la base de datos de varias formas
 
-#Lugar donde están almacenados los medios que queremos detectar
 
 #Listar todos los medios
 #En el formato siguiente:
@@ -176,16 +175,15 @@ function medios.findSeries() {
 }
 
 function medios.findSeries.info() {
-    echo "medios. - "
+    echo "medios.findSeries - Encontrar series."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: cadena de búsqueda"
     echo
-    echo ""
-    echo ""
+    echo "Busca series cuyo título coincida con la cadena de búsqueda indicada."
     echo
-    echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo "Ejemplo:"
+    echo -e "\tsintel -f medios.findSeries:poirot"
+    echo -e "\tsintel -f medios.findSeries:\"agatha christie\""
 }
 
 function medios.findPeliculas() {
@@ -205,16 +203,15 @@ function medios.findPeliculas() {
 }
 
 function medios.findPeliculas.info() {
-    echo "medios. - "
+    echo "medios.findPeliculas - Encontrar películas."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: cadena de búsqueda"
     echo
-    echo ""
-    echo ""
+    echo "Muestra películas cuyos títulos coincidan con la cadena de búsqueda."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -f medios.findPeliculas:northwest"
+    echo -e "\tsubtek -f medios.findPeliculas\"star trek\""
 }
 
 function medios.listEpisodios() {
@@ -232,16 +229,18 @@ function medios.listEpisodios() {
 }
 
 function medios.listEpisodios.info() {
-    echo "medios. - "
+    echo "medios.listEpisodios - Listar episodios de una serie"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id de la serie"
     echo
-    echo ""
-    echo ""
+    echo "Mustra una lista de todos los episodios de la serie cuyo id"
+    echo "se ha especificado como argumento."
+    echo
+    echo "De cada episodio se dan los siguientes datos:"
+    echo "id, idmedio, temporada, episodio, fichero, torrent, esvisto, esdescargado"
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -f medios.listEpisodios:871"
 }
 
 function medios.extractTe() {
@@ -289,16 +288,19 @@ function medios.extractTe() {
 }
 
 function medios.extractTe.info() {
-    echo "medios. - "
+    echo "medios.extractTe - Extrae la temporada y el episodio del nombre del fichero."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: ruta de fichero"
     echo
-    echo ""
-    echo ""
+    echo "Intenta extraer la temporada y el número de episodio del nombre del"
+    echo "fichero que contiene el episodio."
+    echo
+    echo "Puesto que los medios se descargan desde diferentes fuentes, los formatos"
+    echo "en que están representados estos valores varían."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -n medios.extractTe:\"Elementary s07e01.mp4\""
+    echo -e "\tsintel -n medios.extractTe:\"Dark 01x04.mjv\""
 }
 
 function medios.fixTitulo() {
@@ -328,16 +330,15 @@ function medios.fixTitulo() {
 }
 
 function medios.fixTitulo.info() {
-    echo "medios. - "
+    echo "medios.fixTitulo - Elimina partes innecesarias de un título."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: título"
     echo
-    echo ""
-    echo ""
+    echo "Reduce el título a nombre de serie temporada y episodo, eliminando"
+    echo "todo lo superfluo."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -f medios.fixTitulo:\"Elementary 07of01 [Elitetorrent] [DVDRIP].mp4\""
 }
 
 function medios.getTituloSerie() {
@@ -391,16 +392,15 @@ function medios.getTituloSerie() {
 }
 
 function medios.getTituloSerie.info() {
-    echo "medios. - "
+    echo "medios.getTituloSerie - Obtiene el nombre de la serie."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: ruta de archivo"
     echo
-    echo ""
-    echo ""
+    echo "Reduce la ruta completa y nombre de un archivo de medio al"
+    echo "título de la serie al que pertenece."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -f medios.getTituloSerie:\"/home/mhyst/Extra/Dead zone 1x08 [xVID].avi\""
 }
 
 function medios.getTituloPelicula() {
@@ -422,16 +422,15 @@ function medios.getTituloPelicula() {
 }
 
 function medios.getTituloPelicula.info() {
-    echo "medios. - "
+    echo "medios.getTituloPelicula - Obtiene el título de la película del nombre del fichero."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: fichero"
     echo
-    echo ""
-    echo ""
+    echo "Limpia el nombre del fichero de la ruta y todo lo superfluo, para"
+    echo "obtener el título de la película."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -f medios.getTituloPelicula:\"Wonder [HDRip][VOSE][wWw.EliteTorrent.BiZ].mp4\""
 }
 
 function medios.detectar() {
@@ -519,16 +518,16 @@ function medios.detectar() {
 }
 
 function medios.detectar.info() {
-    echo "medios. - "
+    echo "medios.detectar - Añade medios a la base de datos."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: ruta de carpeta"
     echo
-    echo ""
-    echo ""
+    echo "Escanea una carpeta y todos sus subdirectorios en busca de medios."
+    echo "Es capaz de diferenciar las series de las películas."
+    echo "Todo lo que encuentra lo añade a la base de datos."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -f medios.detectar:/home/mhyst/Descargas/"
 }
 
 #Determinar el id de la serie que estamos buscando.
@@ -571,16 +570,16 @@ function medios.determineSeries() {
 }
 
 function medios.determineSeries.info() {
-    echo "medios. - "
+    echo "medios.determineSeries - Determinar el id de la serie por una cadena de búsqueda."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: cadena de búsqueda"
     echo
-    echo ""
-    echo ""
+    echo "Esta función hace uso de medios.find para tratar de determinar cual es el id"
+    echo "de la serie a partir de una cadena de búsqueda."
+    echo "En caso de haber varias posibilidades se le ofrece al usuario la elección."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -f medios.determineSeries:dark"
 }
 
 #Determinar si un episodio de una serie está ya descargado
@@ -628,16 +627,15 @@ function medios.isDownloaded () {
 }
 
 function medios.isDownloaded.info() {
-    echo "medios. - "
+    echo "medios.isDowloaded - Averigua si de una serie tenemos descargado un episodio concreto."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id, te"
     echo
-    echo ""
-    echo ""
+    echo "id es el id de la serie, mientras que te es la temporada y el episodio expresados"
+    echo "como temporadaxepisodio de forma númérica. Ej.: 01x03."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -n medios.isDownloaded:\"871|10x07\""
 }
 
 #Determinar si un episodio de una serie está ya descargado
@@ -685,14 +683,16 @@ function medios.isDownloaded2 () {
 }
 
 function medios.isDownloaded2.info() {
-    echo "medios. - "
+    echo "medios.isDownloaded2 - Determina si cierto episodio de una serie está descargado."
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: titulo, te"
     echo
-    echo ""
-    echo ""
+    echo "Esta función es idéntica a 'medios.isDownloaded' salvo que esta permite"
+    echo "indicar el título de la serie en lugar de su id. Usa una llamada a "
+    echo "medios.determineSeries para obtener el id de la serie."
+    echo
+    echo "te es la temporada y el episodio separados por una x."
     echo
     echo "Ejemplos:"
-    echo -e "\t"
-    echo -e "\t"
+    echo -e "\tsintel -n medios.isDownloaded2:\"poirot|10x03\""
 }
