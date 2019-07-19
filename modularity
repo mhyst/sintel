@@ -11,6 +11,39 @@ modularity_DIR="$global_DIR"
 #Esta variable debe especificarse en el script principal antes de cargar modularity mediante source
 #MODS=( "help" "init" "database" "peliculas" "series" )
 
+function modularity.info() {
+    echo "modularity - Carga los módulos"
+    echo
+    echo "Una de las características de sintel es que siempre es"
+    echo "un trabajo en progreso. Por esta razón tuve que pensar"
+    echo "en una manera sencilla y rápida de añadir funciones y"
+    echo "código que se pudieran utilizar inmediatamente con el"
+    echo "mínimo número de modificaciones al programa principal."
+    echo
+    echo "Eso dió lugar a una primera versión de modularity, que"
+    echo "con alguna mejora pasó a ser el módulo responsable de"
+    echo "cargar el resto de módulos de sintel."
+    echo
+    echo "Su funcionamiento es muy sencillo. En primer lugar se"
+    echo "define una lista llamada MODS que va a contener los"
+    echo "nombres de los ficheros que contienen el código en sí."
+    echo "Entonces se importa mediante la palabra clave 'source'"
+    echo "modularity, que se encarga de leer la lista y de cargar"
+    echo "los módulos en el orden en que están escritos en MODS."
+    echo
+    echo "Este sencillo mecanismo permite escribir nuevos archivos"
+    echo "o módulos con funcionalidades nuevas, cuyas funciones"
+    echo "pueden empezar a utilizarse simplemente añadiendo el"
+    echo "nombre del archivo nuevo a la lista MODS."
+    echo
+    echo "Lo mejor de todo es que los nuevos módulos pueden llamar"
+    echo "a cualquier función de los módulos previamente existentes"
+    echo ", con lo que se pueden crear varias capas de lógica o"
+    echo "niveles, que pueden dar lugar a un programa grande, pero"
+    echo "sin las complicaciones de tener que mantener un script de"
+    echo "bash grande."
+}
+
 #Bucle que recorre el array de módulos y probará a cargar uno tras otro
 for mod in "${MODS[@]}"; do
 	#Si hemos activado la depuración, se mostrarán mensajes indicativos

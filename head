@@ -3,16 +3,46 @@
 #El puntero permite saber por qué episodio nos llegamos.
 #Moverlo es crucial para decirle al sistema cuál es el siguiente episodio que tenemos pendiente
 
+function head.info() {
+    echo "head - Puntero de series"
+    echo
+    echo "Funciones que ayudan a gestionar por qué eisodio"
+    echo "nos llegamos de una serie."
+}
+
 function head.reset() {
 	local idmedio="$1"
 
 	db.executeUpdate "update episodio set esvisto = 0 where idmedio = $idmedio"
 }
 
+function head.reset.info() {
+    echo "head.reset - Mueve el puntero de una serie al principio."
+    echo
+    echo -e "\tArgumentos: idmedio"
+    echo
+    echo "Tanto las películas como las series se almacenan en la tabla medio."
+    echo "A cada nuevo medio se le asigna un identificador numérico. Ese es el"
+    echo "idmedio."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f head.reset:871"
+    echo -e "\tsintel -f head.reset:221"
+}
+
 function head.markall() {
 	local idmedio="$1"
 
 	db.executeUpdate "update episodio set esvisto = 1 where idmedio = $idmedio"
+}
+
+function head.markall.info() {
+    echo "head.markall - Marcar todos los episodios de una serie como vistos."
+    echo
+    echo -e "\tArgumentos: idmedio"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f head.markall:871"
 }
 
 function head.resetTemporada() {
@@ -22,11 +52,29 @@ function head.resetTemporada() {
 	db.executeUpdate "update episodio set esvisto = 0 where idmedio = $idmedio and temporada = $temporada"
 }
 
+function head.resetTemporada.info() {
+    echo "head.resetTemporada - Marcar temporada de una serie como no vista."
+    echo
+    echo -e "\tArgumentos: idmedio, temporada"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -n head.resetTemporada:\"871|10\""
+}
+
 function head.markTemporada() {
 	local idmedio="$1"
 	local temporada="$2"
 
 	db.executeUpdate "update episodio set esvisto = 1 where idmedio = $idmedio and temporada = $temporada"
+}
+
+function head.markTemporada.info() {
+    echo "head.markTemporada - Marcar temporada de una serie como vista."
+    echo
+    echo -e "\tArgumentos: idmedio, temporada"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -n head.markTemporada:\"871:10\""
 }
 
 function head.forth() {
@@ -39,12 +87,30 @@ function head.forth() {
 	db.executeUpdate "update episodio set esvisto = 1 where id = $id"
 }
 
+function head.forth.info() {
+    echo "head.forth - Avanzar el puntero de la serie al siguiente episodio."
+    echo
+    echo -e "\tArgumentos: idmedio"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f head.forth:871"
+}
+
 function head.back() {
 	local idmedio="$1"
 
 	local t=$(db.executeQuery "select max(temporada) from episodio where idmedio=$idmedio and esvisto>0")
 	local id=$(db.executeQuery "select max(id) from episodio where idmedio = $idmedio and temporada = $t and esvisto > 0")
 	db.executeUpdate "update episodio set esvisto = 0 where id = $id"
+}
+
+function head.back.info() {
+    echo "head.back - Retroceder el puntero de la serie al episodio anterior."
+    echo
+    echo -e "\tArgumentos: idmedio"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f head.back:871"
 }
 
 function head.resetN() {
@@ -57,6 +123,15 @@ function head.resetN() {
 	done
 }
 
+function head.resetN.info() {
+    echo "head.resetN - Mover el puntero de la serie N veces hacia atrás."
+    echo
+    echo -e "\tArgumentos: idmedio, N (número de veces)"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -n head.resetN:\"871|5\""
+}
+
 function head.markN() {
 	local idmedio="$1"
 	local n="$2"
@@ -65,6 +140,16 @@ function head.markN() {
 		head.forth $idmedio
 		(( n-- ))
 	done
+}
+
+function head.markN.info() {
+    echo "head.markN - Mover el puntero de la serie N veces hacia delante."
+    echo
+    echo -e "\tArgumentos: idmedio, N (número de veces)"
+    echo ""
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -n head.markN:\"871:5\""
 }
 
 function head.next() {
@@ -85,4 +170,13 @@ function head.next() {
 	else
 		echo "$id"
 	fi
+}
+
+function head.next.info() {
+    echo "head.next - Avanzar el puntero de la serie un episodio."
+    echo
+    echo -e "\tArgumentos: idmedio"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f head.next:871"
 }

@@ -1,6 +1,13 @@
 #!/bin/bash
 #Listar series y películas existentes en la base de datos de varias formas
 
+function medios.info() {
+    echo "medios - Módulo de medios"
+    echo
+    echo "Tareas sobre medios en general."
+    echo "Se usan funciones de otros módulos."
+    echo
+}
 
 #Listar todos los medios
 #En el formato siguiente:

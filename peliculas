@@ -6,6 +6,16 @@ declare -A PELICULA
 
 PELICULA=( ["id"]="" ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["esvisto"]="" ["esdescargado"]="" )
 
+function peliculas.info() {
+    echo "peliculas - Gestión de películas"
+    echo
+    echo "Contiene todo lo necesario para añadir, modificar y ver"
+    echo "medios de películas."
+    echo
+    echo "Puesto que peliculas es un nombre largo, se ha optado por"
+    echo "la palabra inglesa film para el prefijo de este módulo."
+}
+
 #@ film.add titulo fichero torrent
 function film.add() {
 	local titulo="$1"
@@ -15,6 +25,17 @@ function film.add() {
 	$DEBUG && echo "> film.add" > /dev/tty
 	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0)"
 	$DEBUG && echo "< film.add" > /dev/tty
+}
+
+function film.add.info() {
+    echo "film.add - Añadir película (titulo fichero torrent)"
+    echo
+    echo -e "\tArgumentos: titulo, fichero, torrent"
+    echo
+    echo "Añade una película nueva a la base de datos."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -n film.add:\"Indiana Jones y la última cruzada|/home/mhyst/Peliculas/IndianaJones3.avi|indy1.torrent\""
 }
 
 #@ film.add2 registro (Formato: titulo|fichero|torrent)
@@ -28,6 +49,25 @@ function film.add2() {
 	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0,0)"
 }
 
+function film.add2.info() {
+    echo "film.add2 - Añadir película (un solo argumento)"
+    echo
+    echo -e "\tArgumentos: registro"
+    echo
+    echo "Esta función es prácticamente idéntica a film.add. la direfencia"
+    echo "estriba en que la primera requiere tres argumentos separados"
+    echo "mientras que esta solo requiere uno que luego divide en los tres"
+    echo "datos que le hacen falta: título, fichero y torrent."
+    echo
+    echo "Mirando los ejemplos se puede ver que las llamadas son casi idénticas"
+    echo "a excepción de que film.add utiliza la opción -n y esta -f. Véase la"
+    echo "documentación de las funciones callFuncion y callFuncion2 para saber"
+    echo "más."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.add2:\"North By Northwest|/home/mhyst/Peliculas/Nbnw.mp4|nbnw.torrent\""
+}
+
 #@ film-getById id
 function film.getById() {
 	local id="$1"
@@ -36,6 +76,22 @@ function film.getById() {
 	local res=$(db.executeQuery "select * from medio where id = $id")
 	$DEBUG && echo "< film.getById" > /dev/tty
 	echo "$res"
+}
+
+function film.getById.info() {
+    echo "film.getById - Obtener película por id"
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Esta función devuelve el registro de la película tal como fue"
+    echo "almacenado en la base de datos. Cada campo separado por '|'."
+    echo
+    echo "id se corresponde con el id de la tabla medio donde se almacenan"
+    echo "tanto películas como series, por lo que si se proporciona el id"
+    echo "de una serie, se dará el registro de esta."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.getById:871"
 }
 
 #@ film.getIdByTitulo titulo
@@ -48,6 +104,18 @@ function film.getIdByTitulo() {
 	echo "$res"
 }
 
+function film.getIdByTitulo.info() {
+    echo "film.getIdByTitulo - Obtener id de película por título"
+    echo
+    echo -e "\tArgumentos: título"
+    echo
+    echo "Devolverá todos los id de las películas cuyo  título sea"
+    echo "exactamente igual a la cadena proporcionada como argumento."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.getIdByTitulo:\"El puente sobre el río Kwai\""
+}
+
 #@ film.getByTitulo titulo
 function film.getByTitulo() {
 	local titulo="$1"
@@ -58,12 +126,36 @@ function film.getByTitulo() {
 	echo "$res"
 }
 
+function film.getByTitulo.info() {
+    echo "film.getByTitulo - Obtener registro por título."
+    echo
+    echo -e "\tArgumentos: ritulo"
+    echo
+    echo "Devuelve todos los registros de la tabla medio cuyo título"
+    echo "sea igual al suministrado."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f getByTitulo:Vértigo"
+}
+
 #@  film-getByFichero fichero
 function film.getByFichero() {
 	local fichero="$1"
 
 	local res=$(db.executeQuery "select * from medio where esserie = 0 and fichero = \"$fichero\"")
 	echo "$res"
+}
+
+function film.getByFichero.info() {
+    echo "film.getByFichero - Película por nombre de fichero."
+    echo
+    echo -e "\tArgumentos: ruta de fichero"
+    echo
+    echo "Devuelve el registro completo de cada película cuyo fichero"
+    echo "con ruta completa coincida con el suministrado."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.getByFicheri:\"/home/mhyst/Peliculas/Nbnw.mjv\""
 }
 
 #@ film-find busqueda
@@ -75,6 +167,18 @@ function film.find() {
 	echo "$res"	
 }
 
+function film.find.info() {
+    echo "film.find - Buscar películas"
+    echo
+    echo -e "\tArgumentos: cadena de búsqueda"
+    echo
+    echo "Devuelve el registro de todas las películas cuyo título"
+    echo "contenga la cadena suministrada."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.find:kwai"
+}
+
 #@ film-getId titulo (sinonimo de getIdByTitulo)
 function film.getId() {
 	local titulo="$1"
@@ -82,11 +186,35 @@ function film.getId() {
 	local id=$(db.executeQuery "select id from medio where esserie = 0 and titulo = \"$titulo\"")
 }
 
+function film.getId.info() {
+    echo "film.getId - Igual que getIdByTitulo"
+    echo
+    echo -e "\tArgumentos: titulo"
+    echo
+    echo "Devolverá todos los id de las películas cuyo  título sea"
+    echo "exactamente igual a la cadena proporcionada como argumento."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.getId:\"El puente sobre el río Kwai\""
+}
+
 #@ film.remove id
 function film.remove() {
 	local id="$1"
 
 	db.executeUpdate "delete from medio where esserie = 0 and id = $id"
+}
+
+function film.remove.info() {
+    echo "film.remove - Eliminar película por id"
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Elimina la película con el id suministrado."
+    echo "El id es único, por lo que no se borrará más de una."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.remove:871"
 }
 
 #@ film-updateFichero id fichero
@@ -97,12 +225,35 @@ function film.updateFichero() {
 	db.executeUpdate "update medio set fichero=\"$fichero\" where id = $id"
 }
 
+function film.updateFichero.info() {
+    echo "film.updateFichero - Actualizar fichero"
+    echo
+    echo -e "\tArgumentos: id, ruta fichero"
+    echo
+    echo "Actualiza el fichero del medio cuyo id se ha suministrado."
+    echo "No distingue entre series y películas."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -n film.updateFichero:\"2|/mnt/Peliculas/Nbnw.mp4\""
+}
+
 #@ film.updateTorrent id torrent
 function film.updateTorrent() {
 	local id="$1"
 	local torrent="$2"
 
 	db.executeUpdate "update medio set torrent=$torrent where id = $id"
+}
+
+function film.updateTorrent.info() {
+    echo "film.updateTorrent - Actualizar torrent por id"
+    echo
+    echo -e "\tArgumentos: id, torrent"
+    echo
+    echo "Actualiza el torrent de la película cuyo id se ha suministrado."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -n film.updateTorrent:\"2|/mnt/Torrents/Nbnw.torrent\""
 }
 
 #@ film.setVista id
@@ -112,11 +263,29 @@ function film.setVista() {
 	db.executeUpdate "update medio set esvisto=1 where id = $id"
 }
 
+function film.setVista.info() {
+    echo "film.setVista - Establece una película como vista."
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.setVista:2"
+}
+
 #@ film.setNoVista id
 function film.setNoVista() {
 	local id="$1"
 
 	db.executeUpdate "update medio set esdescargado=0 where id = $id"
+}
+
+function film.setNoVista.info() {
+    echo "film.setNoVista - Establece una película como no vista."
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.setNoVista:2"
 }
 
 #@ film.setDescargada id
@@ -126,11 +295,29 @@ function film.setDescargada() {
 	db.executeUpdate "update medio set esdescargado=1 where id = $id"
 }
 
+function film.setDescargada.info() {
+    echo "film.setDescargada - Establece una película como descargada."
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.setDescargada:1"
+}
+
 #@ film.SetNoDescargada id
 function film.setNoDescargada() {
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=0 where id = $id"
+}
+
+function film.setNoDescargada.info() {
+    echo "film.setNoDescargada - Establece una película como no descargada."
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.setNoDescargada:1"
 }
 
 #@ film.parse datos (Formato: (id|titulo|fichero|torrent|esserie|esvisto|esdescargado))
@@ -147,6 +334,17 @@ function film.parse() {
 	PELICULA[esdescargado]="{datosa[6]}"
 }
 
+function film.parse.info() {
+    echo "film.parse - Procesa registro de película."
+    echo
+    echo -e "\tArgumentos: registro"
+    echo
+    echo "Recibe un registro con el formato:"
+    echo "campo1|campo2|campo3|etc"
+    echo "y separa cada campo en una celda del array"
+    echo "PELICULA."
+}
+
 #@ film.parseToFile datos
 function film.parseToFile() {
 	local datos="$1"
@@ -158,6 +356,15 @@ function film.parseToFile() {
 	for key in ${!PELICULA[@]}; do
 		echo "$key ${PELICULA[$key]}" >> /tmp/PELICULA
 	done
+}
+
+function film.parseToFile.info() {
+    echo "film.parseToFile - Procesa registro y lo copia al archivo /tmp/PELICULA"
+    echo
+    echo -e "\tArgumentos: registro"
+    echo
+    echo "Esta función permite compartir datos de una película con"
+    echo "otros scripts o programas."
 }
 
 #@ film.getField field
@@ -179,4 +386,16 @@ function film.getField() {
 	else
 		echo "-1"
 	fi
+}
+
+function film.getField.info() {
+    echo "film.getField - Obtiene un campo de un registro"
+    echo
+    echo -e "\tArgumentos: nombre del campo"
+    echo
+    echo "Antes de poder llamar a esta función debe de haberse"
+    echo "incovado la función film.parse."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f film.getField:titulo"
 }

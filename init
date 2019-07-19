@@ -85,6 +85,10 @@ function init.info() {
     echo "La tarea de init es crear la base de datos si no existe"
     echo "y actualizarla con las nuevas tablas que vayan surgiendo."
     echo
+    echo "El módulo init solo contiene la función init y algunas"
+    echo "variables, por lo que no se ha incluído información propia"
+    echo "del módulo en sí,"
+    echo
     echo "Ejemplo:"
     echo -e "\tsintel -f init"
 }

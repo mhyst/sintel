@@ -17,6 +17,23 @@ database_SQLITE="sqlite3 $database_DB"
 #Si este valor es -1 debe entenderse que su contenido no sirve o que ha habido un error.
 ROWID=-1
 
+function database.info() {
+    echo "database - Módulo que gestiona la base de datos."
+    echo
+    echo "Es el responsable de lanzar consultas y actualizaciones"
+    echo "a la base de datos."
+    echo
+    echo "Cada vez que otro módulo necesita trabajar con la base de"
+    echo "datos, realiza llamadas a una de las funciones de este."
+    echo
+    echo "El prefijo usado por las funciones de este módulo se ha"
+    echo "acortado a db."
+}
+
+function db.info() {
+    database.info
+}
+
 #Hacer consultas a la base de datos
 #Nótese que he utilizado transacciones para evitar que la base de datos quede bloqueada
 function db.executeQuery() {
@@ -28,6 +45,21 @@ function db.executeQuery() {
 		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
 	fi	
 	echo "$res"
+}
+
+function database.executeQuery.info() {
+    echo "database.executeQuery - Ejecuta una consulta."
+    echo
+    echo -e "\tArgumentos: consulta SQL"
+    echo
+    echo "Consulta la base de datos pero no hace cambios."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f db.executeQuery:\"select * from medios\""
+}
+
+function db.executeQuery.info() {
+    database.executeQuery.info
 }
 
 #Inserciones y actualizaciones de la base de datos
@@ -48,4 +80,19 @@ function db.executeUpdate() {
 	if [ $? != 0 ]; then
 		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
 	fi
+}
+
+function database.executeUpdate.info() {
+    echo "database.executeUpdate - Lanza una consulta de actualización."
+    echo
+    echo -e "\tArgumentos: consulta SQL"
+    echo
+    echo "Realiza cambios en la base de datos."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f db.executeUpdate:\"delete from medios\""
+}
+
+function db.executeUpdate.info() {
+    database.executeUpdate.info
 }

@@ -10,6 +10,12 @@
 declare -A ANIME
 ANIME=( ["id"]=""  ["titulo"]="" ["url"]="" ["alias"]="" ["episodio"]="" )
 
+function anime.info() {
+    echo "anime - Módulo para seguimiento de anime"
+    echo
+    echo "Maneja anime que se ve online."
+}
+
 function anime.add() {
 	local titulo="$1"
 	local url="$2"

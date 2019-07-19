@@ -1,6 +1,12 @@
 #!/bin/bash
 #Funciones genericas
 
+function generic.info() {
+    echo "generic - Funciones genéricas."
+    echo
+    echo "Contiene funciones genéricas de soporte para otros módulos."
+}
+
 function trim() {
     echo $*
 }
