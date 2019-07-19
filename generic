@@ -67,8 +67,16 @@ function callFuncion() {
 	eval set -- "$args"
 	$DEBUG && echo "Argumentos procesados: $@" > /dev/tty
 
-	$DEBUG && echo "A ejecutar: $funcion $@" > /dev/tty
-	local res=`$funcion "$@"`
+	local postargs=""
+	for arg in "$@"; do
+	    postargs="$postargs \"$arg\""
+	done
+	postargs=$(trim "$postargs")
+
+	$DEBUG && echo "A ejecutar: $funcion $postargs" > /dev/tty
+	# local res=`$funcion "$postargs"`
+
+	local res=`eval "$funcion" $postargs`
 	echo "$res"
 }
 
@@ -80,6 +88,29 @@ function callFuncion.info() {
     echo
     echo "La tupla es el nombre de la función que queremos llamar y un argumento"
     echo "separados por el caracter dos puntos ':'. El argumento es opcional."
+    echo
+    echo "La forma más cómoda de acceder a esta función es mediante la opción"
+    echo "-f de sintel".
+    echo
+    echo "Se pueden proporcionar varios argumentos a callFuncion así:"
+    echo "  callFuncion arg1 arg2 arg3 ...etc."
+    echo "Pero eso solo puede hacerse desde dentro de sintel. Sin embargo,"
+    echo "si vamos a invocar a esta función desde fuera con la opción -f"
+    echo "se nos plantea un problema. La opción -f solo recoge un argumento,"
+    echo "es decir, que si metemos un espacio, el subsistema de captación de"
+    echo "opciones lo considerará como algo aparte de -f. No obstante hay dos"
+    echo "opciones si queremos emplear más de un argumento en una llamada con"
+    echo "-f. La primera es englobar los argumentos separados por espacios con"
+    echo "comillas. la segunda consiste en entrecomillar toda la llamada,"
+    echo "incluído el nombre de la función. Veamos un ejemplo de cada uno:"
+    echo
+    echo -e "\tsintel -f nombrefuncion:\"arg1 arg2 arg3 etc\""
+    echo -e "\tsintel -f \"nombrefuncion:arg1 arg2 arg3 etc\""
+    echo
+    echo "Aún tenemos un problema más y es que si queremos que uno de esos"
+    echo "argumentos conste de varias palabras. Ese problema queda"
+    echo "resuelto en la función callFuncion2 mediante el uso del separador"
+    echo '|'. De ahí que existan dos funciones para lo mismo.
     echo
     echo "Ejemplos:"
     echo -e "\tsintel -f series.list"
