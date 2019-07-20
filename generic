@@ -150,15 +150,20 @@ function callFuncion2.info() {
 function listFunciones() {
     if [[ $# == 0 ]]; then
         declare -F | while read line; do
-	   echo "${line:11}"
+	    if `grep -E '.info$' <<< "$line" > /dev/null 2>&1`; then
+	       continue;
+	    fi
+	    echo "${line:11}"
 	done
     else
 	declare -F | grep "$1\." | while read line; do
-	   echo "${line:11}"
+	    if `grep -E '.info$' <<< "$line" > /dev/null 2>&1`; then
+		continue
+	    fi
+	    echo "${line:11}"
 	done
     fi
 }
-
 
 function listFunciones.info() {
     echo "generic->listFunciones - Lista las funciones integradas en sintel."
@@ -178,6 +183,18 @@ function listFunciones.info() {
     echo "Ejemplos:"
     echo -e "\tsintel -f listFunciones"
     echo -e "\tsintel -f listFunciones:series"
+}
+
+function listModules() {
+    for module in "${MODS[@]}"; do
+	echo "$module"
+    done
+}
+
+function listModules.info() {
+    echo "generic->listModules - Listar módulos"
+    echo
+    echo "Lista los módulos cargados."
 }
 
 function functionInfo() {
