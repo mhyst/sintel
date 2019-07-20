@@ -159,7 +159,7 @@ function listFunciones() {
 	if [[ $1 == "generic" ]]; then
 	    declare -F | while read line; do
 		line="${line:11}"
-		if `grep -E '.' <<< "$line" > /dev/null 2>&1`; then
+		if `grep "\." <<< "$line" > /dev/null 2>&1`; then
 		    continue
 		fi
 		echo "$line"
@@ -205,6 +205,8 @@ function listModules.info() {
     echo "generic->listModules - Listar módulos"
     echo
     echo "Lista los módulos cargados."
+    echo
+    echo "La opción -m es un atajo a esta función."
 }
 
 function functionInfo() {
