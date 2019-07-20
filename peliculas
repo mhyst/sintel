@@ -29,6 +29,7 @@ function film.add() {
 	$DEBUG && echo "> film.add" > /dev/tty
 	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0)"
 	$DEBUG && echo "< film.add" > /dev/tty
+	echo "$ROWID"
 }
 
 function film.add.info() {
@@ -51,6 +52,7 @@ function film.add2() {
 	local torrent="${PELICULA[torrent]}"
 
 	db.executeUpdate "insert into medio (titulo, fichero, torrent, esserie, esvisto) values (\"$titulo\",\"$fichero\",$torrent,0,0,0)"
+	echo "$ROWID"
 }
 
 function film.add2.info() {

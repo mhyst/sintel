@@ -36,15 +36,16 @@ function series.add() {
 }
 
 function series.add.info() {
-    echo "series.add - "
+    echo "series.add - Agrega una serie a la base de datos"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: titulo"
     echo
-    echo ""
-    echo ""
+    echo "Crea una serie nueva en la base de datos."
+    echo "Solo graba el título, ya que el resto de los datos"
+    echo "pertenecen a cada episodio."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.add:Poirot"
 }
 
 function series.getById() {
@@ -57,15 +58,15 @@ function series.getById() {
 }
 
 function series.getById.info() {
-    echo "series.getById - "
+    echo "series.getById - Obtener serie por id"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id"
     echo
-    echo ""
-    echo ""
+    echo "Obtiene el registro de la serie que corresponda al"
+    echo "id proporcionado. El id es un identificador único,"
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getById:1"
 }
 
 function series.getIdByTitulo() {
@@ -81,15 +82,15 @@ function series.getIdByTitulo() {
 }
 
 function series.getIdByTitulo.info() {
-    echo "series.getIdByTitulo - "
+    echo "series.getIdByTitulo - Obtener id por el título"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: titulo"
     echo
-    echo ""
-    echo ""
+    echo "Obtiene el id de la serie que coincide con el título"
+    echo "indicado."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getIdByTitulo:Poirot"
 }
 
 function series.getByTitulo() {
@@ -102,34 +103,15 @@ function series.getByTitulo() {
 }
 
 function series.getByTitulo.info() {
-    echo "series.getByTitulo - "
+    echo "series.getByTitulo - Obtener serie por título"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: titulo"
     echo
-    echo ""
-    echo ""
-    echo
-    echo "Ejemplo:"
-    echo -e "\t"
-}
-
-function series.getByFichero() {
-	local fichero="$1"
-
-	local res=$(db.executeQuery "select * from medio where esserie = 1 and fichero = \"$fichero\"")
-	echo "$res"
-}
-
-function series.getByFichero.info() {
-    echo "series.getByFichero - "
-    echo
-    echo -e "\tArgumentos: "
-    echo
-    echo ""
-    echo ""
+    echo "Obtiene el registro de la serie que coincida con el"
+    echo "título indicado."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getByTitulo:Poirot"
 }
 
 function series.find() {
@@ -140,15 +122,15 @@ function series.find() {
 }
 
 function series.find.info() {
-    echo "series.find - "
+    echo "series.find - Buscar serie"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: cadena de búsqueda"
     echo
-    echo ""
-    echo ""
+    echo "Devuelve todos los registros cuyo título contenga la cadena"
+    echo "de búsqueda especificada como argumento."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.find:christie"
 }
 
 function series.getId() {
@@ -158,15 +140,15 @@ function series.getId() {
 }
 
 function series.getId.info() {
-    echo "series.getId - "
+    echo "series.getId - Obtener id de la serie"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: titulo"
     echo
-    echo ""
-    echo ""
+    echo "Devuelve el id de la serie cuyo título corresponde con el"
+    echo "pasado como argumento."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getId:Poirot"
 }
 
 function series.remove() {
@@ -176,15 +158,15 @@ function series.remove() {
 }
 
 function series.remove.info() {
-    echo "series.remove - "
+    echo "series.remove - Eliminar serie"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id"
     echo
-    echo ""
-    echo ""
+    echo "Borra de la base de datos la serie que corresponde al id"
+    echo "pasado como argumento en la llamada a la función."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.remove:282"
 }
 
 function series.updateFichero() {
@@ -195,15 +177,18 @@ function series.updateFichero() {
 }
 
 function series.updateFichero.info() {
-    echo "series.updateFichero - "
+    echo "series.updateFichero - Actualizar fichero de la serie"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id, fichero"
     echo
-    echo ""
-    echo ""
+    echo "Las series se graban en la tabla medio, igual que las películas"
+    echo "pero ni el torrent ni el fichero se tienen en cuenta para las"
+    echo "series, dado que hay un fichero y un torrent por cada episodio."
+    echo "Por lo tanto no tiene mucho sentido grabar nada en fichero, pero"
+    echo "se ha respetado pensando en futuras características."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.updateFichero:\"/share/HDB_DATA/Download/serie.avi\""
 }
 
 function series.updateTorrent() {
@@ -214,51 +199,24 @@ function series.updateTorrent() {
 }
 
 function series.updateTorrent.info() {
-    echo "series.updateTorrent - "
+    echo "series.updateTorrent - Actualizar torrent de la serie"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id, torrent"
     echo
-    echo ""
-    echo ""
+    echo "Permite actualizar el torrent de la serie, pero dado que cada"
+    echo "episodio tiene el suyo, no tiene mucho sentido. De todas formas"
+    echo "se ha mantenido esta función."
+    echo
+    echo "El torrent es el id generado por el cliente transmission."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.updateTorrent:312"
 }
 
 function series.setVista() {
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=1 where id = $id"
-}
-
-function series.setVista.info() {
-    echo "series.setVista - "
-    echo
-    echo -e "\tArgumentos: "
-    echo
-    echo ""
-    echo ""
-    echo
-    echo "Ejemplo:"
-    echo -e "\t"
-}
-
-function series.setNoVista() {
-	local id="$1"
-
-	db.executeUpdate "update medio set esvisto=0 where id = $id"
-}
-
-function series.setNoVista.info() {
-    echo "series.setNoVista - "
-    echo
-    echo -e "\tArgumentos: "
-    echo
-    echo ""
-    echo ""
-    echo
-    echo "Ejemplo:"
-    echo -e "\t"
 }
 
 function series.parse() {
@@ -277,15 +235,15 @@ function series.parse() {
 }
 
 function series.parse.info() {
-    echo "series.parse - "
+    echo "series.parse - Procesar registro de serie"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: registro"
     echo
-    echo ""
-    echo ""
+    echo "Procesa un registro de serie y lo introduce en el array"
+    echo "SERIE para un acceso más cómodo."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.parse:\"24 'Se ha escrito un crimen' '' -1 0 0\""
 }
 
 function series.parseToFile() {
@@ -301,15 +259,16 @@ function series.parseToFile() {
 }
 
 function series.parseToFile.info() {
-    echo "series.parseToFile - "
+    echo "series.parseToFile - Procesar registro de serie a archivo"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: registro"
     echo
-    echo ""
-    echo ""
+    echo "Realiza la misma función que series.parse y además graba"
+    echo "los datos a un archivo para compartirlos con un programa"
+    echo "externo."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.parseToFile:\"12 'Poirot' '' -1 0 0\""
 }
 
 function series.getField() {
@@ -333,15 +292,16 @@ function series.getField() {
 }
 
 function series.getField.info() {
-    echo "series.getField - "
+    echo "series.getField - Obtener campo de registro de serie"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: campo"
     echo
-    echo ""
-    echo ""
+    echo "Una vez se ha procesado un registro de serie se puede emplear"
+    echo "esta función para obtener el valor de cualquiera de los campos"
+    echo "definidos en el registro."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getField:titulo"
 }
 
 function series.addEpisodio() {
@@ -356,15 +316,15 @@ function series.addEpisodio() {
 }
 
 function series.addEpisodio.info() {
-    echo "series.addEpisodio - "
+    echo "series.addEpisodio - Añadir episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: idmedio, temporada, episodio, fichero, torrent"
     echo
-    echo ""
-    echo ""
+    echo "Da de alta un episodio en la base de datos. Este esta relacionado"
+    echo "con una serie a través del campo idmedio."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.addEpisodio:\"12 1 1 '/share/HDB_DATA/Download/poirot01x01.avi' 234\""
 }
 
 function series.getEpisodioById() {
@@ -375,15 +335,14 @@ function series.getEpisodioById() {
 }
 
 function series.getEpisodioById.info() {
-    echo "series.getEpisodioById - "
+    echo "series.getEpisodioById - Obtener episodio por id"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id"
     echo
-    echo ""
-    echo ""
+    echo "Obtiene el registro del episodio cuyo id sea el indicado."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getEpisodioById:12"
 }
 
 function series.getEpisodioByFichero() {
@@ -394,15 +353,15 @@ function series.getEpisodioByFichero() {
 }
 
 function series.getEpisodioByFichero.info() {
-    echo "series.getEpisodioByFichero - "
+    echo "series.getEpisodioByFichero - Obtener episodio por fichero"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: fichero"
     echo
-    echo ""
-    echo ""
+    echo "Obtiene el registro del episodio cuyo fichero sea igual"
+    echo "que el indicado."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getEpisodioByFichero:\"/share/HDB_DATA/Download/Poirot01x01.avi\""
 }
 
 function series.findEpisodio() {
@@ -413,15 +372,15 @@ function series.findEpisodio() {
 }
 
 function series.findEpisodio.info() {
-    echo "series.findEpisodio - "
+    echo "series.findEpisodio - Buscar episodio por fichero"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: cadena de búsqueda"
     echo
-    echo ""
-    echo ""
+    echo "Devuelve el registro de episodio cuyo fichero contenga"
+    echo "la cadena de búsqueda indicada."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.findEpispdio:\"Poirot01x01\""
 }
 
 function series.getEpisodioId() {
@@ -434,15 +393,16 @@ function series.getEpisodioId() {
 }
 
 function series.getEpisodioId.info() {
-    echo "series.getEpisodioId - "
+    echo "series.getEpisodioId - Obtener id de episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: idmedio, temporada, episodio"
     echo
-    echo ""
-    echo ""
+    echo "Devuelve el id de un episodio de la serie especificada por"
+    echo "idmedio, y que cuya temporada y número de episodio sean iguales"
+    echo "a los indicados como argumento."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getEpisodioId:\"871 10 7\""
 }
 
 function series.removeEpisodio() {
@@ -452,15 +412,14 @@ function series.removeEpisodio() {
 }
 
 function series.removeEpisodio.info() {
-    echo "series.removeEpisodio - "
+    echo "series.removeEpisodio - Eliminar episodio por id"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id"
     echo
-    echo ""
-    echo ""
+    echo "Borra de la base de datos el episodio cuyo id sea el indicado."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.removeEpisodio:1153"
 }
 
 function series.updateEpisodioFichero() {
@@ -471,15 +430,16 @@ function series.updateEpisodioFichero() {
 }
 
 function series.updateEpisodioFichero.info() {
-    echo "series.updateEpisodioFichero - "
+    echo "series.updateEpisodioFichero - Actualizar fichero del episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id, fichero"
     echo
-    echo ""
-    echo ""
+    echo "Actualiza el fichero del episodio cuyo id es el indicado."
+    echo "Al igual que las series y las películas, cada episodio tiene"
+    echo "un identificador único que está en el campo id."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.updateEpisodioFichero:\"1152 '/mnt/datos/Poirot10x07.avi'\""
 }
 
 function series.updateEpisodioTorrent() {
@@ -490,15 +450,17 @@ function series.updateEpisodioTorrent() {
 }
 
 function series.updateEpisodioTorrent.info() {
-    echo "series.updateEpisodioTorrent - "
+    echo "series.updateEpisodioTorrent - Actualizar el torrent del episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: id, torrent"
     echo
-    echo ""
-    echo ""
+    echo "Actualiza el torrent del episodio cuyo id es el indicado."
+    echo "Recordemos que el torrent no es un archivo, sino el id que"
+    echo "asigna el cliente de BitTorrent transmission a cada torrent."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.updateEpisodioTorrent:\"1152 312\""
+    echo -e "\tsintel -n series.updateEpisodioTorrent:\"1152|312\""
 }
 
 function series.setEpisodioVista() {
@@ -508,15 +470,12 @@ function series.setEpisodioVista() {
 }
 
 function series.setEpisodioVista.info() {
-    echo "series.setEpisodioVista - "
+    echo "series.setEpisodioVista - Marca un episodio como visto"
     echo
-    echo -e "\tArgumentos: "
-    echo
-    echo ""
-    echo ""
+    echo -e "\tArgumentos: id"
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.setEpisodioVista:1152"
 }
 
 function series.setEpisodioNoVista() {
@@ -526,15 +485,12 @@ function series.setEpisodioNoVista() {
 }
 
 function series.setEpisodioNoVista.info() {
-    echo "series.setEpisodioNoVista - "
+    echo "series.setEpisodioNoVista - Marca un episodio como no visto"
     echo
-    echo -e "\tArgumentos: "
-    echo
-    echo ""
-    echo ""
+    echo -e "\tArgumentos: id"
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.setEpisodioNoVista:1152"
 }
 
 function series.setEpisodioDescargado() {
@@ -544,15 +500,12 @@ function series.setEpisodioDescargado() {
 }
 
 function series.setEpisodioDescargado.info() {
-    echo "series.setEpisodioDescargado - "
+    echo "series.setEpisodioDescargado - Marca un episodio como descargado"
     echo
-    echo -e "\tArgumentos: "
-    echo
-    echo ""
-    echo ""
+    echo -e "\tArgumentos: id"
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.setEpisodioDescargado:1152"
 }
 
 function series.setEpisodioNoDescargado() {
@@ -562,15 +515,12 @@ function series.setEpisodioNoDescargado() {
 }
 
 function series.setEpisodioNoDescargado.info() {
-    echo "series.setEpisodioNoDescargado - "
+    echo "series.setEpisodioNoDescargado - Marca un episodio como no descargado"
     echo
-    echo -e "\tArgumentos: "
-    echo
-    echo ""
-    echo ""
+    echo -e "\tArgumentos: id"
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.setEpisodioNoDescargado:1152"
 }
 
 function series.parseEpisodio() {
@@ -589,15 +539,15 @@ function series.parseEpisodio() {
 }
 
 function series.parseEpisodio.info() {
-    echo "series.parseEpisodio - "
+    echo "series.parseEpisodio - Procesa registro de episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: registro"
     echo
-    echo ""
-    echo ""
+    echo "Separa cada campo del registro en las diferentes celdas del"
+    echo "array EPISODIO para un más fácil acceso."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.parseEpisodio:\"1152 12 'Poirot' 10 7 '/mnt/Datos/Poirot10x07.avi' 312 0 0\""
 }
 
 function series.parseEpisodioToFile() {
@@ -613,15 +563,15 @@ function series.parseEpisodioToFile() {
 }
 
 function series.parseEpisodioToFile.info() {
-    echo "series.parseEpisodioToFile - "
+    echo "series.parseEpisodioToFile - Procesa registro de episodio a archivo"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: registro"
     echo
-    echo ""
-    echo ""
+    echo "Procesa el episodio y escribe el resultado en el archivo"
+    echo "/tmp/EPISODIO para compartir los datos con un programa externo."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.parseEpisodioToFile:\"1152 12 'Poirot' 10 7 '/mnt/Datos/Poirot10x07.avi' 312 0 0\""
 }
 
 function series.getEpisodioField() {
@@ -645,15 +595,16 @@ function series.getEpisodioField() {
 }
 
 function series.getEpisodioField.info() {
-    echo "series.getEpisodioField - "
+    echo "series.getEpisodioField - Obtiene el valor de un campo del registro de episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: campo"
     echo
-    echo ""
-    echo ""
+    echo "Una vez procesado un registro de episodio con series.parseEpisodio"
+    echo "se puede llamar a esta función para obtener el valor de uno de sus"
+    echo "campos."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.getEpisodioField:fichero"
 }
 
 function series.parseTemporada() {
@@ -664,15 +615,15 @@ function series.parseTemporada() {
 }
 
 function series.parseTemporada.info() {
-    echo "series.parseTemporada - "
+    echo "series.parseTemporada - Obtener temporada de un episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: te"
     echo
-    echo ""
-    echo ""
+    echo "Devuelve la temporada a partir de una cadena que contenga"
+    echo "la temporada y el episodio separados por el caracter 'x'."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.parseTemporada:10x07"
 }
 
 function series.parseEpisodioNum() {
@@ -683,15 +634,16 @@ function series.parseEpisodioNum() {
 }
 
 function series.parseEpisodioNum.info() {
-    echo "series.parseEpisodioNum - "
+    echo "series.parseEpisodioNum - Obtener el número del episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: te"
     echo
-    echo ""
-    echo ""
+    echo "Devuelve el número del episodio a partir de una cadena que"
+    echo "contenga la temporada y el episodio separados por el"
+    echo "caracter 'x'."
     echo
     echo "Ejemplo:"
-    echo -e "\t"
+    echo -e "\tsintel -f series.parseEpisodioNum:10x07"
 }
 
 function series.screenEpisodio() {
@@ -703,13 +655,17 @@ function series.screenEpisodio() {
 }
 
 function series.screenEpisodio.info() {
-    echo "series.screenEpisodio - "
+    echo "series.screenEpisodio - Obtener id idmedio temporada y episodio"
     echo
-    echo -e "\tArgumentos: "
+    echo -e "\tArgumentos: -"
     echo
-    echo ""
-    echo ""
+    echo "Una vez procesado un episodio con la función series.parseEpisodio"
+    echo "se puede llamar a esta función para obtener o imprimir por pantalla"
+    echo "los siguientes datos del episodio:"
+    echo -e "\ŧid idmedio temporada episodio"
     echo
-    echo "Ejemplo:"
-    echo -e "\t"
+    echo "Puesto que para que esta función opere correctamente es necesario"
+    echo "que el array EPISODIO tenga datos, es imposible invocar a esta"
+    echo "función desde fuera de sintel. Solo es de uso interno por otros"
+    echo "módulos de sintel."
 }
