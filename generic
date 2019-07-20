@@ -156,12 +156,22 @@ function listFunciones() {
 	    echo "${line:11}"
 	done
     else
-	declare -F | grep "$1\." | while read line; do
-	    if `grep -E '.info$' <<< "$line" > /dev/null 2>&1`; then
-		continue
-	    fi
-	    echo "${line:11}"
-	done
+	if [[ $1 == "generic" ]]; then
+	    declare -F | while read line; do
+		line="${line:11}"
+		if `grep -E '.' <<< "$line" > /dev/null 2>&1`; then
+		    continue
+		fi
+		echo "$line"
+	    done
+	else
+	    declare -F | grep "$1\." | while read line; do
+		if `grep -E '.info$' <<< "$line" > /dev/null 2>&1`; then
+		    continue
+		fi
+		echo "${line:11}"
+	    done
+	fi
     fi
 }
 
