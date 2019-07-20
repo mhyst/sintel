@@ -12,6 +12,20 @@ SERIE=( ["id"]=""  ["titulo"]="" ["fichero"]="" ["torrent"]="" ["esserie"]="" ["
 declare -A EPISODIO
 EPISODIO=( ["id"]="" ["idmedio"]="" ["temporada"]="" ["episodio"]="" ["fichero"]="" ["torrent"]="" ["esvisto"]="" ["esdescargado"]="" )
 
+function series.info() {
+    echo "series - Gestión de series"
+    echo
+    echo "Este módulo es muy parecido a películas, aunque añade"
+    echo "algunas funciones adicionales como aquellas que se"
+    echo "cuidan de gestionar los episodios."
+    echo
+    echo "Registros: serie, episodio"
+    echo
+    echo "serie = id | titulo | fichero | torrent | esserie | esvisto"
+    echo "episodio = id | idmedio | temporada | episodio | fichero |"
+    echo "           torrent | esvisto | esdescargado"
+}
+
 function series.add() {
 	local titulo="$1"
 
@@ -21,6 +35,18 @@ function series.add() {
 	echo "$ROWID"
 }
 
+function series.add.info() {
+    echo "series.add - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.getById() {
 	local id="$1"
 
@@ -28,6 +54,18 @@ function series.getById() {
 	local res=$(db.executeQuery "select * from medio where id = $id and esserie=1")
 	$DEBUG && echo "< series.getById" > /dev/tty
 	echo "$res"
+}
+
+function series.getById.info() {
+    echo "series.getById - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.getIdByTitulo() {
@@ -42,6 +80,18 @@ function series.getIdByTitulo() {
 	echo "$res"
 }
 
+function series.getIdByTitulo.info() {
+    echo "series.getIdByTitulo - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.getByTitulo() {
 	local titulo="$1"
 
@@ -51,11 +101,35 @@ function series.getByTitulo() {
 	echo "$res"
 }
 
+function series.getByTitulo.info() {
+    echo "series.getByTitulo - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.getByFichero() {
 	local fichero="$1"
 
 	local res=$(db.executeQuery "select * from medio where esserie = 1 and fichero = \"$fichero\"")
 	echo "$res"
+}
+
+function series.getByFichero.info() {
+    echo "series.getByFichero - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.find() {
@@ -65,16 +139,52 @@ function series.find() {
 	echo "$res"	
 }
 
+function series.find.info() {
+    echo "series.find - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.getId() {
 	local titulo="$1"
 
 	local id=$(db.executeQuery "select id from medio where esserie = 1 and titulo = \"$titulo\"")
 }
 
+function series.getId.info() {
+    echo "series.getId - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.remove() {
 	local id="$1"
 
 	db.executeUpdate "delete from medio where esserie = 1 and id = $id"
+}
+
+function series.remove.info() {
+    echo "series.remove - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.updateFichero() {
@@ -84,11 +194,35 @@ function series.updateFichero() {
 	db.executeUpdate "update medio set fichero=\"$fichero\" where id = $id"
 }
 
+function series.updateFichero.info() {
+    echo "series.updateFichero - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.updateTorrent() {
 	local id="$1"
 	local torrent="$2"
 
 	db.executeUpdate "update medio set torrent=$torrent where id = $id"
+}
+
+function series.updateTorrent.info() {
+    echo "series.updateTorrent - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.setVista() {
@@ -97,10 +231,34 @@ function series.setVista() {
 	db.executeUpdate "update medio set esvisto=1 where id = $id"
 }
 
+function series.setVista.info() {
+    echo "series.setVista - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.setNoVista() {
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=0 where id = $id"
+}
+
+function series.setNoVista.info() {
+    echo "series.setNoVista - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.parse() {
@@ -118,6 +276,18 @@ function series.parse() {
 	$DEBUG && echo "<Sale en series.parse" > /dev/tty
 }
 
+function series.parse.info() {
+    echo "series.parse - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.parseToFile() {
 	local datos="$1"
 
@@ -128,6 +298,18 @@ function series.parseToFile() {
 	for key in ${!SERIE[@]}; do
 		echo "$key ${SERIE[$key]}" >> /tmp/SERIE
 	done
+}
+
+function series.parseToFile.info() {
+    echo "series.parseToFile - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.getField() {
@@ -150,6 +332,18 @@ function series.getField() {
 	fi
 }
 
+function series.getField.info() {
+    echo "series.getField - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.addEpisodio() {
 	local idmedio="$1"
 	local temporada="$2"
@@ -161,11 +355,35 @@ function series.addEpisodio() {
 	 values ($idmedio,$temporada,$episodio,\"$fichero\",$torrent,0,0)"
 }
 
+function series.addEpisodio.info() {
+    echo "series.addEpisodio - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.getEpisodioById() {
 	local id="$1"
 
 	local res=$(db.executeQuery "select * from episodio where id = $id")
 	echo "$res"
+}
+
+function series.getEpisodioById.info() {
+    echo "series.getEpisodioById - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.getEpisodioByFichero() {
@@ -175,11 +393,35 @@ function series.getEpisodioByFichero() {
 	echo "$res"
 }
 
+function series.getEpisodioByFichero.info() {
+    echo "series.getEpisodioByFichero - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.findEpisodio() {
 	local busqueda="$@"
 
 	local res=$(db.executeQuery "select * from episodio where fichero like \"%${busqueda}%\"")
 	echo "$res"	
+}
+
+function series.findEpisodio.info() {
+    echo "series.findEpisodio - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.getEpisodioId() {
@@ -191,10 +433,34 @@ function series.getEpisodioId() {
 	echo "$id"
 }
 
+function series.getEpisodioId.info() {
+    echo "series.getEpisodioId - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.removeEpisodio() {
 	local id="$1"
 
 	db.executeUpdate "delete from episodio where id = $id"
+}
+
+function series.removeEpisodio.info() {
+    echo "series.removeEpisodio - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.updateEpisodioFichero() {
@@ -204,11 +470,35 @@ function series.updateEpisodioFichero() {
 	db.executeUpdate "update episodio set fichero=\"$fichero\" where id = $id"
 }
 
+function series.updateEpisodioFichero.info() {
+    echo "series.updateEpisodioFichero - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.updateEpisodioTorrent() {
 	local id="$1"
 	local torrent="$2"
 
 	db.executeUpdate "update episodio set torrent=$torrent where id = $id"
+}
+
+function series.updateEpisodioTorrent.info() {
+    echo "series.updateEpisodioTorrent - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.setEpisodioVista() {
@@ -217,10 +507,34 @@ function series.setEpisodioVista() {
 	db.executeUpdate "update episodio set esvisto=1 where id = $id"
 }
 
+function series.setEpisodioVista.info() {
+    echo "series.setEpisodioVista - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.setEpisodioNoVista() {
 	local id="$1"
 
 	db.executeUpdate "update episodio set esvisto=0 where id = $id"
+}
+
+function series.setEpisodioNoVista.info() {
+    echo "series.setEpisodioNoVista - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.setEpisodioDescargado() {
@@ -229,10 +543,34 @@ function series.setEpisodioDescargado() {
 	db.executeUpdate "update episodio set esdescargado=1 where id = $id"
 }
 
+function series.setEpisodioDescargado.info() {
+    echo "series.setEpisodioDescargado - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.setEpisodioNoDescargado() {
 	local id="$1"
 
 	db.executeUpdate "update episodio set esdescargado=0 where id = $id"
+}
+
+function series.setEpisodioNoDescargado.info() {
+    echo "series.setEpisodioNoDescargado - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.parseEpisodio() {
@@ -250,6 +588,18 @@ function series.parseEpisodio() {
 	EPISODIO[esdescargado]="${datosa[7]}"
 }
 
+function series.parseEpisodio.info() {
+    echo "series.parseEpisodio - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.parseEpisodioToFile() {
 	local datos="$1"
 
@@ -260,6 +610,18 @@ function series.parseEpisodioToFile() {
 	for key in ${!EPISODIO[@]}; do
 		echo "$key ${EPISODIO[$key]}" >> /tmp/EPISODIO
 	done
+}
+
+function series.parseEpisodioToFile.info() {
+    echo "series.parseEpisodioToFile - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.getEpisodioField() {
@@ -282,11 +644,35 @@ function series.getEpisodioField() {
 	fi
 }
 
+function series.getEpisodioField.info() {
+    echo "series.getEpisodioField - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.parseTemporada() {
 	local te="$1"
 
 	IFS='x' read -a aux <<< "$te"; IFS=" "
 	echo "${aux[0]}"
+}
+
+function series.parseTemporada.info() {
+    echo "series.parseTemporada - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }
 
 function series.parseEpisodioNum() {
@@ -296,10 +682,34 @@ function series.parseEpisodioNum() {
 	echo "${aux[1]}"
 }
 
+function series.parseEpisodioNum.info() {
+    echo "series.parseEpisodioNum - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
+}
+
 function series.screenEpisodio() {
 	echo "${EPISODIO[id]} ${EPISODIO[idmedio]} ${EPISODIO[temporada]} ${EPISODIO[episodio]}" > /dev/tty
 	# ${EPISODIO[fichero]}
 	# ${EPISODIO[torrent]}
 	# ${EPISODIO[esvisto]}
 	# ${EPISODIO[esdescargado]}
+}
+
+function series.screenEpisodio.info() {
+    echo "series.screenEpisodio - "
+    echo
+    echo -e "\tArgumentos: "
+    echo
+    echo ""
+    echo ""
+    echo
+    echo "Ejemplo:"
+    echo -e "\t"
 }

@@ -14,6 +14,10 @@ function peliculas.info() {
     echo
     echo "Puesto que peliculas es un nombre largo, se ha optado por"
     echo "la palabra inglesa film para el prefijo de este módulo."
+    echo
+    echo "Registro:"
+    echo
+    echo "id | titulo | fichero | torrent | esserie | esvisto | esdescargado"
 }
 
 #@ film.add titulo fichero torrent
@@ -35,7 +39,7 @@ function film.add.info() {
     echo "Añade una película nueva a la base de datos."
     echo
     echo "Ejemplos:"
-    echo -e "\tsintel -n film.add:\"Indiana Jones y la última cruzada|/home/mhyst/Peliculas/IndianaJones3.avi|indy1.torrent\""
+    echo -e "\tsintel -n film.add:\"Indiana Jones y la última cruzada|/home/mhyst/Peliculas/IndianaJones3.avi|182\""
 }
 
 #@ film.add2 registro (Formato: titulo|fichero|torrent)
@@ -65,7 +69,7 @@ function film.add2.info() {
     echo "más."
     echo
     echo "Ejemplos:"
-    echo -e "\tsintel -f film.add2:\"North By Northwest|/home/mhyst/Peliculas/Nbnw.mp4|nbnw.torrent\""
+    echo -e "\tsintel -f film.add2:\"North By Northwest|/home/mhyst/Peliculas/Nbnw.mp4|305\""
 }
 
 #@ film-getById id
@@ -251,9 +255,14 @@ function film.updateTorrent.info() {
     echo -e "\tArgumentos: id, torrent"
     echo
     echo "Actualiza el torrent de la película cuyo id se ha suministrado."
+    echo "Cabe notar que en este caso el torrent no es más que el id"
+    echo "del torrent asignado por transmission. Con este dato, y la"
+    echo "ayuda del módulo torrents, se puede obtener información del"
+    echo "torrent en transmission. Esto permite saber, entre otras cosas"
+    echo "si el torrent ya ha terminado de descargarse."
     echo
     echo "Ejemplos:"
-    echo -e "\tsintel -n film.updateTorrent:\"2|/mnt/Torrents/Nbnw.torrent\""
+    echo -e "\tsintel -n film.updateTorrent:\"2|296\""
 }
 
 #@ film.setVista id

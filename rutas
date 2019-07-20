@@ -5,11 +5,52 @@
 #a los archivos de medios. Una desde el punto de vista del servidor y otra desde el del cliente.
 #Este módulo permite gestionar los necesarios reemplazos.
 
+function rutas.info() {
+    echo "rutas - Gestión de rutas de reemplazo"
+    echo
+    echo "En caso de trabajar con un servidor de transmission remoto"
+    echo "como es lógico tendremos la carpeta donde se descargan los"
+    echo "archivos montada en local. Necesitamos un sistema que sea"
+    echo "capaz de trabajar con las rutas del lado del servidor y al"  
+    echo "mismo tiempo poder traducirlas a rutas que funcionen desde"
+    echo "el punto de vista del equipo local. Por ejemplo en mi caso"    
+    echo "dispongo de un NAS local donde las rutas serían algo como"
+    echo "esto:"
+    echo
+    echo -e "\t/share/HDB_DATA/Download/pelicula.avi"
+    echo
+    echo "En cambio, suponiendo que la carpeta Download estuviese"
+    echo "montada en /mnt/Download las rutas locales serían algo así:"
+    echo
+    echo -e "\t/mnt/Download/pelicula.avi"
+    echo
+    echo "Ambas rutas apuntan en realidad al mismo archivo, pero cada"
+    echo "una de ellas solo funcionará en un equipo. Si queremos añadir"
+    echo "un torrent nuevo, tendremos que darle una ruta del lado del"
+    echo "servidor, pero cuando se trata de reproducir una película"
+    echo "será imprescindible utilizar la ruta del lado del equipo de"
+    echo "escritorio. El módulo rutas realiza el mantenimiento de la"
+    echo "tabla de rutas y el reemplazo de un tipo de ruta por otro"
+    echo "cuando es necesario."
+}
+
 function rutas.add() {
 	local ruta="$1"
 	local reemplazo="$2"
 
 	db.executeUpdate "insert into ruta values (\"$ruta\",\"$reemplazo\")"
+}
+
+function rutas.add.info() {
+    echo "rutas.add - Añadir ruta."
+    echo
+    echo -e "\tArgumentos: ruta, reemplazo"
+    echo
+    echo "Añade una nueva correspondencia de rutas."
+    echo "Se añade una ruta remota con su correspondencia local."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f rutas.add:\"/share/HDB_DATA/Download/ /home/mhyst/NAS/Download/\""
 }
 
 function rutas.remove() {
@@ -18,10 +59,33 @@ function rutas.remove() {
 	db.executeUpdate "delete from ruta where ruta=\"$ruta\""
 }
 
+function rutas.remove.info() {
+    echo "rutas.remove - Eliminar una ruta"
+    echo
+    echo -e "\tArgumentos: ruta"
+    echo
+    echo "Elimina una correspondencia cuya ruta remota corresponda"
+    echo "con la ruta dada."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f rutas.remove:/share/HDB_DATA/Download/"
+}
+
 function rutas.get() {
 	local ruta="$1"
 
 	local res=$(db.executeQuery "select reemplazo from ruta where ruta=\"$ruta\"")
+}
+
+function rutas.get.info() {
+    echo "rutas.get - Obtener reemplazo de ruta"
+    echo
+    echo -e "\tArgumentos: ruta"
+    echo
+    echo "Dada una ruta remota obtiene la correspondencia local."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f rutas.get:/share/HDB_DATA/Download/"
 }
 
 function rutas.extraer() {
@@ -38,11 +102,34 @@ function rutas.extraer() {
 	done
 }
 
+function rutas.extraer.info() {
+    echo "rutas.extraer - Obtener ruta coincidente"
+    echo
+    echo -e "\tArgumentos: ruta parcial"
+    echo
+    echo "Devuelve la primera ruta que coincida con la ruta"
+    echo "parcial indicada."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f rutas.extraer:/share/HDB_DATA/"
+}
+
 function rutas.getReemplazo() {
 	local ruta="$1"
 
 	local reemplazo=$(db.executeQuery "select reemplazo from ruta where ruta = \"$ruta\"")
 	echo "$reemplazo"
+}
+
+function rutas.getReemplazo.info() {
+    echo "rutas.getReemplazo - Obtener reemplazo de ruta"
+    echo
+    echo -e "\tArgumentos: ruta"
+    echo
+    echo "Esta función es sinónima de rutas.get"
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f rutas.getReemplazo:/share/HDB_DATA/Download/" 
 }
 
 function rutas.replace() {
@@ -68,4 +155,23 @@ function rutas.replace() {
 		local filename="${path##*$ruta}"
 		echo "$reemplazo$filename"
 	fi
+}
+
+function rutas.replace.info() {
+    echo "rutas.replace - Obtiene la ruta local de una ruta dada."
+    echo
+    echo -e "\tArgumentos: ruta"
+    echo
+    echo "Busca la ruta remota a la que pertenece la ruta indicada"
+    echo "y devuelve la ruta local. Es decir, si se le pasa esta "
+    echo "ruta:"
+    echo
+    echo -e "\t/share/HDB_DATA/Download/transmission/LaSoga.mp4"
+    echo
+    echo "Devolverá:"
+    echo
+    echo -e "\ŧ/home/mhyst/NAS/Download/transmission/LaSoga.mp4"
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f rutas.replace:/share/HDB_DATA/Download/transmission/LaSoga.mp4"
 }

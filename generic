@@ -5,6 +5,7 @@ function generic.info() {
     echo "generic - Funciones genéricas."
     echo
     echo "Contiene funciones genéricas de soporte para otros módulos."
+    echo
 }
 
 function trim() {
@@ -101,7 +102,7 @@ function callFuncion.info() {
     echo "Ejemplos:"
     echo -e "\tsintel -f series.list"
     echo -e "\tsintel -f series.find:poirot"
-    echo -e "\tsintel -f film.add:"'Regreso al futuro' '/mnt/Peliculas/rfuturo.mp4' -1"
+    echo -e "\tsintel -f film.add:\"'Regreso al futuro' '/mnt/Peliculas/rfuturo.mp4' -1\""
 }
 
 function callFuncion2() {
