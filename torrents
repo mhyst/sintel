@@ -3,6 +3,13 @@
 
 torrents_SERVER="192.168.0.64:9091 --auth admin:admin"
 
+function torrents.info() {
+    echo "torrents - Comunicación con transmission"
+    echo
+    echo "Permite extraer datos a través del interfaz remoto del"
+    echo "cliente de BitTorrent transmission."
+}
+
 function torrents.lastId(){
 	local preid=$(transmission-remote $torrents_SERVER -l | tac | grep -Em 1 '^ [0-9]{1,5}' | awk '{print $1}')
 	echo "Preid: $preid" > /dev/tty
@@ -11,12 +18,39 @@ function torrents.lastId(){
 	echo "$id"
 }
 
-function torrents.info() {
+function torrents.lastId.nfo() {
+    echo "torrents.lastId - Obtener el id del último torrent añadido"
+    echo
+    echo -e "\tArgumentos: -"
+    echo
+    echo "Devuelve el id del último torrent añadido. Este id es un"
+    echo "identificador único que transmission genera cada vez que"
+    echo "se añade un torrent nuevo. Mediante el id se pueden realizar"
+    echo "otras operaciones con transmission."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f torrents.lastId"
+}
+
+function torrents.torrent_info() {
 	local id="$1"
 
 	local res=$(transmission-remote $torrents_SERVER -t $id -i)
 	echo "$res" > /tmp/TORRENT_INFO
 	echo "$res"
+}
+
+function torrents.torrent_info.info() {
+    echo "torrents.torrent_info - Obtener toda la información de un torrent"
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Devuelve toda la información del torrent cuyo id se ha indicado"
+    echo "y además escribe esa misma información en el archivo"
+    echo "/tmp/TORRENT_INFO"
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f torrents.torrent_info:312"
 }
 
 function torrents.parse() {
@@ -27,12 +61,37 @@ function torrents.parse() {
 	echo "$res"
 }
 
+function torrents.parse.info() {
+    echo "torrents.parse - Obtiene un campo de la información del torrent"
+    echo
+    echo -e "\tArgumentos: campo"
+    echo
+    echo "Una vez invocada la función torrents.torrent_info, esta función"
+    echo "permite extraer cualquiera de los campos de la información del"
+    echo "torrent consultado por la función torrents.torrent_info."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f torrents.parse:Location"
+}
+
 function torrents.isDone() {
 	local id="$1"
 
 	local res=$(transmission-remote $torrents_SERVER -t $id -i | grep "Hash:")
 	res="${res##*: }"
 	echo "$res"
+}
+
+function torrents.isDone.info() {
+    echo "torrents.isDone - Saber si un torrent ya ha terminado de descargarse"
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Si el torrent ha concluido su descarga, devuelve el campo hash,"
+    echo "nombre incluído."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f torrents.isDone:312"
 }
 
 function torrents.getName() {
@@ -43,10 +102,34 @@ function torrents.getName() {
 	echo "$res"
 }
 
+function torrents.getName.info() {
+    echo "torrents. - Obtiene el nombre del torrent"
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Recaba la información del torrent cuyo id se ha indicado"
+    echo "y extrae el valor del campo nombre."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f torrents.getName:312"
+}
+
 function torrents.getLocation() {
 	local id="$1"
 
 	local res=$(transmission-remote $torrents_SERVER -t $id -i | grep "Location:")
 	res="${res##*: }"
 	echo "$res"
+}
+
+function torrents.getLocation.info() {
+    echo "torrents.getLocation - Obtener ruta del archivo descargado"
+    echo
+    echo -e "\tArgumentos: id"
+    echo
+    echo "Obtiene la información del torrent cuyo id se ha indicado"
+    echo "y devuelve la ruta del archivo descargado."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f torrents.getLocation:312"
 }
