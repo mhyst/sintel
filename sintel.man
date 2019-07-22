@@ -1,0 +1,282 @@
+.\" Copyright (C) Julio Serrano, 2017, 2019
+.\"
+.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, see
+.\" <http://www.gnu.org/licenses/>.
+.\" %%%LICENSE_END
+.\"
+.\" 2019-07-20  Julio Serrano <mhysterio@gmail.com>
+.\"      First version written
+.\" xxxx-xx-xx  Julio Serrano <mhysterio@gmail.com>
+.\"      Update
+.\"
+.\" sintel -  Inteligencia de series
+.\" Contacta mhysterio@gmail.com para corregir errores
+.TH SINTEL 1 20/07/2019 "Julio Serrano" "Manual de sintel"
+.SH NAME
+sintel \- Inteligencia de series, películas y medios en general
+.SH SYNOPSIS
+.SY sintel
+.OP \-h
+.OP \-d dir
+.OP \-f funcion
+.OP \-s fichero
+.OP \-l
+.OP \-i id-episodio
+.OP \-n funcion
+.OP \-x [modulo]
+.OP \-m
+.OP \-\-help
+.OP \-\-list-all
+.OP \-\-list-series
+.OP \-\-list-peliculas
+.OP \-\-find-series cadena
+.OP \-\-find-peliculas cadena
+.OP \-\-add-pelicula registro-pelicula
+.OP \-\-list-episodios idmedio
+.OP \-\-detectar dir 
+.OP \-\-function-call funcion
+.OP \-\-function-call2 funcion
+.OP \-\-list-functions
+.OP \-\-determine-series cadena
+.OP \-\-mods
+.YS
+.SH DESCRIPTION
+.PP
+.B Sintel
+es un programa escrito en bash que dispone de módulos con
+funciones dedicadas a gestionar una base de datos de medios locales
+principalmente. Es decir, series y películas. Aunque tiene módulos
+para realizar otras tareas relacionadas, como por ejemplo el que
+permite comunicarse con el gestor de torrents transmission. Además
+cuenta con dos módulos que permiten realizar el seguimiento de
+series que visionamos online en distintas webs de enlaces. Uno está
+dedicado a las series y otro al anime.
+.PP
+Se creó por la necesidad de controlar los medios descargados,
+pensando que sería mucho más sencillo y rápido buscar en una base de datos
+que hacer búsquedas entre la plétora de ficheros de nuestros discos fijos.
+De esta manera el programa
+ofrece la posibilidad de añadir los medios de una carpeta (incluidos
+los subdirectorios) a la base de datos, para después listarlos o buscarlos.
+Esto puede hacerse tantas veces como se quiera y no importa si se
+añade varias veces la misma carpeta, ya que sintel reconoce los medios
+que ya están en la base de datos y no crea duplicados.
+.PP
+En el caso de las series, siempre es un problema saber por qué episodio
+nos llegamos, así que
+.B sintel 
+ofrece una especie de puntero que puede
+moverse adelante y atrás por los episodios de una serie y así localizar
+con facilidad cuál era el siguiente episodio que teníamos pendiente
+de tal o cual serie. O por ejemplo se puede marcar una temporada entera
+como vista, de forma que no importa si habíamos empezado a ver la serie
+antes de conocer 
+.B sintel,
+puesto que el puntero se puede mover rápidamente
+a donde necesitemos.
+.PP
+Sintel es modular y extensible. Algunas de las funciones internas están
+asociadas a opciones, pero puesto que son muchas y habría que añadir
+muchísimas opciones se ha considerado mejor opción el poder invocar 
+cualquier función interna directamente desde la línea de comandos.
+.SH OPTIONS
+.SS "Opciones generales"
+.PP
+\-h | \-\-help
+.RS
+Muestra la ayuda de
+.B "sintel"
+.
+.RE
+.PP
+\-f | \-\-function-call función:[argumentos]
+.RS
+Invoca una función interna de
+.B "sintel"
+.
+.PP
+El formato del comando es el siguiente:
+.RS
+
+sintel -f función:argumentos
+
+.RE
+En la mayoría de los módulos se interpone un prefijo
+al nombre de sus funciones. Si hay más de un argumento debe
+entrecomillarse la cadena de argumentos entera, y si uno de los
+argumentos requiere espacios para separación de palabras tiene
+que entrecomillarse aparte. Esto puede hacerse mediante comillas 
+simples o escapando el signo de dobles comillas (\\").
+.RE
+.PP
+\-n | \-\-function-call2 function:[argumentos]
+.RS
+Invoca una función interna de
+.B "sintel"
+.
+
+Esta opción es igual a la anterior excepto por que los argumentos,
+si hay más de uno, se separan con el símbolo de cañería (|). El
+formato de esta opción queda de la siguiente forma:
+.RS
+
+sintel -n función:"argumento1|argumento2|etc"
+
+.RE
+Si solo se requiere un argumento o no se requiere ninguno, esta opción
+es exactamente igual a la anterior.
+.RE
+.PP
+\-l | \-\-list-functions
+.RS
+Lista todas las funciones de sintel.
+.RE
+.PP
+\-x módulo
+.RS
+Lista sólo las funciones que pertenecen al módulo indicado.
+.RE
+.PP
+\-\-info función | módulo
+.RS
+Muestra la documentación de la función o el módulo indicado.
+.RE
+.PP
+\-m | \-\-mods
+.RS
+Lista los módulos cargados en sintel.
+.RE
+.SS "Medios"
+.PP
+\-\-list-all
+.RS
+Invoca a la función 'medios.listAll' que muestra todos las películas
+y series de la base de datos.
+.RE
+.PP
+\-\-list-peliculas
+.RS
+Invoca la función 'medios.listPeliculas' que muestra solo las
+películas de la base de datos.
+.RE
+.PP
+\-\-find-peliculas cadena-búsqueda
+.RS
+Invoca la función 'medios.findPeliculas' que lista las películas
+cuyo título contenga la cadena de búsqueda indicada.
+.RE
+.PP
+\-\-add-pelicula registro-pelicula
+.RS
+Invoca la función 'film.add2' que añade el registro indicado
+a la base de datos como una película nueva. El registro comprende
+tres campos: título, fichero y torrent  que deben escribirse de la
+siguiente forma:
+.RS
+
+"título|fichero|torrent"
+
+.RE
+El título es el título de la película y el fichero es la ruta
+completa al archivo de medios de la película, mientras que el
+torrent es el número que le asigna el cliente de BitTorrent
+Transmission al torrent de la película.
+.RE
+.PP
+\-\-list-series
+.RS
+Invoca la función 'medios.listSeries' que lista todas las series
+que contiene la base de datos. 
+.RE
+.PP
+\-\-find-series cadena-búsqueda
+.RS
+Invoca la función 'medios.findSeries' que lista solo las series
+cuyos títulos contengan la cadena de búsqueda dada.
+.RE
+.PP
+\-\-list-episodios id-medio
+.RS
+Invoca a la función 'medios.listEpisodios' que lista los episodios
+de la serie indicada con id-medio de la base de datos.
+.RE
+.PP
+\-d | \-\-detectar directorio
+.RS
+Recorre el directorio indicado de forma recursiva y añade los medios
+que encuentra siempre que no se encuentren ya en la base de datos. Es
+una forma rápida de añadir películas y series. El algoritmo intentará
+diferenciar si el medio es el episodio de una serie o una película
+por la notación de la tupla temporada y episodio, aunque no siempre
+lo detecta bien, porque solo tiene programados unos pocos formatos
+y puede que agrege episodios de serie como películas independientes.
+A veces ocurre que los títulos de los archivos no contengan de forma
+clara el nombre de la serie. En ese caso es posible que se cree una
+serie nueva con ese nombre, lo cual es algo molesto. Debe tenerse
+en cuenta.
+.RE
+.PP
+\-i | \-\-is-downloaded id-medio temporada'x'episodio
+.RS
+Invoca la función 'medios.isDownloaded' que trata de determinar
+si el episodio de la serie indicada está descargado. La serie
+viene determinada por id-medio que es el identificador numérico
+de la serie en la base de datos (aparece como primer campo en
+los resultados de \-\-list-all y \-\-list-series), mientras
+que la temporada y el episodio debe ser una cadena con dos
+números (temporada y episodio) separados por el caracter 'x'.
+.RE
+.PP
+Sintel contiene modulos variados con muchísimas funciones. Se han
+creado opciones para las más usadas hasta ahora. El resto pueden ser
+llamadas con las opciones \-f y \-n. Cada función dispone de una
+sencilla documentación a la que puede accederse con la opción
+\-\-info. En el presente manual daremos una idea de qué tipo de funciones
+tiene cada módulo, los distintos registros usados para compartir
+información de los objetos de la base de datos; y todo aquello que sea
+preciso para proporcionar una base sólida para usar sintel con
+confianza.
+.SH MODULOS
+.SS "Modularidad y extensibilidad de sintel"
+En este apartado vamos a ver ciertos aspectos de la programación de
+sintel, por lo que si no está versado en la programación en bash puede.
+saltar directamente a la parte de descripción del módulo 'help'.
+.PP
+Si has decidido quedarte 
+.SS "help"
+.SS "generic"
+.SS "init"
+.SS "database"
+.SS "peliculas"
+.SS "series"
+.SS "medios"
+.SS "torrents"
+.SS "rutas"
+.SS "head"
+.SS "ver"
+.SS "test"
+.SS "anime"
+.SS "veronline"
+.SH SEE ALSO
+Vea también eso otro
+.SH BUGS
+Errores conocidos
+.SH AUTHOR
+Julio Serrano (mhysterio@gmail.com)
