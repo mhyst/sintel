@@ -316,17 +316,18 @@ esdescargado - indica si el medio ha sido descargado por completo.
 .RS
 Contiene 0 cuando aún no se ha terminado de descargaro y 1 cuando si. Este
 campo solo se usa en algunas aplicaciones de 
-.B "sintel."
+.B "sintel"
+\.
 .RE
 .RE
 .PP
 Las
-.B "series
-requieren de dos tablas para almacenarse. Por un lado el id y el título se guaran
+.B "series"
+requieren de dos tablas para almacenarse. Por un lado el id y el título se guardan
 en la tabla 'medio' que acabamos de describir arriba. En esa misma tabla, cuando
 se trate de una serie, el campo 'esserie' contendrá el valor 1. Además necesitamos
-una tabla más donde guardar los episodios de la serie. Esta tabla se llama
-'episodio' en singular. La tabla 'episodio' almacena los siguientes datos:
+una tabla más donde guardar los episodios de la serie. Esta tabla se llama 'episodio'
+en singular. La tabla 'episodio' almacena los siguientes datos:
 .RS
 .PP
 id - identificador único de episodio.
@@ -382,9 +383,10 @@ esdescargado - indica si el episodio ha terminado de descargarse.
 Será 0 cuando no haya terminado la descarga y 1 cuando haya concluido.
 .RE
 .RE
-.PP Es importante conocer las tablas 'medio' y 'episodios' ya que varias
+.PP
+Es importante conocer las tablas 'medio' y 'episodio' ya que varias
 de las funciones que permiten gestionar películas y series devuelven
-o reciben como argumento uno o varios registros que se corresponderán
+o reciben como argumento registros que se corresponderán
 con el orden de los campos ya explicado. Más adelante veremos ejemplos
 que dejarán bastante claro este punto.
 .SH MODULOS
