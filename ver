@@ -3,6 +3,13 @@
 
 PLAYER="vlc -f --no-loop --play-and-exit"
 
+function ver.info() {
+    echo "ver - Reproducir medios"
+    echo
+    echo "Varias funciones cuyo cometido es reproducir"
+    echo "series y películas."
+}
+
 function ver.pelicula() {
 	local busqueda="$@"
 
@@ -39,6 +46,21 @@ function ver.pelicula() {
 
 	$PLAYER "$filename"
 	film.setVista "${PELICULA[id]}"
+}
+
+function ver.pelicula.info() {
+    echo "ver.pelicula - Reproducir película"
+    echo
+    echo -e "\tArgumentos: cadena de búsqueda"
+    echo
+    echo "Muestra una lista de películas cuyos títulos"
+    echo "contengan la cadena de búsqueda dada."
+    echo "Después se le da al usuario la opción de elegir"
+    echo "una de las películas de la lista. Luego la"
+    echo "película escogida es reproducida."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f ver.pelicula:\"dial m for murder\""
 }
 
 function ver.serieOld() {
@@ -81,6 +103,21 @@ function ver.serieOld() {
 
 	$PLAYER "$filename"
 	db.executeUpdate "update episodio set esvisto=1 where id=$idepisodio"
+}
+
+function ver.serieOld.info() {
+    echo "ver.serieOld - Reproducir episodio de una serie"
+    echo
+    echo -e "\tArgumentos: cadena de búsqueda"
+    echo
+    echo "Muestra una lista de las series cuyo título"
+    echo "contenga la cadena de búsqueda indicada."
+    echo "Se le da al usuario la posibilidad de escoger"
+    echo "una de ellas. Una vez elegida, se reproduce"
+    echo "el primer episodio no visto de la serie."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f ver.serieOld:poirot"
 }
 
 function ver.cache() {
@@ -170,6 +207,18 @@ function ver.cache() {
 	echo "$backup"
 }
 
+function ver.cache.info() {
+    echo "ver.cache - Mostrar 10 episodios alrededor del que toca ver"
+    echo
+    echo -e "\tArgumentos: idserie, titulo, nº de episodios"
+    echo
+    echo "Función interna utilizaba por 'ver.serie' para mostrar"
+    echo "el episodio que toca ver, cinco por arriba y cinco por"
+    echo "debajo, para facilitar la navegación por los episodios"
+    echo "de la serie sin tener que mostrar todos los episodios,"
+    echo "que en algunos casos serían demasiados."
+}
+
 function ver.play() {
 	local idepisodio=$(grep -E '[0-9]{1,3}' <<< "$1")
 	#echo "$idepisodio" | hexdump -C >> /dev/tty
@@ -182,6 +231,18 @@ function ver.play() {
 
 	$PLAYER "$filename" 2> /dev/null > /dev/null
 	db.executeUpdate "update episodio set esvisto=1 where id=$idepisodio"
+}
+
+function ver.play.info() {
+    echo "ver.play - Reproducir un episodio"
+    echo
+    echo -e "\tArgumentos: idepisodio"
+    echo
+    echo "Dado el número de episodio, reproduce el episodio"
+    echo "usando el reproductor contenido en la variable \$PLAYER"
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f ver.play:1153"
 }
 
 function ver.serie() {
@@ -259,4 +320,24 @@ function ver.serie() {
 		#read
 		
 	done
+}
+
+function ver.serie.info() {
+    echo "ver.serie - Ver una serie"
+    echo
+    echo -e "\tArgumentos: cadena de búsqueda"
+    echo
+    echo "Esta es una de las funciones más complejas de sintel."
+    echo "Permite ver un episodio de una serie de forma interactiva."
+    echo "Primero trata de determinar de qué serie se trata"
+    echo "mostrando varias en caso de que haya más de una que"
+    echo "coincidan con la cadena de búsqueda. Una vez que el usuario"
+    echo "ha elegido cuál es la que desea ver, entra en el menú"
+    echo "interactivo de episodios que tiene varias opciones que"
+    echo "permiten mover el puntero de la serie, así como reproducir"
+    echo "un episodio. Una vez entrado en el modo de reproducción,"
+    echo "esta función finaliza."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f ver.serie:marple"
 }

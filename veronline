@@ -1,7 +1,7 @@
 #!/bin/bash
 # Gestión de series online
 #
-# Básicamente este módulo es una copia de veronline, pero dirigido a series online.
+# Básicamente este módulo es una copia de anime, pero dirigido a series online.
 #
 # Si ves una serie en servicios online básicamente o dejas montones de webs como pepecine abiertas por el 
 # último episodio para continuar el día que te apetezcas. Al final te juntas con muchas páginas abiertas
@@ -12,6 +12,12 @@
 declare -A SERIE
 SERIE=( ["id"]="" ["titulo"]="" ["url"]="" ["etiquetas"]="" ["episodio"]="" )
 
+function veronline.info() {
+    echo "veronline - Módulo para seguimiento de series online"
+    echo
+    echo "Maneja series que se ven online."
+}
+
 function veronline.add() {
 	local titulo="$1"
 	local url="$2"
@@ -20,6 +26,15 @@ function veronline.add() {
 	db.executeUpdate "insert into veronline (titulo, url, episodio) values (\"$titulo\",\"$url\",1)"	
 	$DEBUG && echo "< veronline.add" > /dev/tty
 	echo "$ROWID"
+}
+
+function veronline.add.info() {
+    echo "veronline.add - Añade una serie a la base de datos"
+    echo
+    echo -e "\tArgumentos: titulo, url"
+    echo -e "\tDevuelve el id de la serie en la base de datos"
+    echo
+    echo "La URL debe indicarse sin la parte http:// o https://"
 }
 
 function veronline.getById() {

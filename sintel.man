@@ -102,15 +102,15 @@ cualquier función interna directamente desde la línea de comandos.
 \-h | \-\-help
 .RS
 Muestra la ayuda de
-.B "sintel"
-.
+.B "sintel."
+
 .RE
 .PP
 \-f | \-\-function-call función:[argumentos]
 .RS
 Invoca una función interna de
-.B "sintel"
-.
+.B "sintel."
+
 .PP
 El formato del comando es el siguiente:
 .RS
@@ -129,8 +129,8 @@ simples o escapando el signo de dobles comillas (\\").
 \-n | \-\-function-call2 function:[argumentos]
 .RS
 Invoca una función interna de
-.B "sintel"
-.
+.B "sintel."
+
 
 Esta opción es igual a la anterior excepto por que los argumentos,
 si hay más de uno, se separan con el símbolo de cañería (|). El
@@ -146,7 +146,9 @@ es exactamente igual a la anterior.
 .PP
 \-l | \-\-list-functions
 .RS
-Lista todas las funciones de sintel.
+Lista todas las funciones de
+.B "sintel"
+.
 .RE
 .PP
 \-x módulo
@@ -161,7 +163,9 @@ Muestra la documentación de la función o el módulo indicado.
 .PP
 \-m | \-\-mods
 .RS
-Lista los módulos cargados en sintel.
+Lista los módulos cargados en
+.B "sintel."
+
 .RE
 .SS "Medios"
 .PP
@@ -227,7 +231,7 @@ diferenciar si el medio es el episodio de una serie o una película
 por la notación de la tupla temporada y episodio, aunque no siempre
 lo detecta bien, porque solo tiene programados unos pocos formatos
 y puede que agrege episodios de serie como películas independientes.
-A veces ocurre que los títulos de los archivos no contengan de forma
+A veces ocurre que los títulos de los archivos no contienen de forma
 clara el nombre de la serie. En ese caso es posible que se cree una
 serie nueva con ese nombre, lo cual es algo molesto. Debe tenerse
 en cuenta.
@@ -244,36 +248,277 @@ que la temporada y el episodio debe ser una cadena con dos
 números (temporada y episodio) separados por el caracter 'x'.
 .RE
 .PP
-Sintel contiene modulos variados con muchísimas funciones. Se han
+.B "Sintel"
+contiene modulos variados con muchísimas funciones. Se han
 creado opciones para las más usadas hasta ahora. El resto pueden ser
 llamadas con las opciones \-f y \-n. Cada función dispone de una
 sencilla documentación a la que puede accederse con la opción
-\-\-info. En el presente manual daremos una idea de qué tipo de funciones
-tiene cada módulo, los distintos registros usados para compartir
-información de los objetos de la base de datos; y todo aquello que sea
+\-\-info. En el presente manual daremos una idea de qué tipo de
+funciones tiene cada módulo, los distintos registros usados para
+compartir información de los objetos de la base de datos; 
+y todo aquello que sea
 preciso para proporcionar una base sólida para usar sintel con
 confianza.
+.SH BASE DE DATOS
+En esta sección vamos a hablar de lo que necesita saber sobre como
+se almacenan los medios en
+.B "sintel."
+.PP
+Las 
+.B "películas"
+se almacenan en la tabla 
+.B "'medio'." 
+De cada película se
+guardan los siguientes datos:
+.RS
+.PP
+id - identificador de medio.
+.RS
+Se trata un número único que identifica a un solo medio en toda la base
+de datos. En la documentación a este campo se le llama a veces 'idmedio'.
+.RE
+.PP
+titulo - título del medio.
+.RS
+Contiene el título de la película completo.
+.RE
+.PP
+fichero - ruta completa del archivo del medio.
+.RS
+Se trata de una ruta de un sistema de archivos que puede ser local o remota, 
+dependiendo del uso que hagamos. En caso de tratarse de una ruta remota
+es posible que requira de una adaptación para su uso en local, por ejemplo,
+a la hora de reproducir el medio. Hablaremos de esto en el módulo 'rutas'.
+.RE
+.PP
+torrent - id del torrent en el cliente de BitTorrent Transmission.
+.RS
+Se trata de un número entero que sirve, en caso de que estemos utilizando
+el módulo 'torrents' para obtener información del cliente de torrents
+Transmission. Este cliente asigna a cada nuevo torrent un número identificativo
+único. Con este número se puede saber si un medio ha terminado de descargarse
+o su ubicación.
+.RE
+.PP
+esserie - identifica si un medio es o no es una serie.
+.RS
+Este campo será 0 cuando el medio es una película y 1 cuando se trate
+de una serie. Esto es así porque se utiliza también la tabla medio
+para almacenar algunos datos de series.
+.RE
+.PP
+esvisto - indica si el usuario ha visto el medio o no.
+.RS
+Contiene 0 cuando no se ha visto y 1 cuando ya se ha visto.
+.RE
+.PP
+esdescargado - indica si el medio ha sido descargado por completo.
+.RS
+Contiene 0 cuando aún no se ha terminado de descargaro y 1 cuando si. Este
+campo solo se usa en algunas aplicaciones de 
+.B "sintel."
+.RE
+.RE
+.PP
+Las
+.B "series
+requieren de dos tablas para almacenarse. Por un lado el id y el título se guaran
+en la tabla 'medio' que acabamos de describir arriba. En esa misma tabla, cuando
+se trate de una serie, el campo 'esserie' contendrá el valor 1. Además necesitamos
+una tabla más donde guardar los episodios de la serie. Esta tabla se llama
+'episodio' en singular. La tabla 'episodio' almacena los siguientes datos:
+.RS
+.PP
+id - identificador único de episodio.
+.RS
+Contiene un número que representa un único episodio en la base de datos, sin
+importar a qué serie pertenezca. Este número es independiente y no se
+corresponde con el número de episodio dentro de la serie. Cuando la base
+de datos acaba de crearse, el primer episodio añadido tendrá el número 1.
+A partir de entonces, cada nuevo episodio tendrá el siguiente número,
+a no ser que borremos episodios, en cuyo caso se podrán reutilizar números
+ya utilizados. Este número solo afecta como medio de identificar un solo
+episodio en toda la base de datos.
+.RE
+.PP
+idmedio - id de la serie a la que pertenece.
+.RS
+Hace referencia al registro de la serie a la que pertenece el episodio
+en la tabla 'medio'. Todos los episodios de una misma serie tendrán el
+mismo valor en este campo.
+.RE
+.PP
+temporada - número de la temporada a la que pertenece.
+.RS
+Temporada a la que pertenece el episodio. Se trata de un número que va de 1 en
+adelante.
+.RE
+.PP
+episodio - número de episodio.
+.RS
+Este es el número de episodio o de orden dentro de la serie. Cada nueva
+temporada empieza de nuevo en 1.
+.RE
+.PP
+fichero - ruta completa al archivo del episodio.
+.RS
+Se trata de la ruta completa al archivo que contiene el episodio. Se deben
+utilizar rutas absolutas.
+.RE
+.PP
+torrent - id del torrent en el cliente de torrents Transmission.
+.RS
+Este dato generado por el propio Transmission, permite recabar información
+del torrent. 
+.RE
+.PP
+esvisto - indica si el usuario ha visto el episodio o no.
+.RS
+Cuando no se ha visto aún contendrá 0, y 1 cuando ya se ha visto.
+.RE
+.PP
+esdescargado - indica si el episodio ha terminado de descargarse.
+.RS
+Será 0 cuando no haya terminado la descarga y 1 cuando haya concluido.
+.RE
+.RE
+.PP Es importante conocer las tablas 'medio' y 'episodios' ya que varias
+de las funciones que permiten gestionar películas y series devuelven
+o reciben como argumento uno o varios registros que se corresponderán
+con el orden de los campos ya explicado. Más adelante veremos ejemplos
+que dejarán bastante claro este punto.
 .SH MODULOS
 .SS "Modularidad y extensibilidad de sintel"
 En este apartado vamos a ver ciertos aspectos de la programación de
-sintel, por lo que si no está versado en la programación en bash puede.
-saltar directamente a la parte de descripción del módulo 'help'.
+.B "sintel"
+, por lo que si no está versado en la programación en
+.B "bash"
+puede saltar directamente a la parte de descripción del módulo 'help'.
 .PP
-Si has decidido quedarte 
-.SS "help"
-.SS "generic"
-.SS "init"
-.SS "database"
-.SS "peliculas"
-.SS "series"
-.SS "medios"
-.SS "torrents"
-.SS "rutas"
-.SS "head"
-.SS "ver"
-.SS "test"
-.SS "anime"
-.SS "veronline"
+Mantener un siempre creciente script de bash se va complicando
+conforme se va convirtiendo en un archivo grande. Una comilla ausente
+o mal puesta puede hacer que gran parte del script deje de funcionar.
+Pero precismente el proceso de creación de
+.B "sintel"
+ya desde el principio
+apuntaba a que podía convertirse en algo problemático. La idea de hacerlo
+modular surgió enseguida. Y es que revisar un archivo solo con funciones
+relacionadas es mucho más sencillo y rápido. Por eso
+.B "sintel"
+es modular.
+.PP
+Una de las características de
+.B "sintel"
+es que siempre es
+un trabajo en progreso. Por esta razón tuve que pensar
+en una manera sencilla y rápida de añadir funciones y
+código que se pudieran utilizar inmediatamente con el
+mínimo número de modificaciones al programa principal.
+Eso dió lugar a una primera versión de modularity, que
+con alguna mejora pasó a ser el módulo responsable de
+cargar el resto de módulos de sintel.
+.PP
+Su funcionamiento es muy sencillo. En primer lugar se
+define una lista llamada MODS que va a contener los
+nombres de los ficheros que contienen el código en sí.
+Entonces se importa mediante la palabra clave 'source'
+modularity, que se encarga de leer la lista y de cargar
+los módulos en el orden en que están escritos en MODS.
+.PP
+Este sencillo mecanismo permite escribir nuevos archivos
+o módulos con funcionalidades nuevas, cuyas funciones
+pueden empezar a utilizarse simplemente añadiendo el
+nombre del archivo nuevo a la lista MODS.
+.PP
+Lo mejor de todo es que los nuevos módulos pueden llamar
+a cualquier función de los módulos previamente existentes
+, con lo que se pueden crear varias capas de lógica o
+niveles, que pueden dar lugar a un programa grande, pero
+sin las complicaciones de tener que mantener un script de
+bash grande.
+.SS "Descripción de los módulos"
+.B "help"
+.RS
+Módulo de ayuda principal.
+.PP
+Nota: aún no está implementado.
+.RE
+.PP
+.B "generic"
+.RS
+En este módulo se han añadido algunas funciones de uso general,
+de ahí su nombre. Aunque posteriormente también se le añadieron
+las funciones responsables de la documentación interna de
+funciones.
+.RE
+.PP
+.B "init"
+.RS
+Módulo de inicialización. Comprueba si existe el archivo de la
+base de datos, si no existe lo crea. También es el responsable
+de actualizar la base de datos a la última versión, añadiendo
+las tablas necesarias.
+.RE
+.PP
+.B "database"
+.RS
+Módulo responsable de la base de datos. En realidad se trata de
+un módulo genérico con las funciones 'db.executeQuery' y
+ 'db.executeUpdate' que permiten ejecutar consultas y modificar
+tablas en la base de datos.
+.RE
+.PP
+.B "peliculas"
+.RS
+Conjunto de funciones de gestión de películas.
+.RE
+.PP
+.B "series"
+.RS
+Funciones de gestión de series.
+.RE
+.PP
+.B "medios"
+.RS
+Funciones para gestión de medios en general.
+.RE
+.PP
+.B "torrents"
+.RS
+Funciones para gestionar la comunicación con el gestor
+de torrents Transmission.
+.RE
+.PP
+.B "rutas"
+.RS
+Gestión de rutas alternativas (correspondencias entre rutas
+remotas y locales).
+.RE
+.PP
+.B "head"
+.RS
+Funciones de movimiento del puntero de series.
+.RE
+.PP
+.B "ver"
+.RS
+Funciones de visionado.
+.RE
+.PP
+.B "test"
+.RS
+Módulo donde añadir funciones de prueba.
+.RE
+.PP
+.B "anime"
+.RS
+Gestión del anime que vemos online, en páginas de enlaces.
+.RE
+.PP
+.B "veronline"
+.RS
+Gestión de las series que vemos online, en webs de enlaces.
+.RE
 .SH SEE ALSO
 Vea también eso otro
 .SH BUGS
