@@ -393,14 +393,14 @@ que dejarán bastante claro este punto.
 .SS "Modularidad y extensibilidad de sintel"
 En este apartado vamos a ver ciertos aspectos de la programación de
 .B "sintel"
-, por lo que si no está versado en la programación en
+por lo que si no está versado en la programación en
 .B "bash"
 puede saltar directamente a la parte de descripción del módulo 'help'.
 .PP
 Mantener un siempre creciente script de bash se va complicando
 conforme se va convirtiendo en un archivo grande. Una comilla ausente
 o mal puesta puede hacer que gran parte del script deje de funcionar.
-Pero precismente el proceso de creación de
+Precisamente el proceso de creación de
 .B "sintel"
 ya desde el principio
 apuntaba a que podía convertirse en algo problemático. La idea de hacerlo
@@ -416,12 +416,12 @@ un trabajo en progreso. Por esta razón tuve que pensar
 en una manera sencilla y rápida de añadir funciones y
 código que se pudieran utilizar inmediatamente con el
 mínimo número de modificaciones al programa principal.
-Eso dió lugar a una primera versión de modularity, que
+Eso dió lugar a una primera versión de 'modularity', que
 con alguna mejora pasó a ser el módulo responsable de
 cargar el resto de módulos de sintel.
 .PP
 Su funcionamiento es muy sencillo. En primer lugar se
-define una lista llamada MODS que va a contener los
+define una lista llamada MODS que va a almacenar los
 nombres de los ficheros que contienen el código en sí.
 Entonces se importa mediante la palabra clave 'source'
 modularity, que se encarga de leer la lista y de cargar
@@ -456,8 +456,7 @@ funciones.
 .PP
 .B "init"
 .RS
-Módulo de inicialización. Comprueba si existe el archivo de la
-base de datos, si no existe lo crea. También es el responsable
+Módulo de inicialización. También es el responsable
 de actualizar la base de datos a la última versión, añadiendo
 las tablas necesarias.
 .RE
@@ -467,7 +466,9 @@ las tablas necesarias.
 Módulo responsable de la base de datos. En realidad se trata de
 un módulo genérico con las funciones 'db.executeQuery' y
  'db.executeUpdate' que permiten ejecutar consultas y modificar
-tablas en la base de datos.
+tablas en la base de datos. Este módulo al cargarse comprueba
+si existe el fichero de la base de datos y si no existe llama
+a init.
 .RE
 .PP
 .B "peliculas"
