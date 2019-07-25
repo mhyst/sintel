@@ -43,24 +43,22 @@ sintel \- Inteligencia de series, películas y medios en general
 .OP \-x [modulo]
 .OP \-m
 .OP \-\-help
-.OP \-\-list-all
-.OP \-\-list-series
-.OP \-\-list-peliculas
-.OP \-\-find-series cadena
-.OP \-\-find-peliculas cadena
-.OP \-\-add-pelicula registro-pelicula
-.OP \-\-list-episodios idmedio
+.OP \-\-list\-all
+.OP \-\-list\-series
+.OP \-\-list\-peliculas
+.OP \-\-find\-series cadena
+.OP \-\-find\-peliculas cadena
+.OP \-\-add\-pelicula registro-pelicula
+.OP \-\-list\-episodios idmedio
 .OP \-\-detectar dir 
-.OP \-\-function-call funcion
-.OP \-\-function-call2 funcion
-.OP \-\-list-functions
-.OP \-\-determine-series cadena
+.OP \-\-function\-call funcion
+.OP \-\-function\-call2 funcion
+.OP \-\-list\-functions
+.OP \-\-determine\-series cadena
 .OP \-\-mods
 .YS
 .SH DESCRIPTION
-.PP
-.B Sintel
-es un programa escrito en bash que dispone de módulos con
+\fBSintel\fP es un programa escrito en bash que dispone de módulos con
 funciones dedicadas a gestionar una base de datos de medios locales
 principalmente. Es decir, series y películas. Aunque tiene módulos
 para realizar otras tareas relacionadas, como por ejemplo el que
@@ -80,19 +78,18 @@ añade varias veces la misma carpeta, ya que sintel reconoce los medios
 que ya están en la base de datos y no crea duplicados.
 .PP
 En el caso de las series, siempre es un problema saber por qué episodio
-nos llegamos, así que
-.B sintel 
+nos llegamos, así que \fBsintel\fP
 ofrece una especie de puntero que puede
 moverse adelante y atrás por los episodios de una serie y así localizar
 con facilidad cuál era el siguiente episodio que teníamos pendiente
 de tal o cual serie. O por ejemplo se puede marcar una temporada entera
 como vista, de forma que no importa si habíamos empezado a ver la serie
-antes de conocer 
-.B sintel,
+antes de conocer \fBsintel\fP,
 puesto que el puntero se puede mover rápidamente
 a donde necesitemos.
 .PP
-Sintel es modular y extensible. Algunas de las funciones internas están
+\fBSintel\fP es modular y extensible. Algunas de las funciones internas 
+están
 asociadas a opciones, pero puesto que son muchas y habría que añadir
 muchísimas opciones se ha considerado mejor opción el poder invocar 
 cualquier función interna directamente desde la línea de comandos.
@@ -106,10 +103,9 @@ Muestra la ayuda de
 
 .RE
 .PP
-\-f | \-\-function-call función:[argumentos]
+\-f | \-\-function\-call función:[argumentos]
 .RS
-Invoca una función interna de
-.B "sintel."
+Invoca una función interna de \fBsintel\fP.
 
 .PP
 El formato del comando es el siguiente:
@@ -126,10 +122,9 @@ que entrecomillarse aparte. Esto puede hacerse mediante comillas
 simples o escapando el signo de dobles comillas (\\").
 .RE
 .PP
-\-n | \-\-function-call2 function:[argumentos]
+\-n | \-\-function\-call2 function:[argumentos]
 .RS
-Invoca una función interna de
-.B "sintel."
+Invoca una función interna de \fBsintel\fP.
 
 
 Esta opción es igual a la anterior excepto por que los argumentos,
@@ -144,11 +139,9 @@ Si solo se requiere un argumento o no se requiere ninguno, esta opción
 es exactamente igual a la anterior.
 .RE
 .PP
-\-l | \-\-list-functions
+\-l | \-\-list\-functions
 .RS
-Lista todas las funciones de
-.B "sintel"
-.
+Lista todas las funciones de \fBsintel\fP.
 .RE
 .PP
 \-x módulo
@@ -169,25 +162,25 @@ Lista los módulos cargados en
 .RE
 .SS "Medios"
 .PP
-\-\-list-all
+\-\-list\-all
 .RS
 Invoca a la función 'medios.listAll' que muestra todos las películas
 y series de la base de datos.
 .RE
 .PP
-\-\-list-peliculas
+\-\-list\-peliculas
 .RS
 Invoca la función 'medios.listPeliculas' que muestra solo las
 películas de la base de datos.
 .RE
 .PP
-\-\-find-peliculas cadena-búsqueda
+\-\-find\-peliculas cadena-búsqueda
 .RS
 Invoca la función 'medios.findPeliculas' que lista las películas
 cuyo título contenga la cadena de búsqueda indicada.
 .RE
 .PP
-\-\-add-pelicula registro-pelicula
+\-\-add\-pelicula registro-pelicula
 .RS
 Invoca la función 'film.add2' que añade el registro indicado
 a la base de datos como una película nueva. El registro comprende
@@ -204,19 +197,19 @@ torrent es el número que le asigna el cliente de BitTorrent
 Transmission al torrent de la película.
 .RE
 .PP
-\-\-list-series
+\-\-list\-series
 .RS
 Invoca la función 'medios.listSeries' que lista todas las series
 que contiene la base de datos. 
 .RE
 .PP
-\-\-find-series cadena-búsqueda
+\-\-find\-series cadena-búsqueda
 .RS
 Invoca la función 'medios.findSeries' que lista solo las series
 cuyos títulos contengan la cadena de búsqueda dada.
 .RE
 .PP
-\-\-list-episodios id-medio
+\-\-list\-episodios id-medio
 .RS
 Invoca a la función 'medios.listEpisodios' que lista los episodios
 de la serie indicada con id-medio de la base de datos.
@@ -237,7 +230,7 @@ serie nueva con ese nombre, lo cual es algo molesto. Debe tenerse
 en cuenta.
 .RE
 .PP
-\-i | \-\-is-downloaded id-medio temporada'x'episodio
+\-i | \-\-is\-downloaded id-medio temporada'x'episodio
 .RS
 Invoca la función 'medios.isDownloaded' que trata de determinar
 si el episodio de la serie indicada está descargado. La serie
@@ -261,15 +254,10 @@ preciso para proporcionar una base sólida para usar sintel con
 confianza.
 .SH BASE DE DATOS
 En esta sección vamos a hablar de lo que necesita saber sobre como
-se almacenan los medios en
-.B "sintel."
+se almacenan los medios en \fBsintel\fP.
 .PP
-Las 
-.B "películas"
-se almacenan en la tabla 
-.B "'medio'." 
-De cada película se
-guardan los siguientes datos:
+Las \fBpelículas\fP se almacenan en la tabla \fB'medio'\fP.
+De cada película se guardan los siguientes datos:
 .RS
 .PP
 id - identificador de medio.
@@ -295,9 +283,10 @@ torrent - id del torrent en el cliente de BitTorrent Transmission.
 .RS
 Se trata de un número entero que sirve, en caso de que estemos utilizando
 el módulo 'torrents' para obtener información del cliente de torrents
-Transmission. Este cliente asigna a cada nuevo torrent un número identificativo
-único. Con este número se puede saber si un medio ha terminado de descargarse
-o su ubicación.
+Transmission. Este cliente asigna a cada nuevo torrent un número 
+identificativo
+único. Con este número se puede saber si un medio ha terminado de 
+descargarse o su ubicación.
 .RE
 .PP
 esserie - identifica si un medio es o no es una serie.
@@ -315,19 +304,17 @@ Contiene 0 cuando no se ha visto y 1 cuando ya se ha visto.
 esdescargado - indica si el medio ha sido descargado por completo.
 .RS
 Contiene 0 cuando aún no se ha terminado de descargaro y 1 cuando si. Este
-campo solo se usa en algunas aplicaciones de 
-.B "sintel"
-\.
+campo solo se usa en algunas aplicaciones de \fBsintel\fP.
 .RE
 .RE
 .PP
-Las
-.B "series"
-requieren de dos tablas para almacenarse. Por un lado el id y el título se guardan
-en la tabla 'medio' que acabamos de describir arriba. En esa misma tabla, cuando
-se trate de una serie, el campo 'esserie' contendrá el valor 1. Además necesitamos
-una tabla más donde guardar los episodios de la serie. Esta tabla se llama 'episodio'
-en singular. La tabla 'episodio' almacena los siguientes datos:
+Las \fBseries\fP requieren de dos tablas para almacenarse. Por un lado 
+el id y el título se guardan en la tabla 'medio' que acabamos de 
+describir arriba. En esa misma tabla, cuando se trate de una serie, 
+el campo 'esserie' contendrá el valor 1. Además necesitamos
+una tabla más donde guardar los episodios de la serie. Esta tabla se
+llama 'episodio' en singular. La tabla 'episodio' almacena los
+siguientes datos:
 .RS
 .PP
 id - identificador único de episodio.
@@ -351,8 +338,8 @@ mismo valor en este campo.
 .PP
 temporada - número de la temporada a la que pertenece.
 .RS
-Temporada a la que pertenece el episodio. Se trata de un número que va de 1 en
-adelante.
+Temporada a la que pertenece el episodio. Se trata de un número que va de 1 
+en adelante.
 .RE
 .PP
 episodio - número de episodio.
