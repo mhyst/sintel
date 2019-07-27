@@ -111,7 +111,11 @@ Invoca una función interna de \fBsintel\fP.
 El formato del comando es el siguiente:
 .RS
 
-sintel -f función:argumentos
+sintel -f función
+
+o
+
+sintel -f función:"argumentos"
 
 .RE
 En la mayoría de los módulos se interpone un prefijo
@@ -131,6 +135,10 @@ Esta opción es igual a la anterior excepto por que los argumentos,
 si hay más de uno, se separan con el símbolo de cañería (|). El
 formato de esta opción queda de la siguiente forma:
 .RS
+
+sintel -n funcion
+
+o
 
 sintel -n función:"argumento1|argumento2|etc"
 
@@ -194,7 +202,8 @@ siguiente forma:
 El título es el título de la película y el fichero es la ruta
 completa al archivo de medios de la película, mientras que el
 torrent es el número que le asigna el cliente de BitTorrent
-Transmission al torrent de la película.
+Transmission al torrent de la película. Si no queremos indicar
+el torrent, deberemos poner -1 en su lugar.
 .RE
 .PP
 \-\-list\-series
@@ -291,7 +300,7 @@ descargarse o su ubicación.
 .PP
 esserie - identifica si un medio es o no es una serie.
 .RS
-Este campo será 0 cuando el medio es una película y 1 cuando se trate
+Este campo será 0 cuando el medio sea una película y 1 cuando se trate
 de una serie. Esto es así porque se utiliza también la tabla medio
 para almacenar algunos datos de series.
 .RE
@@ -405,7 +414,7 @@ código que se pudieran utilizar inmediatamente con el
 mínimo número de modificaciones al programa principal.
 Eso dió lugar a una primera versión de 'modularity', que
 con alguna mejora pasó a ser el módulo responsable de
-cargar el resto de módulos de sintel.
+cargar el resto de módulos de \fBsintel\fP.
 .PP
 Su funcionamiento es muy sencillo. En primer lugar se
 define una lista llamada MODS que va a almacenar los

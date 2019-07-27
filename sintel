@@ -7,7 +7,7 @@ DEBUG=false
 VERSION="2.1.0"
 
 #Cargamos los módulos
-MODS=( "help" "generic" "init" "database" "peliculas" "series" "medios" "torrents" "rutas" "head" "ver" "test" "anime" "veronline" )
+MODS=( "help" "generic" "doc" "init" "database" "peliculas" "series" "medios" "torrents" "rutas" "head" "ver" "test" "anime" "veronline" )
 
 source "$global_DIR/modularity"
 
@@ -47,14 +47,14 @@ while true; do
 	--add-pelicula ) registro="$2"; shift; film.add2 "$registro" ;;
 	--list-episodios ) idmedio="$2"; shift; medios.listEpisodios "$idmedio" ;;
 	-d | --detectar ) directorio="$2"; shift; medios.detectar "$directorio" ;;
-	-f | --function-call ) funcion="$2"; shift; callFuncion "$funcion" ;;
-	-n | --function-call2 ) funcion="$2"; shift; callFuncion2 "$funcion" ;;
-	-l | --list-functions ) listFunciones ;;
-	-x ) busqueda="$2"; shift; listFunciones "$busqueda" ;;
+	-f | --function-call ) funcion="$2"; shift; doc.callFunction "$funcion" ;;
+	-n | --function-call2 ) funcion="$2"; shift; doc.callFunction2 "$funcion" ;;
+	-l | --list-functions ) doc.listFunctions ;;
+	-x ) busqueda="$2"; shift; doc.listFunctions "$busqueda" ;;
 	-s | --determine-series ) busqueda="$2"; shift; medios.determineSeries "$busqueda" ;;
 	-i | --is-downloaded ) funcion="$2"; shift; callFuncion "medios.isDownloaded:$funcion" ;;
-	--info ) funcion="$2"; shift; functionInfo "$funcion" ;;
-	-m | --mods ) listModules ;;
+	--info ) funcion="$2"; shift; doc.functionInfo "$funcion" ;;
+	-m | --mods ) doc.listModules ;;
     * ) break ;;
   esac
   shift

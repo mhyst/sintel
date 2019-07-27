@@ -1,0 +1,193 @@
+#!/bin/bash
+# Módulo DOC
+# Funciones de documentación
+
+function doc.info() {
+    echo "doc - Funciones de documentación."
+    echo
+    echo "Contiene funciones para consultar la documentación."
+    echo "interna de sintel."
+    echo    
+}
+
+function doc.callFunction() {
+	local tupla="$1"
+
+	$DEBUG && echo "Tupla: $tupla" >> /dev/tty
+	IFS=':' read -a aux <<< "$tupla"; IFS=" "
+	local funcion="${aux[0]}"
+	$DEBUG && echo "Función: $funcion" > /dev/tty
+
+	local args="${aux[1]}"
+	$DEBUG && echo "Argumentos: $args" > /dev/tty
+
+	eval set -- "$args"
+	$DEBUG && echo "Argumentos procesados: $@" > /dev/tty
+
+	local postargs=""
+	for arg in "$@"; do
+	    postargs="$postargs \"$arg\""
+	done
+	postargs=$(trim "$postargs")
+
+	$DEBUG && echo "A ejecutar: $funcion $postargs" > /dev/tty
+	# local res=`$funcion "$postargs"`
+
+	local res=`eval "$funcion" $postargs`
+	echo "$res"
+}
+
+
+function doc.callFunction.info() {
+    echo "doc.callFunction - Llama a una funcion integrada de sintel"
+    echo
+    echo -e "\tArgumentos: tupla"
+    echo
+    echo "La tupla es el nombre de la función que queremos llamar y argumentos"
+    echo "separados por el caracter dos puntos ':'. El argumento es opcional."
+    echo
+    echo "La forma más cómoda de acceder a esta función es mediante la opción"
+    echo "-f de sintel".
+    echo
+    echo "Se puede pasar más de un argumento a una función. Para ello hay que"
+    echo "entrecomillar los argumentos o toda la tupla. Si uno o varios de los"
+    echo "argumentos consta de más de una palabra, es decir, que contiene"
+    echo "espacios, debe entrecomillarse de por si con comilla simple o usando"
+    echo "comillas dobles escapadas: \"."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f series.list"
+    echo -e "\tsintel -f series.find:poirot"
+    echo -e "\tsintel -f film.add:\"'Regreso al futuro' '/mnt/Peliculas/rfuturo.mp4' -1\""
+}
+
+function doc.callFunction2() {
+	local tupla="$1"
+
+	$DEBUG && echo "Tupla: $tupla" >> /dev/tty
+	IFS=':' read -a aux <<< "$tupla"; IFS=" "
+	local funcion="${aux[0]}"
+	$DEBUG && echo "Función: $funcion" > /dev/tty
+
+	local args="${aux[1]}"
+	$DEBUG && echo "Argumentos: $args" > /dev/tty
+
+	declare -a preargs
+	IFS='|' read -r -a preargs <<< "$args"; IFS=" "
+
+	local postargs=""
+	for arg in "${preargs[@]}"; do
+		postargs="$postargs \"$arg\""
+	done
+	postargs=$(trim "$postargs")
+
+	#eval set -- "$args"
+	$DEBUG && echo "Argumentos procesados: $postargs" > /dev/tty
+
+	$DEBUG && echo "A ejecutar: $funcion $postargs" > /dev/tty
+
+	local res=`eval "$funcion" $postargs`
+	echo "$res"
+}
+
+function doc.callFunction2.info() {
+    echo "doc.callFunction2 - Llama a una función con varios argumentos"
+    echo
+    echo -e "\tArgumentos: tupla-avanzada"
+    echo
+    echo "Tupla-avanzada consiste en 'funcion:argumento-avanzado'"
+    echo "mientras que argumento avanzado es una cadena entrecomillada que admite "
+    echo "varios argumentos separados por el caracter tubería '|'."
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -n anime.add:\"Detective Conan|www.veranimes.tv/detective-conan-capitulo-\""
+}
+
+function doc.listFunctions() {
+    if [[ $# == 0 ]]; then
+        declare -F | while read line; do
+	    if `grep -E '.info$' <<< "$line" > /dev/null 2>&1`; then
+	       continue;
+	    fi
+	    echo "${line:11}"
+	done
+    else
+	if [[ $1 == "generic" ]]; then
+	    declare -F | while read line; do
+		line="${line:11}"
+		if `grep "\." <<< "$line" > /dev/null 2>&1`; then
+		    continue
+		fi
+		echo "$line"
+	    done
+	else
+	    declare -F | grep "$1\." | while read line; do
+		if `grep -E '.info$' <<< "$line" > /dev/null 2>&1`; then
+		    continue
+		fi
+		echo "${line:11}"
+	    done
+	fi
+    fi
+}
+
+function doc.listFunctions.info() {
+    echo "doc.listFunctions - Lista las funciones integradas en sintel."
+    echo
+    echo -e "\tArgumentos: [módulo]"
+    echo
+    echo "Si no se indican argumentos se listan todas las funciones definidas"
+    echo "dentro de los diversos módulos de sintel."
+    echo
+    echo "Si se indica el nombre de un módulo se listan todas las funciones"
+    echo "de ese módulo."
+    echo
+    echo "Si no se requiere argumento puede ahorrarse tiempo invocando el comando"
+    echo "'sintel -l'. Si por el contrario se quieren ver solo las funciones de"
+    echo "un módulo, podemos usar el atajo 'sintel -x anime'."
+    echo
+    echo "Ejemplos:"
+    echo -e "\tsintel -f doc.listFunctions"
+    echo -e "\tsintel -f doc.listFunctions:series"
+}
+
+function doc.listModules() {
+    for module in "${MODS[@]}"; do
+	echo "$module"
+    done
+}
+
+function doc.listModules.info() {
+    echo "doc.listModules - Listar módulos"
+    echo
+    echo "Lista los módulos cargados."
+    echo
+    echo "La opción -m es un atajo a esta función."
+}
+
+function doc.functionInfo() {
+    local funcion="$1"
+
+    declare -F | grep "${funcion}.info" > /dev/null 2>&1
+    if [[ $? != 0 ]]; then
+	echo -e "La función '$funcion' no tiene documentación de momento."
+    else
+	"${funcion}.info"
+    fi
+}
+
+
+function doc.functionInfo.info() {
+    echo "doc.functionInfo - Mostrar la documentación de una función de sintel."
+    echo
+    echo -e "\tArgumentos: función"
+    echo
+    echo "La documentación de sintel está todavía escribiéndose. Puede haber funciones"
+    echo "que no estén documentadas todavía."
+    echo
+    echo "Se puede llamar a esta función con el atajo 'sintel --info funcion'."
+    echo
+    echo "Ejemplos:"
+    echo -e "\t sintel --info doc.functionInfo"
+    echo -e "\t sintel --info ver.serie"
+}
