@@ -1,5 +1,21 @@
 #!/bin/bash
-#Inteligencia sobre series y películas. Lleva una base de datos a la que los demás scripts podrán consultar e insertar tados.
+# This file is part of Sintel.
+#
+# Sintel is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Sintel is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Sintel.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+# Inteligencia sobre series y películas. Lleva una base de datos a la que los demás scripts podrán consultar e insertar tados.
 
 #Directorio global del script
 global_DIR=~/bin/scripts/sintel

@@ -439,15 +439,19 @@ bash grande.
 .RS
 Módulo de ayuda principal.
 .PP
-Nota: aún no está implementado.
+Nota: Por ahora solo tiene la función del mismo nombre
+que aún no está terminada.
 .RE
 .PP
 .B "generic"
 .RS
-En este módulo se han añadido algunas funciones de uso general,
-de ahí su nombre. Aunque posteriormente también se le añadieron
-las funciones responsables de la documentación interna de
-funciones.
+Funciones de propósito general. Pueden utilizarse tanto a nivel
+interno como externo, desde fuera de \fBsintel\fP.
+.RE
+.PP
+.B "doc"
+.RS
+Funciones que soportan la documentación interna de \fBsintel\fP.
 .RE
 .PP
 .B "init"
@@ -469,58 +473,165 @@ a init.
 .PP
 .B "peliculas"
 .RS
-Conjunto de funciones de gestión de películas.
+Conjunto de funciones de gestión de películas. Permite añadir
+películas a la base de datos, consultarlas, buscarlas,
+modificarlas y borrarlas. Aunque el módulo se llama películas,
+las funciones tienen el prefijo film, por lo que para listarlas
+se ha de usar 'sintel -x film'.
 .RE
 .PP
 .B "series"
 .RS
-Funciones de gestión de series.
+Funciones de gestión de series. Dar de alta series, consultarlas,
+buscarlas, actualizarlas, añadir episodios, etc. Es uno de los
+módulos con mayor número de funciones.
 .RE
 .PP
 .B "medios"
 .RS
-Funciones para gestión de medios en general.
+Funciones para gestión de medios en general. Este módulo contiene
+funciones de propósito general para medios. En concreto todas las
+funciones que permiten listar medios están en él.
 .RE
 .PP
 .B "torrents"
 .RS
 Funciones para gestionar la comunicación con el gestor
-de torrents Transmission.
+de torrents Transmission. Realiza funciones desde obtener
+el id del último torrent añadido, hasta recopilar datos
+de un torrent. Funciona gracias al programa
+transmission-remote, y por supuesto requiere una instancia
+de Transmission funcionando con el modo remoto activado.
+Edite el fichero de este módulo para modificar las credenciales
+de acceso a su servicio de Transmission.
 .RE
 .PP
 .B "rutas"
 .RS
 Gestión de rutas alternativas (correspondencias entre rutas
-remotas y locales).
+remotas y locales). Este módulo solo es necesario si se
+utiliza un servicio de Transmission remoto. En caso de
+usar un cliente local no es necesario puesto que no habrá
+duplicidad de rutas remotas y locales. Para entender su
+funcionamiento veremos un ejemplo.
+.PP
+Imaginemos que tenemos el servicio de Transmission en un
+NAS o servidor, cuya carpeta de descargas es la siguiente:
+.PP
+/share/HDB_DATA/Download/transmission/completed
+.PP
+Dentro de ella tenemos nuestros medios, y además tenemos
+acceso en un PC de escritorio mediante NFS a la 
+carpeta '/share/HDB_DATA/Download' que tenemos montada
+en la siguiente ruta:
+.PP
+/mnt/Download
+.PP
+A la hora de tratar nuestros medios con \fBsintel\fP se nos
+presenta un problema. Si hemos estado usando algo como 'mt'
+para descargar los torrents, todos los medios tendrán rutas
+remotas, es decir, que solo funcionarán desde el NAS. Más
+a la hora de reproducirlos necesitaremos rutas que empiecen
+por '/mnt/Download' que es la única manera de que el PC de
+escritorio acceda a los archivos. Por ejemplo pongamos este
+medio:
+.PP
+/share/HDB_DATA/Download/transmission/completed/series/Elementary/Elementary1x01.mp4
+.PP
+Si usamos directamente esa ruta para reproducir el medio en el PC
+de escritorio, dará un error. Necesitamos esta otra ruta:
+.PP
+/mnt/Download/transmission/completed/series/Elementary/Elementary1x01.mp4
+.PP
+Es decir, necesitamos que cualquier ruta remota sea convertida
+en una ruta local. Eso es precisamente lo que hace este módulo.
+Permite agregar pares de rutas, obtener unas a partir de las otras
+y convertir rutas de un tipo en el otro.
 .RE
 .PP
 .B "head"
 .RS
-Funciones de movimiento del puntero de series.
+Funciones de movimiento del puntero de series. Permite avanzar o
+retroceder el puntero de una serie, es decir, modificar cual es
+el siguiente episodio que tenemos que ver; de varias maneras.
+Por ejemplo se puede mover ese puntero de uno en uno o de 'n'
+en 'n', siendo 'n' el número de posiciones que queremos moverlo.
+También permite marcar como vista una temporada entera y
+desmarcarla. En definitiva una serie de herramientas muy sencillas
+y últiles para facilitarnos la vida a la hora de llevar la cuenta
+de por qué episodio nos llegamos de tal serie. Funciona ajustando
+en 0 o en 1 el campo 'esvisto' (mencionado en la sección de la
+base de datos) de los episodios. Para poder invocar cualquiera
+de estas funciones necesitaremos el 'id' de la serie.
 .RE
 .PP
 .B "ver"
 .RS
-Funciones de visionado.
+Funciones de visionado. Este módulo es algo básico pero esencial.
+Principalmente cuenta con dos funciones: 'ver.pelicula'
+y 'ver.serie'. La primera requiere una cadena de búsqueda y
+si encuentra una película que coincida la reproducirá. En caso de
+encontrar varias, nos da a elegir. La segunda es un sistema
+interactivo mediante el cual se puede seleccionar qué episodio
+queremos ver. Una vez que hemos conseguido llenar la base de datos
+con medios, ya solo nos queda disfrutar con este módulo.
 .RE
 .PP
 .B "test"
 .RS
-Módulo donde añadir funciones de prueba.
+Módulo donde añadir funciones de prueba. No tiene ninguna
+utilidad especial más allá de escribir funciones para probar
+cosas.
 .RE
 .PP
 .B "anime"
 .RS
-Gestión del anime que vemos online, en páginas de enlaces.
+Gestión del anime que vemos online, en páginas de enlaces. Este
+módulo funciona con una tabla aparte ('anime') que mantiene una
+lista del anime que vemos online. Hay disponible un frontend
+de este módulo que hace más fácil su uso.
 .RE
 .PP
 .B "veronline"
 .RS
 Gestión de las series que vemos online, en webs de enlaces.
+Es una copia del módulo anterior que se utiliza de la misma
+forma, pero para series online en lugar del anime. El mismo
+frontend mencionado en el módulo anterior incluye un script
+similar que facilita el uso de este módulo.
 .RE
-.SH SEE ALSO
-Vea también eso otro
-.SH BUGS
-Errores conocidos
+.SH VEA TAMBIÉN
+Consulte también la documentación interna. La mejor forma de 
+hacerlo es listar primero los módulos:
+.PP
+.RS
+sintel \-\-mods
+.RE
+.PP
+Tiene disponible una pequeña descripción de cada módulo que
+puede consultar mediante:
+.PP
+.RS
+sintel --info ver
+.RE
+.PP
+Después consulte módulo por módulo para ver la lista de funciones
+que tiene cada uno de ellos:
+.PP
+.RS
+sintel \-x ver
+.RE
+.PP
+Una vez que ya conoce el nombre de una función concreta, se puede
+consultar la documentación interna de esa función con el
+siguiente comando:
+.PP
+.RS
+sintel \-\-info ver.series
+.RE
+.PP
+De esta manera es fácil navegar por la documentación interna. Si
+después de leer toda la documentación hay algo que no entiende,
+no dude en escribirme.
 .SH AUTHOR
 Julio Serrano (mhysterio@gmail.com)
