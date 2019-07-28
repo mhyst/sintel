@@ -1,3 +1,4 @@
+<!--
 [//]: # This file is part of Sintel.
 [//]: #
 [//]: # Sintel is free software: you can redistribute it and/or modify
@@ -13,7 +14,7 @@
 [//]: # You should have received a copy of the GNU General Public License
 [//]: # along with Sintel.  If not, see <https://www.gnu.org/licenses/>.
 [//]: #
-[//]: #
+[//]: #-->
 # sintel
 Inteligencia sobre series y otros medios
 
