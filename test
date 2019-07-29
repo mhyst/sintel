@@ -113,3 +113,16 @@ function test.extractTe() {
 	 #echo "$(medios.getTituloSerie "$medio")"
 	 echo $(medios.extractTe "$medio")
 }
+
+function testCheckArgs() {
+    #local res=$(checkArgs 2 $@)
+    
+    checkArgs 2 $@
+    [[ $? != 0 ]] && exit 1   
+    if $res; then
+	echo "Los argumentos son correctos"
+	echo "Args: $@"
+    else
+	echo "Error: Los argumentos no son correctos"
+    fi
+}

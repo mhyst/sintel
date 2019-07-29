@@ -35,13 +35,15 @@ function veronline.info() {
 }
 
 function veronline.add() {
-	local titulo="$1"
-	local url="$2"
+    checkArguments 2 $@
+    $? != 0 && exit 1
+    local titulo="$1"
+    local url="$2"
 
-	$DEBUG && echo "> veronline.add" > /dev/tty
-	db.executeUpdate "insert into veronline (titulo, url, episodio) values (\"$titulo\",\"$url\",1)"	
-	$DEBUG && echo "< veronline.add" > /dev/tty
-	echo "$ROWID"
+    $DEBUG && echo "> veronline.add" > /dev/tty
+    db.executeUpdate "insert into veronline (titulo, url, episodio) values (\"$titulo\",\"$url\",1)"	
+    $DEBUG && echo "< veronline.add" > /dev/tty
+    echo "$ROWID"
 }
 
 function veronline.add.info() {

@@ -51,6 +51,8 @@ function rutas.info() {
 }
 
 function rutas.add() {
+    checkArgs 2 $@
+    [[ $? != 0 ]] && exit 1   
 	local ruta="$1"
 	local reemplazo="$2"
 
@@ -70,6 +72,8 @@ function rutas.add.info() {
 }
 
 function rutas.remove() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local ruta="$1"
 
 	db.executeUpdate "delete from ruta where ruta=\"$ruta\""
@@ -88,6 +92,8 @@ function rutas.remove.info() {
 }
 
 function rutas.get() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local ruta="$1"
 
 	local res=$(db.executeQuery "select reemplazo from ruta where ruta=\"$ruta\"")
@@ -105,6 +111,8 @@ function rutas.get.info() {
 }
 
 function rutas.extraer() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local path="$1"
 
 	local res=$(db.executeQuery "select ruta from ruta")
@@ -131,6 +139,8 @@ function rutas.extraer.info() {
 }
 
 function rutas.getReemplazo() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local ruta="$1"
 
 	local reemplazo=$(db.executeQuery "select reemplazo from ruta where ruta = \"$ruta\"")
@@ -149,6 +159,8 @@ function rutas.getReemplazo.info() {
 }
 
 function rutas.replace() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local path="$1"
 	local reemplazo=""
 	local ruta=""

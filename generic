@@ -69,3 +69,14 @@ function userChoice.info() {
     echo "La cadena es el mensaje que se mostrará al usuario antes de introducir"
     echo "un número por teclado."
 }
+
+function checkArgs() {
+    local nargs="$1"
+    shift
+    if [[ $nargs != $# ]]; then
+	echo "Error: La función requiere $nargs argumentos" > /dev/tty
+	return 1
+    else
+	return 0
+    fi
+}

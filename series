@@ -43,6 +43,8 @@ function series.info() {
 }
 
 function series.add() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local titulo="$1"
 
 	$DEBUG && echo "> series.add" > /dev/tty
@@ -65,6 +67,8 @@ function series.add.info() {
 }
 
 function series.getById() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	$DEBUG && echo "> series.getById" > /dev/tty
@@ -86,6 +90,8 @@ function series.getById.info() {
 }
 
 function series.getIdByTitulo() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local titulo="$1"
 
 	$DEBUG && echo "> series.getByTitulo" > /dev/tty
@@ -110,6 +116,8 @@ function series.getIdByTitulo.info() {
 }
 
 function series.getByTitulo() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local titulo="$1"
 
 	$DEBUG && echo "> series.getByTitulo" > /dev/tty
@@ -150,6 +158,8 @@ function series.find.info() {
 }
 
 function series.getId() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local titulo="$1"
 
 	local id=$(db.executeQuery "select id from medio where esserie = 1 and titulo = \"$titulo\"")
@@ -168,6 +178,8 @@ function series.getId.info() {
 }
 
 function series.remove() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "delete from medio where esserie = 1 and id = $id"
@@ -186,6 +198,8 @@ function series.remove.info() {
 }
 
 function series.updateFichero() {
+    checkArgs 2 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local fichero="$2"
 
@@ -208,6 +222,8 @@ function series.updateFichero.info() {
 }
 
 function series.updateTorrent() {
+    checkArgs 2 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local torrent="$2"
 
@@ -230,12 +246,25 @@ function series.updateTorrent.info() {
 }
 
 function series.setVista() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=1 where id = $id"
 }
 
+function series.setVista.info() {
+    echo "series.setVista - Marcar una serie como vista."
+    echo
+    echo -e "\tArgumento: id"
+    echo
+    echo "Ejemplo:"
+    echo -e "\tsintel -f series.setVista:1143"
+}
+
 function series.parse() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local datos="$1"
 
 	$DEBUG && echo ">Entra en series.parse" > /dev/tty
@@ -263,6 +292,8 @@ function series.parse.info() {
 }
 
 function series.parseToFile() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local datos="$1"
 
 	series.parse "$datos"
@@ -288,6 +319,8 @@ function series.parseToFile.info() {
 }
 
 function series.getField() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local field="$1"
 
 	let i=0
@@ -321,6 +354,8 @@ function series.getField.info() {
 }
 
 function series.addEpisodio() {
+    checkArgs 5 $@
+    [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local temporada="$2"
 	local episodio="$3"
@@ -344,6 +379,8 @@ function series.addEpisodio.info() {
 }
 
 function series.getEpisodioById() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	local res=$(db.executeQuery "select * from episodio where id = $id")
@@ -362,6 +399,8 @@ function series.getEpisodioById.info() {
 }
 
 function series.getEpisodioByFichero() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local fichero="$1"
 
 	local res=$(db.executeQuery "select * from episodio where fichero = \"$fichero\"")
@@ -400,6 +439,8 @@ function series.findEpisodio.info() {
 }
 
 function series.getEpisodioId() {
+    checkArgs 3 $@
+    [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local temporada="$2"
 	local episodio="$3"
@@ -422,6 +463,8 @@ function series.getEpisodioId.info() {
 }
 
 function series.removeEpisodio() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "delete from episodio where id = $id"
@@ -439,6 +482,8 @@ function series.removeEpisodio.info() {
 }
 
 function series.updateEpisodioFichero() {
+    checkArgs 2 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local fichero="$2"
 
@@ -459,6 +504,8 @@ function series.updateEpisodioFichero.info() {
 }
 
 function series.updateEpisodioTorrent() {
+    checkArgs 2 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local torrent="$2"
 
@@ -480,6 +527,8 @@ function series.updateEpisodioTorrent.info() {
 }
 
 function series.setEpisodioVista() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update episodio set esvisto=1 where id = $id"
@@ -495,6 +544,8 @@ function series.setEpisodioVista.info() {
 }
 
 function series.setEpisodioNoVista() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update episodio set esvisto=0 where id = $id"
@@ -510,6 +561,8 @@ function series.setEpisodioNoVista.info() {
 }
 
 function series.setEpisodioDescargado() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update episodio set esdescargado=1 where id = $id"
@@ -525,6 +578,8 @@ function series.setEpisodioDescargado.info() {
 }
 
 function series.setEpisodioNoDescargado() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update episodio set esdescargado=0 where id = $id"
@@ -540,6 +595,8 @@ function series.setEpisodioNoDescargado.info() {
 }
 
 function series.parseEpisodio() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local datos="$1"
 
 	IFS='|' read -a datosa <<< "$datos"; IFS=" "
@@ -567,6 +624,8 @@ function series.parseEpisodio.info() {
 }
 
 function series.parseEpisodioToFile() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local datos="$1"
 
 	series.parseEpisodio "$datos"
@@ -591,6 +650,8 @@ function series.parseEpisodioToFile.info() {
 }
 
 function series.getEpisodioField() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local field="$1"
 
 	let i=0
@@ -624,6 +685,8 @@ function series.getEpisodioField.info() {
 }
 
 function series.parseTemporada() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local te="$1"
 
 	IFS='x' read -a aux <<< "$te"; IFS=" "
@@ -643,6 +706,8 @@ function series.parseTemporada.info() {
 }
 
 function series.parseEpisodioNum() {
+    checkArgs 1 $@
+    [[ $? != 0 ]] && exit 1   
 	local te="$1"
 
 	IFS='x' read -a aux <<< "$te"; IFS=" "
