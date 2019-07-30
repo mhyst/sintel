@@ -237,8 +237,6 @@ function medios.findPeliculas.info() {
 }
 
 function medios.listEpisodios() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local e=""
 
@@ -268,8 +266,6 @@ function medios.listEpisodios.info() {
 }
 
 function medios.extractTe() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local medio="$1"
 	local te=""
 	local rem=""
@@ -330,8 +326,6 @@ function medios.extractTe.info() {
 }
 
 function medios.fixTitulo() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local medio="$*"
 
 	medio="$(tr -d '[\[\]]' <<< $medio)"
@@ -370,8 +364,6 @@ function medios.fixTitulo.info() {
 }
 
 function medios.getTituloSerie() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local medio="$1"
 
 	# Extraemos el nombre del archivo sin su ruta
@@ -434,8 +426,6 @@ function medios.getTituloSerie.info() {
 }
 
 function medios.getTituloPelicula() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local medio="$1"
 
 	local aux="${medio##*/}"
@@ -466,8 +456,6 @@ function medios.getTituloPelicula.info() {
 }
 
 function medios.detectar() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local folder="$1"
 	local re='[0-9]{1,2}x[0-9]{1,3}'
 	local te=""

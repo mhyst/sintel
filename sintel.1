@@ -536,12 +536,14 @@ por '/mnt/Download' que es la única manera de que el PC de
 escritorio acceda a los archivos. Por ejemplo pongamos este
 medio:
 .PP
-/share/HDB_DATA/Download/transmission/completed/series/Elementary/Elementary1x01.mp4
+/share/HDB_DATA/Download/transmission/completed
+/series/Elementary/Elementary1x01.mp4
 .PP
 Si usamos directamente esa ruta para reproducir el medio en el PC
 de escritorio, dará un error. Necesitamos esta otra ruta:
 .PP
-/mnt/Download/transmission/completed/series/Elementary/Elementary1x01.mp4
+/mnt/Download/transmission/completed
+/series/Elementary/Elementary1x01.mp4
 .PP
 Es decir, necesitamos que cualquier ruta remota sea convertida
 en una ruta local. Eso es precisamente lo que hace este módulo.

@@ -62,8 +62,6 @@ function film.add.info() {
 
 #@ film.add2 registro (Formato: titulo|fichero|torrent)
 function film.add2() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local datos="$1"
 	film.parse "$datos"
 	local titulo="${PELICULA[titulo]}"
@@ -95,8 +93,6 @@ function film.add2.info() {
 
 #@ film-getById id
 function film.getById() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	$DEBUG && echo "> film.getById" > /dev/tty
@@ -123,8 +119,6 @@ function film.getById.info() {
 
 #@ film.getIdByTitulo titulo
 function film.getIdByTitulo() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local titulo="$1"
 
 	$DEBUG && echo "> film.getByTitulo" > /dev/tty
@@ -147,8 +141,6 @@ function film.getIdByTitulo.info() {
 
 #@ film.getByTitulo titulo
 function film.getByTitulo() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local titulo="$1"
 
 	$DEBUG && echo "> film.getByTitulo" > /dev/tty
@@ -171,8 +163,6 @@ function film.getByTitulo.info() {
 
 #@  film-getByFichero fichero
 function film.getByFichero() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local fichero="$1"
 
 	local res=$(db.executeQuery "select * from medio where esserie = 0 and fichero = \"$fichero\"")
@@ -233,8 +223,6 @@ function film.getId.info() {
 
 #@ film.remove id
 function film.remove() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "delete from medio where esserie = 0 and id = $id"
@@ -302,8 +290,6 @@ function film.updateTorrent.info() {
 
 #@ film.setVista id
 function film.setVista() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=1 where id = $id"
@@ -320,8 +306,6 @@ function film.setVista.info() {
 
 #@ film.setNoVista id
 function film.setNoVista() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update medio set esdescargado=0 where id = $id"
@@ -338,8 +322,6 @@ function film.setNoVista.info() {
 
 #@ film.setDescargada id
 function film.setDescargada() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update medio set esdescargado=1 where id = $id"
@@ -356,8 +338,6 @@ function film.setDescargada.info() {
 
 #@ film.SetNoDescargada id
 function film.setNoDescargada() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=0 where id = $id"
@@ -374,8 +354,6 @@ function film.setNoDescargada.info() {
 
 #@ film.parse datos (Formato: (id|titulo|fichero|torrent|esserie|esvisto|esdescargado))
 function film.parse() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local datos="$1"
 
 	IFS='|' read -a datosa <<< "$datos"; IFS=" "
@@ -401,8 +379,6 @@ function film.parse.info() {
 
 #@ film.parseToFile datos
 function film.parseToFile() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local datos="$1"
 
 	film.parse "$datos"
@@ -425,8 +401,6 @@ function film.parseToFile.info() {
 
 #@ film.getField field
 function film.getField() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
 	local field="$1"
 
 	let i=0

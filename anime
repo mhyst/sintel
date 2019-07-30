@@ -55,8 +55,6 @@ function anime.add.info() {
 }
 
 function anime.getById() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
 
     $DEBUG && echo "> anime.getById" > /dev/tty
@@ -66,8 +64,6 @@ function anime.getById() {
 }
 
 function anime.getIdByTitulo() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local titulo="$1"
 
     $DEBUG && echo "> anime.getByTitulo" > /dev/tty
@@ -77,8 +73,6 @@ function anime.getIdByTitulo() {
 }
 
 function anime.getByTitulo() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local titulo="$1"
 
     $DEBUG && echo "> anime.getByTitulo" > /dev/tty
@@ -102,8 +96,6 @@ function anime.list() {
 }
 
 function anime.delete() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
 
     $DEBUG && echo "> anime.delete" > /dev/tty
@@ -125,8 +117,6 @@ function anime.setAlias() {
 }
 
 function anime.getId() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local titulo="$1"
 
     local id=$(db.executeQuery "select id from anime where titulo = \"$titulo\"")
@@ -134,8 +124,6 @@ function anime.getId() {
 }
 
 function anime.remove() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
 
     db.executeUpdate "delete from anime where id = $id"
@@ -169,24 +157,18 @@ function anime.updateEpisodio() {
 }
 
 function anime.next() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
 
     db.executeUpdate "update anime set episodio=episodio+1 where id = $id"
 }
 
 function anime.previous() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
 
     db.executeUpdate "update anime set episodio=episodio-1 where id = $id"
 }
 
 function anime.parse() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local datos="$1"
 
     $DEBUG && echo ">Entra en anime.parse" > /dev/tty
@@ -200,8 +182,6 @@ function anime.parse() {
 }
 
 function anime.parseToFile() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local datos="$1"
 
     anime.parse "$datos"
@@ -214,8 +194,6 @@ function anime.parseToFile() {
 }
 
 function anime.getField() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local field="$1"
 
     let i=0
@@ -240,8 +218,6 @@ function anime.screenAnime() {
 }
 
 function anime.watch() {
-    checkArgs 1 $@
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
 
     $DEBUG && echo "> anime.watch" > /dev/tty
