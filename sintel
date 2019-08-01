@@ -20,7 +20,7 @@
 #Directorio global del script
 global_DIR=~/bin/scripts/sintel
 DEBUG=false
-VERSION="2.5.0"
+VERSION="2.6.0"
 
 #Cargamos los módulos
 MODS=( "help" "generic" "doc" "init" "database" "peliculas" "series" "medios" "torrents" "rutas" "head" "ver" "test" "anime" "veronline" )
@@ -68,7 +68,7 @@ while true; do
 	-l | --list-functions ) doc.listFunctions ;;
 	-x ) busqueda="$2"; shift; doc.listFunctions "$busqueda" ;;
 	-s | --determine-series ) busqueda="$2"; shift; medios.determineSeries "$busqueda" ;;
-	-i | --is-downloaded ) funcion="$2"; shift; callFuncion "medios.isDownloaded:$funcion" ;;
+	-i | --is-downloaded ) funcion="$2"; shift; doc.callFunction "medios.isDownloaded:$funcion" ;;
 	--info ) funcion="$2"; shift; doc.functionInfo "$funcion" ;;
 	-m | --mods ) doc.listModules ;;
     * ) break ;;
