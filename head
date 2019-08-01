@@ -61,7 +61,7 @@ function head.markall.info() {
 }
 
 function head.resetTemporada() {
-    checkArgs 2 $@
+    
     [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local temporada="$2"
@@ -79,7 +79,7 @@ function head.resetTemporada.info() {
 }
 
 function head.markTemporada() {
-    checkArgs 2 $@
+    
     [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local temporada="$2"
@@ -133,7 +133,7 @@ function head.back.info() {
 }
 
 function head.resetN() {
-    checkArgs 2 $@
+    
     [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local n="$2"
@@ -154,7 +154,7 @@ function head.resetN.info() {
 }
 
 function head.markN() {
-    checkArgs 2 $@
+    
     [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local n="$2"

@@ -136,7 +136,7 @@ function ver.serieOld.info() {
 }
 
 function ver.cache() {
-    checkArgs 3 $@
+    
     [[ $? != 0 ]] && exit 1   
 	local idserie="$1"
 	local titulo="$2"

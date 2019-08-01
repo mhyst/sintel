@@ -37,7 +37,7 @@ function peliculas.info() {
 
 #@ film.add titulo fichero torrent
 function film.add() {
-    checkArgs 3 $@
+    
     [[ $? != 0 ]] && exit 1   
 	local titulo="$1"
 	local fichero="$2"
@@ -242,7 +242,7 @@ function film.remove.info() {
 
 #@ film-updateFichero id fichero
 function film.updateFichero() {
-    checkArgs 2 $@
+    
     [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local fichero="$2"
@@ -264,7 +264,7 @@ function film.updateFichero.info() {
 
 #@ film.updateTorrent id torrent
 function film.updateTorrent() {
-    checkArgs 2 $@
+    
     [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local torrent="$2"

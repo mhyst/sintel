@@ -602,6 +602,210 @@ forma, pero para series online en lugar del anime. El mismo
 frontend mencionado en el módulo anterior incluye un script
 similar que facilita el uso de este módulo.
 .RE
+.SH EJEMPLOS
+\fB1. Popular la base de datos\fP
+.PP
+Una vez instalado, tendremos la base de datos vacía. Lo primero
+que tenemos que hacer es cargarla con datos. Esto se puede
+hacer de tres maneras distintas: 
+.PP
+\fB1.1. Con la opción detectar.\fP
+.PP
+Esta opción recorre un directorio y sus subdirectorios y agrega
+todos los ficheros de medios que encuentra a la base de datos.
+En algunos casos puede no ser la opción ideal, aunque es la más
+rápida. Como ya se dijo, puede pasarse esta opción por el mismo
+directorio tantas veces como se quiera, ya que no añade dos
+veces el mismo fichero.
+.PP
+sintel -d /mnt/medios
+
+sintel -d /mnt/datos/peliculas
+.PP
+\fB1.2. Añadiendo una película manualmente.\fP
+.PP
+Debe hacerse una por una teniendo en todo momento el control de
+qué título le ponemos y donde se encuentra el fichero. Se
+recomienda utilizar la opción \-n y utilizar el formato de
+registro con la función 'film.add2'.
+.PP
+sintel -n film.add2:"El Resplandor|/mnt/medios/elresplandor.mp4|-1"
+.PP
+\fB1.3. Añadiendo un episodio de una serie manualmente.\fP
+.PP
+Al igual que la opción anterior, es manual. Si es la primera
+vez que agrega episodios de esa serie, tendrá que dar de alta
+la serie. Entonces ya podrá añadir los episodios utilizando el
+idmedio de devuelve la función 'series.add'. En el ejemplo, la
+serie "Dead Zone" se ha añadido con el id 1412, que se usará
+en adelante para dar de alta todos los episodios de esa serie.
+En todos los ejemplos el torrent se ajusta a -1 dado que no
+vamos a usar el módulo 'torrents'.
+.PP
+sintel -f series.add:"Dead zone"
+
+
+sintel -n series.addEpisodio:"1412|1|1|/mnt/medios/series/dz/1x01.mp4|-1"
+
+sintel -n series.addEpisodio:"1412|1|2|/mnt/medios/series/dz/1x02.mp4|-1"
+.RE
+.PP
+\fB2. Mantenimiento\fP
+.PP
+Una vez que ya tenemos datos en la base de datos vamos a ver como
+podemos realizar el mantenimiento.
+.PP
+\fB2.1. Borrar una película o serie\fP
+.PP
+Primero buscamos la película con find:
+.PP
+sintel -f film.find:resplandor
+.PP
+La función 'film.find' devuelve un listado de todas las películas cuyo
+título coincida con nuestra cadena de búsqueda. De cada película nos
+mostrará el registro completo tal y como está definido en la sección
+de arriba sobre la base de datos. Los campos aparecen separados con
+el caracter tubería '|'. El primer campo es el id de la película. Ese
+es el dato que tendremos que utilizar en la siguiente llamada para
+borrar la película:
+.PP
+sintel -f film.remove:1
+.PP
+En el caso de las series es exactamente igual, salvo por que se deben
+utilizar las funciones 'series.find' y 'series.remove'.
+.PP
+También se puede borrar un episodio con la función 'series.removeEpisodio'.
+Para ello se precisa el id del episodio. Este id no es el de la serie
+sino que representa únicamente a un episodio en toda la base de datos.
+.PP
+Buscamos el episodio que queremos borrar. Para ello llamamos
+a la función 'series.getEpisodioId'. Requiere tres argumentos en el
+siguiente orden: idmedio, temporada y episodio. Como ya se ha dicho,
+el idmedio es el id de la serie en la tabla medios (se obtiene al
+agregar una serie o con la función 'series.find:titulo'. En este
+ejemplo vamos a obtener el id del episodio 1x01:
+.PP
+sintel -n series.getEpisodioId:"2|1|1"
+.PP
+También puede buscarse el id de episodio de otra forma, con la
+funcición 'series.getEpisodioByFichero'. Como su nombre indica permite
+obtener un episodio por la ruta de su fichero:
+.PP
+sintel -n series.getEpisodioByFichero:"/mnt/medios/series/dz/1x01.mp4"
+.PP
+Esta función no devuelve solo el id, sino todo el registro. El id del
+episodio aparecerá en el primer campo. Ahora ya solo nos queda borrarlo:
+.PP
+sintel -f series.removeEpisodio:2
+.PP
+\fB2.2. Actualización\fP
+.PP
+\fB2.2.1. Películas\fP
+.PP
+El módulo 'películas' ofrece las siguientes funciones para temas de
+actualización. Todas ellas requieren que se les indique el id de la
+película como primer argumento. Las dos últimas funciones requieren
+de un argumento adicional:
+.RS
+film.setDescargada - Marcar como descargada.
+
+film.setNoDescargada - Marcar como no descargada.
+
+film.setNoVista - Marcar como no vista.
+
+film.setVista - Marcar como vista.
+
+film.updateFichero - Actualizar ruta al medio.
+
+film.updateTorrent - Actualizar id de torrent.
+.RE
+.PP
+Veamos cómo se marca nuestra película como vista:
+.PP
+sintel -f film.setVista:1
+.PP
+Ahora imaginemos que hemos movido el fichero de nuestra película
+a otro disco. Nótese que empleamos la opción -n para poder usar
+el separador tubería '|' en los argumentos.
+.PP
+sintel -n film.updateFichero:"1|/mnt/datos/peliculas/resplandor.mp4"
+.PP
+\fB2.2.2. Series\fP
+.PP
+El módulo 'series' ofrece las siguientes funciones de
+actualización:
+.RS
+series.setEpisodioDescargado - Marca como descargado.
+
+series.setEpisodioNoDescargado - Marca como no descargado.
+
+series.setEpisodioNoVista - Marca como no visto.
+
+series.setEpisodioVista - Marca como visto.
+
+series.updateEpisodioFichero - Actualiza fichero.
+
+series.updateEpisodioTorrent - Actualiza torrent.
+.RE
+.PP
+Todas ellas tienen que ver con los campos de la tabla episodio
+descrita en la sección de la base de datos, más arriba. Como se
+puede ver, ni el título de las películas ni el de las series se
+puede modificar. Tampoco se pueden modificar la temporada y el
+número de episodio. Las funciones listadas permiten modificar
+los campos restantes. En este caso se precisa al menos un
+argumento, que será el id de episodio. A continuación, dependiendo
+de la función que sea, podrá ir otro argumento que será el nuevo
+valor que queremos asignar.
+.PP
+sintel -n series.updateEpisodioFichero:"2|/mnt/medios/series/dz/1x02.mp4"
+.PP
+\fB3. Consultas\fP
+.PP
+La razón última para usar \fBSintel\fP es sin duda su capacidad para
+consultar la base de datos. Sin ello nadie se tomaría la molestia
+de popular la base de datos. Aunque los módulos 'películas' y 'series'
+tienen también muchas funciones de consulta, en este documento
+vamos a ver las de 'medios':
+.RS
+medios.findPeliculas - Buscar películas por título.
+medios.findSeries - Buscar series por título
+medios.listAll - Listar todos los medios.
+medios.listEpisodios - Listar episodios por idmedio.
+medios.listPeliculas - Listar todas las películas.
+medios.listSeries - Listar todas las series.
+.RE
+.PP
+Las dos primeras funciones de la lista tienen sus alternativas en
+sus módulos respectivos: 'film.find' y 'series.find'. Estas ofrecen
+sus resultados en formato registro (con el separador '|') por lo que
+quizá se vean con más claridad. Ambas requieren una cadena de búsqueda
+entrecomillada como argumento.
+.PP
+La función 'medios.listEpisodios' requiere el idmedio como argumento,
+mientras que el resto de las funciones 'list' no precisan ningún
+argumento.
+.PP
+\fB4. Reproducción\fP
+.PP
+El módulo 'ver' nos ofrece varias funciones para reproducir medios
+con nuestro reproductor favorito. Para seleccionarlo se debe editar
+el archivo /usr/share/sintel/var (con sudo) y modificar la variable
+PLAYER. Por defecto reproduce con vlc si está instalado. Las funciones
+más importantes son:
+.RS
+ver.pelicula - Ver una película.
+ver.serie - Ver una serie.
+.RE
+.PP
+Ambas funciones presentan un menú de selección en caso de que dos o
+más medios coincidan con la cadena de búsqueda. Una vez seleccionado
+el medio, este se reproducirá.
+.PP
+La función 'ver.serie' muestra una pantalla interactiva en la que
+el usuario puede realizar varias acciones con el puntero de la
+serie. Para reproducir el episodio marcado pulse 'p' e 'intro'.
+Puede echar un vistazo a las demás opciones.
 .SH VEA TAMBIÉN
 Consulte también la documentación interna. La mejor forma de 
 hacerlo es listar primero los módulos:

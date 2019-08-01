@@ -72,8 +72,10 @@ function userChoice.info() {
 function checkArgs() {
     local nargs="$1"
     shift
-    if [[ $nargs != $# ]]; then
+    
+    if (( $nargs !=  $# )); then
 	echo "Error: La función requiere $nargs argumentos" > /dev/tty
+	echo "Se proporcionaron $#" > /dev/tty
 	return 1
     else
 	return 0
