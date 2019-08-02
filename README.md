@@ -58,13 +58,14 @@ uid                  Julio Cesar Serrano Ortuno (mhyst) <mhysterio@gmail.com>
 
 ### Método 3
 
-La instalación se efectúa clonando el repositorio y modificando algunas variables dentro de algunos archivos del script.
+Este método consiste en una instalación manual. La instalación se efectúa
+mediante el clonado del repositorio. También deberemos editar un par de
+archivos y modificar algunas variables del script.
 
 #### Clonamos el repositorio
 
-Si vamos a tener nuestros scripts en la carpeta bin que reside en la carpeta personal. Es decir, en vuestra home, lo que yo recomiendo para no ensuciar esta carpeta es crear una carpeta dentro de ella que se llame 'scripts', por ejemplo. Nos metemos en ella y clonamos con el siguiente comando:
-
 ```
+cd /tmp
 git clone https://github.com/mhyst/sintel.git
 ```
 
@@ -72,7 +73,7 @@ El clonado creará una carpeta llamada 'sintel' que deberemos conservar pues den
 
 #### Ajustamos las variables del script
 
-Entramos en 'sintel' y deberemos modificar el contenido de las siguientes variables:
+Entramos en 'sintel' y deberemos modificar el contenido de las siguientes variables con nuestro editor preferido (por ejemplo nano o vim):
 
 - global-DIR: Ubicada en el archivo sintel. Si tienes el script en ~/bin/scripts/sintel tal como explico en el párrafo de arriba, no es necesario modificarla. Si no es así, debemos indicar la ruta completa en la que residen los archivos de sintel.
 
@@ -80,15 +81,34 @@ Entramos en 'sintel' y deberemos modificar el contenido de las siguientes variab
 
 - PLAYER: Ubicada en ver. Permite configurar con qué reproductor queremos reproducir las películas y series.
 
+Ahora volveremos a la carpeta /tmp/ con:
+
+```
+cd ..
+```
+
+#### Movemos la carpeta a su lugar definitivo
+
+El directorio sintel que acabamos de crear en /tmp/ deberá moverse
+a su localización definitiva. Nosotros lo haremos en $HOME/.local.
+
+
+```
+mv sintel $HOME/.local/
+
+```
+
 #### Copiamos el archivo sintel a la carpeta bin
 
-Una vez que todas las variables han sido modificadas solo nos resta copiar únicamente el archivo sintel a la carpeta bin que habíamos seleccionado previamente para poder invocar sintel desde cualquier carpeta. Si nuestra carpeta bin va a estar dentro de nuestra carpeta personal, siendo el usuario en mi caso 'mhyst', el comando quedaría como sigue:
+Por último debemos poner el archivo llamado 'sintel' en una de las
+carpetas que se encuentran mencionadas en la variable PATH. Por
+practicidad vamos a elegir $HOME/bin. Si no existe la creamos
 
 ```
-cp sintel  ~/bin/
+cd
+mkdir bin
+cp ./local/sintel/sintel  $HOME/bin/
 ```
-
-Para que el comando funcione debemos estar dentro de la carpeta sintel. Y ya está. ¡Instalación completada!
 
 ## Usos de sintel
 
