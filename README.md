@@ -28,7 +28,7 @@ Además este script está diseñado para ser modular y extensible de forma senci
 
 ## Instalación
 
-**¡ATENCIÓN!**: Si ya tenía una copia de sintel instalada, antes de efectuar la actualización haga una copia de seguridad de la base de datos que se encuentra en /usr/local/share/sintel/sintel.db. Entonces actualice y restaure su copia de la base de datos. Después ejecute el comando 'sintel -f init' para actualizar la base de datos a la nueva versión.
+**¡ATENCIÓN!**: Si ya tenía una copia de sintel instalada, antes de efectuar la actualización haga una copia de seguridad de la base de datos que se encuentra en /usr/share/sintel/sintel.db. Entonces actualice y restaure su copia de la base de datos. Después ejecute el comando 'sintel -f init' para actualizar la base de datos a la nueva versión. Si va a actualizar a la versión 2.6.0-5 o posterior, esta medida no es necesaria.
 
 ### Método 1
 
