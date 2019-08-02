@@ -40,7 +40,9 @@ sudo dpkg -i sintel_2.6.0-5_all.deb
 
 ### Método 2
 
-Agregando mi propio repositorio:
+Agregando mi propio repositorio. Este es el mejor método ya que una
+vez instalado podremos disponer de actualizaciones como si se tratara
+de cualquier otro paquete.
 
 ```
 sudo add-apt-repository ppa:mhysterio/bash
