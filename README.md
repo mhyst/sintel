@@ -38,8 +38,6 @@ Desgargamos el paquete deb de la última release y ejecutamos un comando similar
 sudo dpkg -i sintel_2.6.0-5_all.deb
 ```
 
-Este método no requiere de configuración adicional.
-
 ### Método 2
 
 Agregando mi propio repositorio:
