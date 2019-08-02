@@ -35,7 +35,7 @@ Además este script está diseñado para ser modular y extensible de forma senci
 Desgargamos el paquete deb de la última release y ejecutamos un comando similar a este:
 
 ```
-sudo dpkg -i sintel2.0.1.deb
+sudo dpkg -i sintel_2.6.0-5_all.deb
 ```
 
 Este método no requiere de configuración adicional.
