@@ -34,11 +34,9 @@ Además este script está diseñado para ser modular y extensible de forma senci
 
 Desgargamos el paquete deb de la última release y ejecutamos un comando similar a este:
 
----
-
+```
 sudo dpkg -i sintel2.0.1.deb
-
----
+```
 
 Este método no requiere de configuración adicional.
 
@@ -68,11 +66,9 @@ La instalación se efectúa clonando el repositorio y modificando algunas variab
 
 Si vamos a tener nuestros scripts en la carpeta bin que reside en la carpeta personal. Es decir, en vuestra home, lo que yo recomiendo para no ensuciar esta carpeta es crear una carpeta dentro de ella que se llame 'scripts', por ejemplo. Nos metemos en ella y clonamos con el siguiente comando:
 
----
-
+```
 git clone https://github.com/mhyst/sintel.git
-
----
+```
 
 El clonado creará una carpeta llamada 'sintel' que deberemos conservar pues dentro están los diversos archivos que conforman este complejo script.
 
@@ -90,11 +86,9 @@ Entramos en 'sintel' y deberemos modificar el contenido de las siguientes variab
 
 Una vez que todas las variables han sido modificadas solo nos resta copiar únicamente el archivo sintel a la carpeta bin que habíamos seleccionado previamente para poder invocar sintel desde cualquier carpeta. Si nuestra carpeta bin va a estar dentro de nuestra carpeta personal, siendo el usuario en mi caso 'mhyst', el comando quedaría como sigue:
 
----
-
+```
 cp sintel  ~/bin/
-
----
+```
 
 Para que el comando funcione debemos estar dentro de la carpeta sintel. Y ya está. ¡Instalación completada!
 
