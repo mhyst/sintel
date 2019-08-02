@@ -46,22 +46,18 @@ Este método no requiere de configuración adicional.
 
 Agregando mi propio repositorio:
 
----
-
+```
 sudo add-apt-repository ppa:mhysterio/bash
 sudo apt-get update
 apt install sintel
-
----
+```
 
 Los paquetes del ppa está firmados con mi clave personal secreta cuyo
 fingerprint es el siguiente: 
 
 ```
-
 Huella de clave = 018A BA44 9EC5 3A05 74D4  2A03 D18F A7B9 26CD 0212
 uid                  Julio Cesar Serrano Ortuno (mhyst) <mhysterio@gmail.com>
-
 ```
 
 ### Método 3
