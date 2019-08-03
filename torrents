@@ -26,10 +26,8 @@ function torrents.info() {
 }
 
 function torrents.lastId(){
-	local preid=$(transmission-remote $torrents_SERVER -l | tac | grep -Em 1 '^ [0-9]{1,5}' | awk '{print $1}')
-	echo "Preid: $preid" > /dev/tty
+	local preid=$(transmission-remote $torrents_SERVER -l | tac | grep -Em 1 '^ {1,4}[0-9]{1,5}' | awk '{print $1}')
 	local id=$(trim "$preid")
-	echo "Id: $id" > /dev/tty
 	echo "$id"
 }
 
