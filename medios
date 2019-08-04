@@ -613,41 +613,47 @@ function medios.isDownloaded () {
 
 	$DEBUG && echo "ID: $id, TE: $te" > /dev/tty
 
+	declare -a aux
 	IFS='x' read -a aux <<< "$te"
 	temporada="${aux[0]}"
 	episodio="${aux[1]}"
 	unset IFS
 	if [[ "$temporada" == "" ]] || [[ "$episodio" == "" ]]; then
-		echo "ERROR: No se pudo obtener te2 en >$medio<" > /dev/tty
-		echo "false"
-		exit
+	    echo "ERROR: No se pudo obtener te2 en >$medio<" > /dev/tty
+	    echo "false"
+	    exit
 	fi
 
 	if [[ "$id" == "" ]] || [[ "$id" == "-1" ]]; then
-		echo "ERROR: No se pudo determinar el id de la serie: $serie" > /dev/tty
-		echo "false"
-		exit
+	    echo "ERROR: No se pudo determinar el id de la serie: $serie" > /dev/tty
+	    echo "false"
+	    exit
 	fi
 
-	local epid=$(series.getEpisodioId "$id" "$temporada" "$episodio")
-	#echo "---- ----" > /dev/tty
+	echo "1." > /dev/tty
 
+	local epid=$(series.getEpisodioId "$id" "$temporada" "$episodio")
+
+	
+	echo "2. $epid" > /dev/tty
 	if [[ "$epid" == "" ]]; then
+	    echo "false"
+	    exit
+	else
+	    local reg=$(series.getEpisodioById "$epid")
+
+	    echo "3." > /dev/tty
+	    if [[ "$reg" == "" ]]; then
+		echo "ERROR: No se pudo obtener el episodio por el ID obtenido"
 		echo "false"
 		exit
-	else
-		local reg=$(series.getEpisodioById "$epid")
-		if [[ "$reg" == "" ]]; then
-			echo "ERROR: No se pudo obtener el episodio por el ID obtenido"
-			echo "false"
-			exit
-		fi
-		series.parse "$reg"
-		if [[ "${SERIE[fichero]}" == "" ]]; then
-			echo "false"
-		else
-			echo "true"
-		fi
+	    fi
+	    series.parse "$reg"
+	    if [[ "${SERIE[fichero]}" == "" ]]; then
+		echo "false"
+	    else
+		echo "true"
+	    fi
 	fi
 }
 
