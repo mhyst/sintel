@@ -35,7 +35,6 @@ function anime.info() {
 
 function anime.add() {
     
-    [[ $? != 0 ]] && exit 1   
     local titulo="$1"
     local url="$2"
 
@@ -106,7 +105,6 @@ function anime.delete() {
 
 function anime.setAlias() {
     
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
     local alias="$2"
 
@@ -131,7 +129,6 @@ function anime.remove() {
 
 function anime.updateTitulo() {
     
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
     local titulo="$2"
 
@@ -140,7 +137,6 @@ function anime.updateTitulo() {
 
 function anime.updateURL() {
     
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
     local url="$2"
 
@@ -149,7 +145,6 @@ function anime.updateURL() {
 
 function anime.updateEpisodio() {
     
-    [[ $? != 0 ]] && exit 1   
     local id="$1"
     local episodio="$2"
 

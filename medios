@@ -607,7 +607,6 @@ function medios.determineSeries.info() {
 #Determinar si un episodio de una serie está ya descargado
 function medios.isDownloaded () {
     
-    [[ $? != 0 ]] && exit 1   
 
 	local id="$1"
 	local te="$2"
@@ -665,7 +664,6 @@ function medios.isDownloaded.info() {
 #Determinar si un episodio de una serie está ya descargado
 function medios.isDownloaded2 () {
     
-    [[ $? != 0 ]] && exit 1   
 
 	local serie="$1"
 	local te="$2"

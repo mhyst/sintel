@@ -186,7 +186,6 @@ function series.remove.info() {
 
 function series.updateFichero() {
     
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local fichero="$2"
 
@@ -210,7 +209,6 @@ function series.updateFichero.info() {
 
 function series.updateTorrent() {
     
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local torrent="$2"
 
@@ -334,7 +332,6 @@ function series.getField.info() {
 
 function series.addEpisodio() {
     
-    [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local temporada="$2"
 	local episodio="$3"
@@ -415,7 +412,6 @@ function series.findEpisodio.info() {
 
 function series.getEpisodioId() {
     
-    [[ $? != 0 ]] && exit 1   
 	local idmedio="$1"
 	local temporada="$2"
 	local episodio="$3"
@@ -456,7 +452,6 @@ function series.removeEpisodio.info() {
 
 function series.updateEpisodioFichero() {
     
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local fichero="$2"
 
@@ -478,7 +473,6 @@ function series.updateEpisodioFichero.info() {
 
 function series.updateEpisodioTorrent() {
     
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local torrent="$2"
 

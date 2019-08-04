@@ -51,7 +51,6 @@ function rutas.info() {
 
 function rutas.add() {
     
-    [[ $? != 0 ]] && exit 1   
 	local ruta="$1"
 	local reemplazo="$2"
 

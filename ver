@@ -137,7 +137,6 @@ function ver.serieOld.info() {
 
 function ver.cache() {
     
-    [[ $? != 0 ]] && exit 1   
 	local idserie="$1"
 	local titulo="$2"
 	local nepisodios="$3"
