@@ -630,19 +630,14 @@ function medios.isDownloaded () {
 	    exit
 	fi
 
-	echo "1." > /dev/tty
-
 	local epid=$(series.getEpisodioId "$id" "$temporada" "$episodio")
-
 	
-	echo "2. $epid" > /dev/tty
 	if [[ "$epid" == "" ]]; then
 	    echo "false"
 	    exit
 	else
 	    local reg=$(series.getEpisodioById "$epid")
 
-	    echo "3." > /dev/tty
 	    if [[ "$reg" == "" ]]; then
 		echo "ERROR: No se pudo obtener el episodio por el ID obtenido"
 		echo "false"

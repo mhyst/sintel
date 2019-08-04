@@ -416,7 +416,7 @@ function series.getEpisodioId() {
 	local temporada="$2"
 	local episodio="$3"
 
-	local id=$(db.executeQuery "select id from episodio where idmedio = $idmedio and temporada = $temporada and episodio = $episodio")
+	local id=$(db.executeQuery "select id from episodio where idmedio = $idmedio and temporada = $temporada and episodio = $episodio limit 1")
 	echo "$id"
 }
 
