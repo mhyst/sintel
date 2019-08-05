@@ -22,7 +22,7 @@ _sintel () {
         COMPREPLY=( $(compgen -W "$sintel_functions" -- ${cur}) )
 	;;
       -x)
-	COMPREPLY=( $(compgen -W "$modules" -- ${cur}) )
+	COMPREPLY=( $(compgen -W "$sintel_modules" -- ${cur}) )
 	;;
       --info)
         COMPREPLY=( $(compgen -W "$sintel_functions" -- ${cur}) )
