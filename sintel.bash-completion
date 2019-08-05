@@ -1,32 +1,31 @@
 # bash completion for sintel(1)           -*- shell-script -*-
 
+sintel_functions="$(sintel -l)"
+sintel_modules="$(sintel -m)"
+sintel_opts="-h --help --list-all --list-series --list-peliculas --find-series --find-peliculas --add-pelicula --list-episodios -d --detectar -f --function-call -n --function-call2 -l --list-functions -x -s --determine-series -i --is-downloaded --info -m --mods"
 _sintel () {
   local cur prev opts
-  local functions="$(sintel -l)"
-  local modules="$(sintel -m)"
 
   _get_comp_words_by_ref cur prev
 
-  opts="-h --help --list-all --list-series --list-peliculas --find-series --find-peliculas --add-pelicula --list-episodios -d --detectar -f --function-call -n --function-call2 -l --list-functions -x -s --determine-series -i --is-downloaded --info -m --mods"
-
   if [[ ${cur} == -* ]] ; then
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "${sintel_opts}" -- ${cur}) )
   else
     case "${prev}" in
       -d|--detectar)
         _filedir
 	;;
       -f|--function-call)
-        COMREPLY=( $(compgen -W "$functions" -- ${cur}) )
+        COMPREPLY=( $(compgen -W "$sintel_functions" -- ${cur}) )
 	;;
       -n|--function-call2)
-        COMREPLY=( $(compgen -W "$functions" -- ${cur}) )
+        COMPREPLY=( $(compgen -W "$sintel_functions" -- ${cur}) )
 	;;
       -x)
 	COMPREPLY=( $(compgen -W "$modules" -- ${cur}) )
 	;;
       --info)
-        COMREPLY=( $(compgen -W "$functions" -- ${cur}) )
+        COMPREPLY=( $(compgen -W "$sintel_functions" -- ${cur}) )
 	;;
       *)
         # dirs and torrents

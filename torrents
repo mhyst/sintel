@@ -31,7 +31,7 @@ function torrents.lastId(){
 	echo "$id"
 }
 
-function torrents.lastId.nfo() {
+function torrents.lastId.info() {
     echo "torrents.lastId - Obtener el id del último torrent añadido"
     echo
     echo -e "\tArgumentos: -"
