@@ -271,7 +271,10 @@ function medios.extractTe() {
 	local rem=""
 	local aux=""
 
-	local EXPS=( '[0-9]{1,3}[xX][0-9]{1,4}' '[sS][0-9]{1,3}[eE][0-9]{1,4}' '[0-9]{1,3}[oO][fF][0-9]{1,4}' )
+	medio=$(basename "$medio")
+	echo "Medio: $medio" > /dev/tty
+
+	local EXPS=( '[0-9]{1,3}[xX][0-9]{1,4}' '[sS][0-9]{1,3}[eE][0-9]{1,4}' '[0-9]{1,3}[oO][fF][0-9]{1,4}' 'Cap.[0-9]{3}' )
 
 	let i=0
 	for exp in "${EXPS[@]}"; do
@@ -297,6 +300,10 @@ function medios.extractTe() {
 					$DEBUG && echo "aux: $aux" > /dev/tty
 					te="$aux"
 					break
+					;;
+				3 )
+					rem=$(grep -oE '[0-9]{3}' <<< $te)
+					te="${rem:0:1}x${rem:1:2}"
 					;;
 				* )
 					echo "ERROR: Esto no debería suceder 2" > /dev/tty
