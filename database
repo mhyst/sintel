@@ -86,16 +86,22 @@ function db.executeUpdate() {
 	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
+	tmpfn=$(tempfile)
 	if [[ "${sql,,}" == "insert"* ]]; then
-		local res=`$database_SQLITE "BEGIN; $sql; select last_insert_rowid(); END TRANSACTION"`
-		ROWID=$res
+		$database_SQLITE "BEGIN; $sql; select last_insert_rowid(); END TRANSACTION" > $tmpfn
+		if [[ $? != 0 ]]; then
+			echo "Error"
+			echo "SQL ERROR: $sql" >> /tmp/sintel.txt
+			die
+		fi
+		ROWID=$(cat $tmpfn)
 	else
-		local res=`$database_SQLITE "BEGIN; $sql; END TRANSACTION"`
+		$database_SQLITE "BEGIN; $sql; END TRANSACTION"
+		if [[ $? != 0 ]]; then
+			echo "SQL ERROR: $sql" >> /tmp/sintel.txt
+			die
+		fi
 		ROWID=-1
-	fi
-	if [[ $? != 0 ]]; then
-		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
-		die
 	fi
 }
 

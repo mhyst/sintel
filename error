@@ -15,8 +15,8 @@
 #
 #
 # Control de errores
-set -o pipefail  # trace ERR through pipes
-set -o errtrace  # trace ERR through 'time command' and other functions
+#set -o pipefail  # trace ERR through pipes
+#set -o errtrace  # trace ERR through 'time command' and other functions
 
 function error.info() {
     echo "error - Manejo de errores de Sintel"
@@ -30,8 +30,10 @@ function error.info() {
 
 function error.stackTrace() {
     echo "Stack trace:"
+    let i=1
     for func in "${FUNCNAME[@]}"; do
-	echo "   $func"
+	[[ $i > 2 ]] && echo "   $func"
+	(( i++ ))
     done
 }
 
@@ -61,7 +63,9 @@ function error() {
 }
 
 function die() {
+    echo "Intentando matar sintel..."
     local pid=$(getpid)
+    echo "PID: $pid"
     if [ $pid -ne 0 ]; then
 	echo "      >> Kill $pid"
 	kill $pid
