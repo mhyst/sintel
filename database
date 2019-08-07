@@ -52,12 +52,13 @@ function db.info() {
 #Hacer consultas a la base de datos
 #Nótese que he utilizado transacciones para evitar que la base de datos quede bloqueada
 function db.executeQuery() {
-	sql="$1"
+	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
 	local res=`$database_SQLITE "BEGIN; $sql; END TRANSACTION"`
-	if [ $? != 0 ]; then
+	if [[ $? != 0 ]]; then
 		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
+		die
 	fi	
 	echo "$res"
 }
@@ -82,7 +83,7 @@ function db.executeQuery.info() {
 #Si la operación es un insert, una vez insertado se obtendrá el ROWID
 #Esto sucederá también con los updates, pero no haremos caso a ese dato.
 function db.executeUpdate() {
-	sql="$1"
+	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
 	if [[ "${sql,,}" == "insert"* ]]; then
@@ -92,8 +93,9 @@ function db.executeUpdate() {
 		local res=`$database_SQLITE "BEGIN; $sql; END TRANSACTION"`
 		ROWID=-1
 	fi
-	if [ $? != 0 ]; then
+	if [[ $? != 0 ]]; then
 		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
+		die
 	fi
 }
 

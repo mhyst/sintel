@@ -125,3 +125,14 @@ function testCheckArgs() {
 	echo "Error: Los argumentos no son correctos"
     fi
 }
+
+function args() {
+    echo "N. Args: $#"
+    if [[ $# != 4 ]]; then
+	echo "Error: el número de argumentos deberían ser 4" > /dev/tty
+	echo "Stack trace:"
+	for func in "${FUNCNAME[@]}"; do
+	    echo "   $func"
+	done
+    fi
+}

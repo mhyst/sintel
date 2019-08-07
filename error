@@ -1,0 +1,73 @@
+# This file is part of Sintel.
+#
+# Sintel is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Sintel is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Sintel.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+# Control de errores
+set -o pipefail  # trace ERR through pipes
+set -o errtrace  # trace ERR through 'time command' and other functions
+
+function error.info() {
+    echo "error - Manejo de errores de Sintel"
+    echo
+    echo "En caso de producirse un error se invocará automáticamente"
+    echo "la función 'error' que informará al usuario de en qué"
+    echo "parte del script se produjo, incluyendo la pila de llamadas."
+    echo
+    echo
+}
+
+function error.stackTrace() {
+    echo "Stack trace:"
+    for func in "${FUNCNAME[@]}"; do
+	echo "   $func"
+    done
+}
+
+function error.stackTrace.info() {
+    echo "error.stackTrace - Muestra la pila de llamadas"
+    echo
+    echo "Lista las funciones que han sido llamadas en orden"
+    echo "inverso. Permite hacerse una idea de dónde se ha"
+    echo "producido un error. Esta función es llamada desde la"
+    echo "función 'error'."
+    echo
+    echo
+}
+
+
+function error() {
+    local parent_lineno="$1"
+    local message="$2"
+    local code="${3:-1}"
+    if [[ -n "$message" ]] ; then
+        echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+    else
+        echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+    fi
+    error.stackTrace
+    exit "${code}"
+}
+
+function die() {
+    local pid=$(getpid)
+    if [ $pid -ne 0 ]; then
+	echo "      >> Kill $pid"
+	kill $pid
+    else
+	return
+    fi
+}
+
+trap 'error ${LINENO}' ERR

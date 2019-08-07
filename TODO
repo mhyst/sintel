@@ -1,0 +1,6 @@
+* Revisar todas las funciones que puedan necesitar añadir un limit 1 al
+  final de la consulta para arrojar solo un resultado.
+
+* Revisar módulo por módulo función por función.
+
+* Agregar un buen control de argumentos
