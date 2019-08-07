@@ -55,11 +55,13 @@ function db.executeQuery() {
 	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
-	local res=`$database_SQLITE "BEGIN; $sql; END TRANSACTION"`
+	local tmpfn=$(tempfile)
+	$database_SQLITE "BEGIN; $sql; END TRANSACTION" > $tmpfn
 	if [[ $? != 0 ]]; then
 		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
 		die
-	fi	
+	fi
+	res=$(cat $tmpfn)
 	echo "$res"
 }
 
@@ -86,11 +88,10 @@ function db.executeUpdate() {
 	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
-	tmpfn=$(tempfile)
+	local tmpfn=$(tempfile)
 	if [[ "${sql,,}" == "insert"* ]]; then
 		$database_SQLITE "BEGIN; $sql; select last_insert_rowid(); END TRANSACTION" > $tmpfn
 		if [[ $? != 0 ]]; then
-			echo "Error"
 			echo "SQL ERROR: $sql" >> /tmp/sintel.txt
 			die
 		fi
