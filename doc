@@ -127,7 +127,9 @@ function doc.listFunctions() {
 	    echo "${line:11}"
 	done
     else
-	if [[ $1 == "generic" ]]; then
+	local module=""
+	case $1 in
+	"generic")
 	    declare -F | while read line; do
 		line="${line:11}"
 		if `grep "\." <<< "$line" > /dev/null 2>&1`; then
@@ -135,14 +137,20 @@ function doc.listFunctions() {
 		fi
 		echo "$line"
 	    done
-	else
-	    declare -F | grep "$1\." | while read line; do
-		if `grep -E '.info$' <<< "$line" > /dev/null 2>&1`; then
-		    continue
-		fi
-		echo "${line:11}"
-	    done
-	fi
+	    ;;
+	"peliculas")
+	    module="film"
+	    ;;
+	*)
+	    module="$1"
+	    ;;
+	esac
+	declare -F | grep "$module\." | while read line; do
+	    if `grep -E '.info$' <<< "$line" > /dev/null 2>&1`; then
+		continue
+	    fi
+	    echo "${line:11}"
+	done
     fi
 }
 
