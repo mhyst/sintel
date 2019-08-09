@@ -17,6 +17,7 @@
 # Control de errores
 #set -o pipefail  # trace ERR through pipes
 #set -o errtrace  # trace ERR through 'time command' and other functions
+set -eE
 
 function error.info() {
     echo "error - Manejo de errores de Sintel"
@@ -38,6 +39,7 @@ function error.stackTrace() {
 }
 
 function error.stackTrace.info() {
+    echo
     echo "error.stackTrace - Muestra la pila de llamadas"
     echo
     echo "Lista las funciones que han sido llamadas en orden"
@@ -53,6 +55,7 @@ function error() {
     local parent_lineno="$1"
     local message="$2"
     local code="${3:-1}"
+    echo
     if [[ -n "$message" ]] ; then
         echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
     else
@@ -62,16 +65,21 @@ function error() {
     exit "${code}"
 }
 
-function die() {
-    echo "Intentando matar sintel..."
-    local pid=$(getpid)
-    echo "PID: $pid"
-    if [ $pid -ne 0 ]; then
-	echo "      >> Kill $pid"
-	kill $pid
-    else
-	return
-    fi
+iargs(){
+    local n="$1"
+    local args="$2"
+    echo "La función '${FUNCNAME[1]}' requiere $n argumentos: $args"
+}
+
+die() {
+    echo "ERROR: $@"
+    exit 1
+    #local pid=$(ps -ef | grep -v grep | grep sintel | awk '{print $2}')
+    #if [[ $pid != 0 ]]; then
+    #	kill $pid
+    #else
+    #	return
+    #fi
 }
 
 trap 'error ${LINENO}' ERR

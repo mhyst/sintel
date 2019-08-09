@@ -4,3 +4,5 @@
 * Revisar módulo por módulo función por función.
 
 * Agregar un buen control de argumentos
+  Ya ha sido probado en anime.add
+  Ponerlo en aquellas funciones en que se necesite.

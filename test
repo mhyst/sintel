@@ -136,3 +136,7 @@ function args() {
 	done
     fi
 }
+
+function testAnimeAdd() {
+    anime.add "titulo"
+}

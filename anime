@@ -34,6 +34,7 @@ function anime.info() {
 }
 
 function anime.add() {
+    [[ $# != 2 ]] && ( die $(iargs 2 "título y url") )
     
     local titulo="$1"
     local url="$2"
@@ -54,6 +55,7 @@ function anime.add.info() {
 }
 
 function anime.getById() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
     local id="$1"
 
     $DEBUG && echo "> anime.getById" > /dev/tty
@@ -63,6 +65,7 @@ function anime.getById() {
 }
 
 function anime.getIdByTitulo() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
     local titulo="$1"
 
     $DEBUG && echo "> anime.getByTitulo" > /dev/tty
@@ -72,6 +75,7 @@ function anime.getIdByTitulo() {
 }
 
 function anime.getByTitulo() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
     local titulo="$1"
 
     $DEBUG && echo "> anime.getByTitulo" > /dev/tty
@@ -95,6 +99,7 @@ function anime.list() {
 }
 
 function anime.delete() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
     local id="$1"
 
     $DEBUG && echo "> anime.delete" > /dev/tty
@@ -105,6 +110,7 @@ function anime.delete() {
 
 function anime.setAlias() {
     
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y alias") )
     local id="$1"
     local alias="$2"
 
@@ -115,6 +121,7 @@ function anime.setAlias() {
 }
 
 function anime.getId() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
     local titulo="$1"
 
     local id=$(db.executeQuery "select id from anime where titulo = \"$titulo\"")
@@ -122,6 +129,7 @@ function anime.getId() {
 }
 
 function anime.remove() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
     local id="$1"
 
     db.executeUpdate "delete from anime where id = $id"
@@ -129,6 +137,7 @@ function anime.remove() {
 
 function anime.updateTitulo() {
     
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y título") )
     local id="$1"
     local titulo="$2"
 
@@ -137,6 +146,7 @@ function anime.updateTitulo() {
 
 function anime.updateURL() {
     
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y url") )
     local id="$1"
     local url="$2"
 
@@ -145,6 +155,7 @@ function anime.updateURL() {
 
 function anime.updateEpisodio() {
     
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y episodio") )
     local id="$1"
     local episodio="$2"
 
@@ -152,18 +163,21 @@ function anime.updateEpisodio() {
 }
 
 function anime.next() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
     local id="$1"
 
     db.executeUpdate "update anime set episodio=episodio+1 where id = $id"
 }
 
 function anime.previous() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
     local id="$1"
 
     db.executeUpdate "update anime set episodio=episodio-1 where id = $id"
 }
 
 function anime.parse() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro (datos)") )
     local datos="$1"
 
     $DEBUG && echo ">Entra en anime.parse" > /dev/tty
@@ -173,22 +187,23 @@ function anime.parse() {
     ANIME[url]="${datosa[2]}"
     ANIME[alias]="${datosa[3]}"
     ANIME[episodio]="${datosa[4]}"
-    $DEBUG && echo "<Sale en anime.parse" > /dev/tty
+    #$DEBUG && echo "<Sale en anime.parse" > /dev/tty
 }
 
 function anime.parseToFile() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro (datos)") )
     local datos="$1"
 
     anime.parse "$datos"
 
     echo > /tmp/ANIME
-    let i=0
     for key in ${!ANIME[@]}; do
-    echo "$key ${ANIME[$key]}" >> /tmp/ANIME
+	echo "$key ${ANIME[$key]}" >> /tmp/ANIME
     done
 }
 
 function anime.getField() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "campo") )
     local field="$1"
 
     let i=0
@@ -213,6 +228,7 @@ function anime.screenAnime() {
 }
 
 function anime.watch() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
     local id="$1"
 
     $DEBUG && echo "> anime.watch" > /dev/tty

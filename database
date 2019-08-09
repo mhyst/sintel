@@ -52,6 +52,7 @@ function db.info() {
 #Hacer consultas a la base de datos
 #Nótese que he utilizado transacciones para evitar que la base de datos quede bloqueada
 function db.executeQuery() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "sql") )
 	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
@@ -85,6 +86,7 @@ function db.executeQuery.info() {
 #Si la operación es un insert, una vez insertado se obtendrá el ROWID
 #Esto sucederá también con los updates, pero no haremos caso a ese dato.
 function db.executeUpdate() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "sql") )
 	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
