@@ -42,6 +42,7 @@ function series.info() {
 }
 
 function series.add() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
 	local titulo="$1"
 
 	$DEBUG && echo "> series.add" > /dev/tty
@@ -64,6 +65,7 @@ function series.add.info() {
 }
 
 function series.getById() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	$DEBUG && echo "> series.getById" > /dev/tty
@@ -85,6 +87,7 @@ function series.getById.info() {
 }
 
 function series.getIdByTitulo() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
 	local titulo="$1"
 
 	$DEBUG && echo "> series.getByTitulo" > /dev/tty
@@ -109,6 +112,7 @@ function series.getIdByTitulo.info() {
 }
 
 function series.getByTitulo() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
 	local titulo="$1"
 
 	$DEBUG && echo "> series.getByTitulo" > /dev/tty
@@ -149,6 +153,7 @@ function series.find.info() {
 }
 
 function series.getId() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
 	local titulo="$1"
 
 	local id=$(db.executeQuery "select id from medio where esserie = 1 and titulo = \"$titulo\"")
@@ -167,6 +172,7 @@ function series.getId.info() {
 }
 
 function series.remove() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "delete from medio where esserie = 1 and id = $id"
@@ -185,6 +191,7 @@ function series.remove.info() {
 }
 
 function series.updateFichero() {
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y fichero") )
     
 	local id="$1"
 	local fichero="$2"
@@ -208,6 +215,7 @@ function series.updateFichero.info() {
 }
 
 function series.updateTorrent() {
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y torrent") )
     
 	local id="$1"
 	local torrent="$2"
@@ -231,6 +239,7 @@ function series.updateTorrent.info() {
 }
 
 function series.setVista() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=1 where id = $id"
@@ -246,6 +255,7 @@ function series.setVista.info() {
 }
 
 function series.parse() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro") )
 	local datos="$1"
 
 	$DEBUG && echo ">Entra en series.parse" > /dev/tty
@@ -273,6 +283,7 @@ function series.parse.info() {
 }
 
 function series.parseToFile() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro") )
 	local datos="$1"
 
 	series.parse "$datos"
@@ -298,6 +309,7 @@ function series.parseToFile.info() {
 }
 
 function series.getField() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "campo") )
 	local field="$1"
 
 	let i=0
@@ -331,6 +343,7 @@ function series.getField.info() {
 }
 
 function series.addEpisodio() {
+    [[ $# != 5 ]] && ( die $(iargs 5 "id, temporada, episodio, fichero y torrent") )
     
 	local idmedio="$1"
 	local temporada="$2"
@@ -355,6 +368,7 @@ function series.addEpisodio.info() {
 }
 
 function series.getEpisodioById() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	local res=$(db.executeQuery "select * from episodio where id = $id")
@@ -373,6 +387,7 @@ function series.getEpisodioById.info() {
 }
 
 function series.getEpisodioByFichero() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "fichero") )
 	local fichero="$1"
 
 	local res=$(db.executeQuery "select * from episodio where fichero = \"$fichero\"")
@@ -411,6 +426,7 @@ function series.findEpisodio.info() {
 }
 
 function series.getEpisodioId() {
+    [[ $# != 3 ]] && ( die $(iargs 3 "id, temporada y episodio") )
     
 	local idmedio="$1"
 	local temporada="$2"
@@ -434,6 +450,7 @@ function series.getEpisodioId.info() {
 }
 
 function series.removeEpisodio() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "delete from episodio where id = $id"
@@ -451,6 +468,7 @@ function series.removeEpisodio.info() {
 }
 
 function series.updateEpisodioFichero() {
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y fichero") )
     
 	local id="$1"
 	local fichero="$2"
@@ -472,6 +490,7 @@ function series.updateEpisodioFichero.info() {
 }
 
 function series.updateEpisodioTorrent() {
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y torrent") )
     
 	local id="$1"
 	local torrent="$2"
@@ -494,6 +513,7 @@ function series.updateEpisodioTorrent.info() {
 }
 
 function series.setEpisodioVista() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update episodio set esvisto=1 where id = $id"
@@ -509,6 +529,7 @@ function series.setEpisodioVista.info() {
 }
 
 function series.setEpisodioNoVista() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update episodio set esvisto=0 where id = $id"
@@ -524,6 +545,7 @@ function series.setEpisodioNoVista.info() {
 }
 
 function series.setEpisodioDescargado() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update episodio set esdescargado=1 where id = $id"
@@ -539,6 +561,7 @@ function series.setEpisodioDescargado.info() {
 }
 
 function series.setEpisodioNoDescargado() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update episodio set esdescargado=0 where id = $id"
@@ -554,6 +577,7 @@ function series.setEpisodioNoDescargado.info() {
 }
 
 function series.parseEpisodio() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro") )
 	local datos="$1"
 
 	IFS='|' read -a datosa <<< "$datos"; IFS=" "
@@ -581,6 +605,7 @@ function series.parseEpisodio.info() {
 }
 
 function series.parseEpisodioToFile() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro") )
 	local datos="$1"
 
 	series.parseEpisodio "$datos"
@@ -605,6 +630,7 @@ function series.parseEpisodioToFile.info() {
 }
 
 function series.getEpisodioField() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "campo") )
 	local field="$1"
 
 	let i=0
@@ -638,6 +664,7 @@ function series.getEpisodioField.info() {
 }
 
 function series.parseTemporada() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "te") )
 	local te="$1"
 
 	IFS='x' read -a aux <<< "$te"; IFS=" "
@@ -657,6 +684,7 @@ function series.parseTemporada.info() {
 }
 
 function series.parseEpisodioNum() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "te") )
 	local te="$1"
 
 	IFS='x' read -a aux <<< "$te"; IFS=" "

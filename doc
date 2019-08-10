@@ -101,7 +101,7 @@ function doc.callFunction2() {
 
 	$DEBUG && echo "A ejecutar: $funcion $postargs" > /dev/tty
 
-	local res=`eval "$funcion" $postargs`
+	local res=`eval "$funcion" "$postargs"`
 	echo "$res"
 }
 

@@ -37,8 +37,8 @@ function peliculas.info() {
 
 #@ film.add titulo fichero torrent
 function film.add() {
+    [[ $# != 3 ]] && ( die $(iargs 3 "título, ficheroy torrent") )
     
-    [[ $? != 0 ]] && exit 1   
 	local titulo="$1"
 	local fichero="$2"
 	local torrent="$3"
@@ -62,6 +62,7 @@ function film.add.info() {
 
 #@ film.add2 registro (Formato: titulo|fichero|torrent)
 function film.add2() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro") )
 	local datos="$1"
 	film.parse "$datos"
 	local titulo="${PELICULA[titulo]}"
@@ -93,6 +94,7 @@ function film.add2.info() {
 
 #@ film-getById id
 function film.getById() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	$DEBUG && echo "> film.getById" > /dev/tty
@@ -119,6 +121,7 @@ function film.getById.info() {
 
 #@ film.getIdByTitulo titulo
 function film.getIdByTitulo() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
 	local titulo="$1"
 
 	$DEBUG && echo "> film.getByTitulo" > /dev/tty
@@ -141,6 +144,7 @@ function film.getIdByTitulo.info() {
 
 #@ film.getByTitulo titulo
 function film.getByTitulo() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
 	local titulo="$1"
 
 	$DEBUG && echo "> film.getByTitulo" > /dev/tty
@@ -163,6 +167,7 @@ function film.getByTitulo.info() {
 
 #@  film-getByFichero fichero
 function film.getByFichero() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "fichero") )
 	local fichero="$1"
 
 	local res=$(db.executeQuery "select * from medio where esserie = 0 and fichero = \"$fichero\"")
@@ -204,6 +209,7 @@ function film.find.info() {
 
 #@ film-getId titulo (sinonimo de getIdByTitulo)
 function film.getId() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "título") )
 	local titulo="$1"
 
 	local id=$(db.executeQuery "select id from medio where esserie = 0 and titulo = \"$titulo\"")
@@ -223,6 +229,7 @@ function film.getId.info() {
 
 #@ film.remove id
 function film.remove() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "delete from medio where esserie = 0 and id = $id"
@@ -242,8 +249,9 @@ function film.remove.info() {
 
 #@ film-updateFichero id fichero
 function film.updateFichero() {
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y fichero") )
+
     
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local fichero="$2"
 
@@ -264,8 +272,8 @@ function film.updateFichero.info() {
 
 #@ film.updateTorrent id torrent
 function film.updateTorrent() {
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y torrent") )
     
-    [[ $? != 0 ]] && exit 1   
 	local id="$1"
 	local torrent="$2"
 
@@ -290,6 +298,7 @@ function film.updateTorrent.info() {
 
 #@ film.setVista id
 function film.setVista() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=1 where id = $id"
@@ -306,6 +315,7 @@ function film.setVista.info() {
 
 #@ film.setNoVista id
 function film.setNoVista() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update medio set esdescargado=0 where id = $id"
@@ -322,6 +332,7 @@ function film.setNoVista.info() {
 
 #@ film.setDescargada id
 function film.setDescargada() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update medio set esdescargado=1 where id = $id"
@@ -338,6 +349,7 @@ function film.setDescargada.info() {
 
 #@ film.SetNoDescargada id
 function film.setNoDescargada() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	db.executeUpdate "update medio set esvisto=0 where id = $id"
@@ -354,6 +366,7 @@ function film.setNoDescargada.info() {
 
 #@ film.parse datos (Formato: (id|titulo|fichero|torrent|esserie|esvisto|esdescargado))
 function film.parse() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro") )
 	local datos="$1"
 
 	IFS='|' read -a datosa <<< "$datos"; IFS=" "
@@ -379,6 +392,7 @@ function film.parse.info() {
 
 #@ film.parseToFile datos
 function film.parseToFile() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "registro") )
 	local datos="$1"
 
 	film.parse "$datos"
@@ -401,6 +415,7 @@ function film.parseToFile.info() {
 
 #@ film.getField field
 function film.getField() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "campo") )
 	local field="$1"
 
 	let i=0

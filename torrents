@@ -46,6 +46,7 @@ function torrents.lastId.info() {
 }
 
 function torrents.torrent_info() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	local res=$(transmission-remote $torrents_SERVER -t $id -i)
@@ -67,6 +68,8 @@ function torrents.torrent_info.info() {
 }
 
 function torrents.parse() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "campo") )
+
 	local field="$1"
 
 	local res=`grep "$field:" < /tmp/TORRENT_INFO`
@@ -88,6 +91,7 @@ function torrents.parse.info() {
 }
 
 function torrents.isDone() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	local res=$(transmission-remote $torrents_SERVER -t $id -i | grep "Hash:")
@@ -108,6 +112,7 @@ function torrents.isDone.info() {
 }
 
 function torrents.getName() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	local res=$(transmission-remote $torrents_SERVER -t $id -i | grep "Name:")
@@ -128,6 +133,7 @@ function torrents.getName.info() {
 }
 
 function torrents.getLocation() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local id="$1"
 
 	local res=$(transmission-remote $torrents_SERVER -t $id -i | grep "Location:")

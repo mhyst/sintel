@@ -237,6 +237,7 @@ function medios.findPeliculas.info() {
 }
 
 function medios.listEpisodios() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local idmedio="$1"
 	local e=""
 
@@ -266,6 +267,7 @@ function medios.listEpisodios.info() {
 }
 
 function medios.extractTe() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "fichero") )
 	local medio="$1"
 	local te=""
 	local rem=""
@@ -333,6 +335,7 @@ function medios.extractTe.info() {
 }
 
 function medios.fixTitulo() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "fichero") )
 	local medio="$*"
 
 	medio="$(tr -d '[\[\]]' <<< $medio)"
@@ -371,6 +374,7 @@ function medios.fixTitulo.info() {
 }
 
 function medios.getTituloSerie() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "fichero") )
 	local medio="$1"
 
 	# Extraemos el nombre del archivo sin su ruta
@@ -433,6 +437,7 @@ function medios.getTituloSerie.info() {
 }
 
 function medios.getTituloPelicula() {
+    [[ $# != 1 ]] && ( die $(iargs 1 "fichero") )
 	local medio="$1"
 
 	local aux="${medio##*/}"
@@ -613,6 +618,7 @@ function medios.determineSeries.info() {
 
 #Determinar si un episodio de una serie está ya descargado
 function medios.isDownloaded () {
+    [[ $# != 2 ]] && ( die $(iargs 2 "id y te") )
     
 
 	local id="$1"
@@ -673,6 +679,7 @@ function medios.isDownloaded.info() {
 
 #Determinar si un episodio de una serie está ya descargado
 function medios.isDownloaded2 () {
+    [[ $# != 2 ]] && ( die $(iargs 2 "título y te") )
     
 
 	local serie="$1"
