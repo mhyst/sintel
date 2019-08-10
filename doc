@@ -29,11 +29,23 @@ function doc.callFunction() {
 	local tupla="$1"
 
 	$DEBUG && echo "Tupla: $tupla" >> /dev/tty
-	IFS=':' read -a aux <<< "$tupla"; IFS=" "
-	local funcion="${aux[0]}"
+	local pos=$(expr index "$tupla" :)
+	if [[ $pos == 1 ]]; then
+	    die "callFunction necesita una llamada normalizada tipo 'funcion:\"args\"'"
+	fi
+	local funcion=""
+	if [[ $pos == 0 ]]; then
+	    funcion=$tupla
+	    pos=${#tupla}
+	else
+	    #IFS=':' read -a aux <<< "$tupla"; IFS=" "
+	    #local funcion="${aux[0]}"
+	    funcion="${tupla::$(( pos-1 ))}"
+	fi
 	$DEBUG && echo "Función: $funcion" > /dev/tty
 
-	local args="${aux[1]}"
+	#local args="${aux[1]}"
+	local args="${tupla:pos}"
 	$DEBUG && echo "Argumentos: $args" > /dev/tty
 
 	eval set -- "$args"
@@ -80,11 +92,20 @@ function doc.callFunction2() {
 	local tupla="$1"
 
 	$DEBUG && echo "Tupla: $tupla" >> /dev/tty
-	IFS=':' read -a aux <<< "$tupla"; IFS=" "
-	local funcion="${aux[0]}"
+	local pos=$(expr index "$tupla" :)
+	if [[ $pos == 1 ]]; then
+	    die "callFunction22 necesita una llamada normalizada tipo 'funcion:\"args\"'"
+	fi
+	local funcion=""
+	if [[ $pos == 0 ]]; then
+	    funcion=$tupla
+	    pos=${#tupla}
+	else
+	    funcion="${tupla::$(( pos-1 ))}"
+	fi
 	$DEBUG && echo "Función: $funcion" > /dev/tty
 
-	local args="${aux[1]}"
+	local args="${tupla:pos}"
 	$DEBUG && echo "Argumentos: $args" > /dev/tty
 
 	declare -a preargs

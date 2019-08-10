@@ -19,8 +19,8 @@
 
 #Directorio global del script
 global_DIR=~/bin/scripts/sintel
-DEBUG=false
-VERSION="2.6.0"
+DEBUG=true
+VERSION="2.6.2"
 
 #Cargamos los módulos
 MODS=( "error" "help" "generic" "doc" "init" "database" "peliculas" "series" "medios" "torrents" "rutas" "head" "ver" "test" "anime" "veronline" )
