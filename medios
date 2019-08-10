@@ -520,7 +520,7 @@ function medios.detectar() {
 			id=$(series.getIdByTitulo "$titulo")
 			if [[ "$id" == "" ]]; then
 				#No existe, la creamos
-				series.add "$titulo" "null" "-1"
+				series.add "$titulo"
 				id="$ROWID"
 			fi
 
