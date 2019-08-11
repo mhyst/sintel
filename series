@@ -91,10 +91,7 @@ function series.getIdByTitulo() {
 	local titulo="$1"
 
 	$DEBUG && echo "> series.getByTitulo" > /dev/tty
-	local res=$(db.executeQuery "select id from medio where esserie=1 and lower(titulo) = \"${titulo,,}\"")
-	# if [[ $? != 0 ]]; then
-	# 	echo "SQL: $sql"
-	# fi
+	local res=$(db.executeQuery "select id from medio where esserie=1 and titulo like \"%${titulo,,}%\" limit 1")
 	$DEBUG && echo "< series.getByTitulo" > /dev/tty
 	echo "$res"
 }

@@ -16,7 +16,8 @@
 #
 #Ver una serie o película
 
-PLAYER="vlc -f --no-loop --play-and-exit"
+#PLAYER="vlc -f --no-loop --play-and-exit"
+PLAYER="mpv -fs"
 
 function ver.info() {
     echo "ver - Reproducir medios"
@@ -142,6 +143,8 @@ function ver.cache() {
 	local titulo="$2"
 	local nepisodios="$3"
 
+	local basefn=""
+
 	clear > /dev/tty
 
 	echo -e "\e[92mSerie:\e[0m  \e[1m$titulo\e[0m - $nepisodios episodios" > /dev/tty
@@ -206,19 +209,20 @@ function ver.cache() {
 	readarray -t datosa <<< "$datos"
 	let i=0
 	for episodio in "${datosa[@]}"; do
-		#echo "datosa de $i $episodio"
-		if (( i >= ini )) && (( i <= fin )); then
-			#echo "Entra ini-fin" > /dev/tty
-			series.parseEpisodio "$episodio"
-			#series.screenEpisodio
-			if [[ "${EPISODIO[id]}" == "$next" ]]; then
-				echo -e -n "> \e[38;5;196m\e[47m" > /dev/tty
-			else
-				echo -n "  " > /dev/tty
-			fi
-			echo -e "${EPISODIO[temporada]}x${EPISODIO[episodio]}:		${EPISODIO[fichero]}\e[0m" > /dev/tty
+	    #echo "datosa de $i $episodio"
+	    if (( i >= ini )) && (( i <= fin )); then
+		#echo "Entra ini-fin" > /dev/tty
+		series.parseEpisodio "$episodio"
+		#series.screenEpisodio
+		if [[ "${EPISODIO[id]}" == "$next" ]]; then
+			echo -e -n "> \e[38;5;196m\e[47m" > /dev/tty
+		else
+			echo -n "  " > /dev/tty
 		fi
-		(( i++ ))
+		basefn="$(basename "${EPISODIO[fichero]}")"
+		echo -e "${EPISODIO[temporada]}x${EPISODIO[episodio]}:\t$basefn\e[0m" > /dev/tty
+	    fi
+	    (( i++ ))
 	done
 
 	echo "$backup"
@@ -238,16 +242,12 @@ function ver.cache.info() {
 
 function ver.play() {
     [[ $# != 1 ]] && ( die $(iargs 1 "idepisodio") )
-	local idepisodio=$(grep -E '[0-9]{1,3}' <<< "$1")
-	#echo "$idepisodio" | hexdump -C >> /dev/tty
+	#local idepisodio=$(grep -E '[0-9]{1,3}' <<< "$1")
+	local idepisodio="$1"
 
-	#echo "Episodio a reproducir: $idepisodio, size: ${#idepisodio}" > /dev/tty
+	local filename="$(db.executeQuery "select fichero from episodio where id = $idepisodio")"
 
-	local filename=$(db.executeQuery "select fichero from episodio where id = $idepisodio")
-
-	#echo "Filename: $filename" > /dev/tty
-
-	$PLAYER "$filename" 2> /dev/null > /dev/null
+	$PLAYER "$filename"
 	db.executeUpdate "update episodio set esvisto=1 where id=$idepisodio"
 }
 
