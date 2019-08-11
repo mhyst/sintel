@@ -255,7 +255,7 @@ function series.parse() {
     [[ $# != 1 ]] && ( die $(iargs 1 "registro") )
 	local datos="$1"
 
-	$DEBUG && echo ">Entra en series.parse" > /dev/tty
+	#$DEBUG && echo ">Entra en series.parse" > /dev/tty
 	IFS='|' read -a datosa <<< "$datos"; IFS=" "
 	SERIE[id]="${datosa[0]}"
 	SERIE[titulo]="${datosa[1]}"
@@ -264,7 +264,7 @@ function series.parse() {
 	SERIE[esserie]="${datosa[4]}"
 	SERIE[esvisto]="${datosa[5]}"
 	# SERIE[esdescargado]="${datosa[6]}"
-	$DEBUG && echo "<Sale en series.parse" > /dev/tty
+	#$DEBUG && echo "<Sale en series.parse" > /dev/tty
 }
 
 function series.parse.info() {
