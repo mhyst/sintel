@@ -40,7 +40,7 @@ function userChoice() {
 	local limite=$1
 	local cadena="$2"
 	local reply
-	let reply=0
+	local reply=0
 
 	echo > /dev/tty
 	echo "$cadena" > /dev/tty

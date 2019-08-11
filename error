@@ -34,7 +34,8 @@ function error.stackTrace() {
     echo "Stack trace:"
     let i=1
     for func in "${FUNCNAME[@]}"; do
-	[[ $i > 2 ]] && echo "   $func"
+	#[[ $i > 2 ]] && echo "   $func"
+	echo "    $func"
 	(( i++ ))
     done
 }

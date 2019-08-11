@@ -278,7 +278,7 @@ function medios.extractTe() {
 
 	local EXPS=( '[0-9]{1,3}[xX][0-9]{1,4}' '[sS][0-9]{1,3}[eE][0-9]{1,4}' '[0-9]{1,3}[oO][fF][0-9]{1,4}' 'Cap.[0-9]{3}' )
 
-	local i=0
+	let i=0
 	for exp in "${EXPS[@]}"; do
 		te=$(grep -oE $exp <<< "$medio")
 		if [[ "$te" != "" ]]; then
@@ -343,7 +343,7 @@ function medios.extractTe2() {
 
 	local EXPS=( '[0-9]{1,3}[xX][0-9]{1,4}' '[sS][0-9]{1,3}[eE][0-9]{1,4}' '[0-9]{1,3}[oO][fF][0-9]{1,4}' 'Cap.[0-9]{3}' )
 
-	local i=0
+	let i=0
 	for exp in "${EXPS[@]}"; do
 		te=$(grep -oE $exp <<< "$medio")
 		if [[ "$te" != "" ]]; then
@@ -571,21 +571,15 @@ function medios.detectar.info() {
 function medios.determineSeries() {
 	local busqueda="$@"
 
-	local res=$(series.find "$busqueda")
-	#echo "res: $res" > /dev/tty
-
-	if [[ "$res" == "" ]]; then
-		echo "-1"
-		exit
-	fi
-	readarray -t devueltos <<< $res
-
+	local devueltos=($(series.find "$busqueda"))
+	
 	if [[ ${#devueltos[@]} == 0 ]]; then
 		echo "-1"
 		exit
 	fi
 
 	if [[ ${#devueltos[@]} == 1 ]]; then
+		#echo "Se devuelve solo uno?" > /dev/tty
 		series.parse "${devueltos[0]}"
 
 		echo "${SERIE[id]}"
@@ -593,11 +587,17 @@ function medios.determineSeries() {
 		echo -e "\e[47m\e[31m Series coincidentes \e[0m\n" > /dev/tty
 		local i=0
 		for reg in "${devueltos[@]}"; do
+		        #echo "Antes del parse" > /dev/tty
 			series.parse "$reg"
+			#echo "Después del parse" > /dev/tty
 			echo " $i:	${SERIE[titulo]}" > /dev/tty
-			(( i++ ))
+			#echo "Antes del i++" > /dev/tty
+			((i=i+1))
+			#echo "Después del i++" > /dev/tty
 		done
+		#echo "Antes del limite" > /dev/tty
 		local LIMITE=$(( ${#devueltos[*]} - 1 ))
+		#echo "Después del límite: $LIMITE" > /dev/tty
 		local CHOSENID=$(userChoice $LIMITE "Seleccione la serie:")
 		series.parse "${devueltos[$CHOSENID]}"
 		echo "${SERIE[id]}"

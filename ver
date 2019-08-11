@@ -268,6 +268,7 @@ function ver.serie() {
 	local busqueda="$@"
 
 	local idserie=$(medios.determineSeries "$busqueda")
+	echo "Después de determineSeries $idserie" > /dev/tty
 
 	if [[ "$idserie" == "-1" ]]; then
 		echo "No hay series que se correspondan con la cadena de búsqueda: $busqueda" > /dev/tty
@@ -277,9 +278,12 @@ function ver.serie() {
 	local titulo=$(db.executeQuery "select titulo from medio where id=$idserie")
 	local nepisodios=$(db.executeQuery "select count(id) from episodio where idmedio=$idserie")
 
+	echo "Antes del bucle" > /dev/tty
 	local correcto=false
 	while ! $correcto; do
+		echo "Antes de ver.cache" > /dev/tty
 		local next=$(ver.cache "$idserie" "$titulo" "$nepisodios")
+		echo "Después de ver.cache" > /dev/tty
 		#echo "ver.serie2 Next: >$next<"
 		echo > /dev/tty
 		echo > /dev/tty
