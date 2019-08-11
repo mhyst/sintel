@@ -141,3 +141,14 @@ function args() {
 function testAnimeAdd() {
     anime.add "titulo"
 }
+
+function testMakeArray() {
+    local busqueda="$@"
+
+    local datos=$(db.executeQuery "select * from medio where esserie=0 and esvisto = 0 and titulo like \"%$busqueda%\"")
+    echo "$datos"
+
+    IFS=$'\n'
+    readarray -t datosa <<< "$datos"
+    echo "${datosa[0]}"
+}

@@ -29,15 +29,12 @@ function ver.info() {
 
 function ver.pelicula() {
 	local busqueda="$@"
-
+	
 	local datos=$(db.executeQuery "select * from medio where esserie = 0 and esvisto = 0 and titulo like \"%$busqueda%\"")
-
-	if [[ "$datos" == "" ]]; then
-		echo "No hay películas que se correspondan con la cadena de búsqueda: $busqueda" > /dev/tty
-		exit
-	fi
-
+		
+	IFS=$'\n'
 	readarray -t datosa <<< "$datos"
+	#echo "Datosa: ${datosa[0]}" > /dev/tty
 
 	echo "Películas encontradas: ${#datosa[@]}" > /dev/tty
 	if [[ ${#datosa[@]} == 0 ]]; then
@@ -45,12 +42,12 @@ function ver.pelicula() {
 		exit
 	fi
 
-	let i=0
+	local i=0
 	for medio in "${datosa[@]}"; do
 		film.parse "$medio"
 		
 		echo "$i:	${PELICULA[titulo]}" > /dev/tty
-		(( i++ ))
+		((i=i+1))
 	done
 
 	readarray -t datosa <<< "$datos"
@@ -99,12 +96,12 @@ function ver.serieOld() {
 		exit
 	fi
 
-	let i=0
+	local i=0
 	for medio in "${datosa[@]}"; do
 		film.parse "$medio"
 		
 		echo "$i:	${PELICULA[titulo]}" > /dev/tty
-		(( i++ ))
+		((i=i+1))
 	done
 
 	readarray -t datosa <<< "$datos"
@@ -170,7 +167,7 @@ function ver.cache() {
 
 	readarray -t datosa <<< "$datos"
 
-	let i=0
+	local i=0
 	let ini=-1
 	let fin=-1
 	for episodio in "${datosa[@]}"; do
@@ -193,7 +190,7 @@ function ver.cache() {
 			#fi
 			break
 		fi
-		(( i++ ))
+		((i=i+1))
 	done
 
 	#echo "ini: $ini, fin: $fin" > /dev/tty
@@ -208,7 +205,7 @@ function ver.cache() {
 	echo
 	echo
 	readarray -t datosa <<< "$datos"
-	let i=0
+	local i=0
 	for episodio in "${datosa[@]}"; do
 	    #echo "datosa de $i $episodio"
 	    if (( i >= ini )) && (( i <= fin )); then
@@ -223,7 +220,7 @@ function ver.cache() {
 		basefn="$(basename "${EPISODIO[fichero]}")"
 		echo -e "${EPISODIO[temporada]}x${EPISODIO[episodio]}:\t$basefn\e[0m" > /dev/tty
 	    fi
-	    (( i++ ))
+	    ((i=i+1))
 	done
 
 	echo "$backup"
