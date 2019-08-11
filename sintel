@@ -19,7 +19,7 @@
 
 #Directorio global del script
 global_DIR=~/bin/scripts/sintel
-DEBUG=true
+DEBUG=false
 VERSION="2.6.2"
 
 #Cargamos los módulos
