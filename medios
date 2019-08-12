@@ -138,7 +138,7 @@ function medios.listSeries.info() {
 #Listar todas las películas
 #En el formato id titulo
 function medios.listPeliculas() {
-	local datos=$(db.executeQuery "select * from medio")
+	local datos=$(db.executeQuery "select * from medio where esserie=0")
 	local e=""
 	local e2=""
 	local res=""
