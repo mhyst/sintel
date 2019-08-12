@@ -571,7 +571,11 @@ function medios.detectar.info() {
 function medios.determineSeries() {
 	local busqueda="$@"
 
-	local devueltos=($(series.find "$busqueda"))
+	local res=$(series.find "$busqueda")
+	IFS=$'\n'
+	declare -a devueltos
+	readarray -t devueltos <<< "$res"
+	unset IFS
 	
 	if [[ ${#devueltos[@]} == 0 ]]; then
 		echo "-1"
