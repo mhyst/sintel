@@ -517,9 +517,9 @@ function medios.detectar() {
 			else
 				echo "Temporada: $temporada, Episodio: $episodio"
 			fi
-			#id=$(series.getIdByTitulo "$titulo")
-			id=$(medios.determineSeries "$titulo")
-			if [[ "$id" == "-1" ]]; then
+			id=$(series.getIdByTitulo "$titulo")
+			#id=$(medios.determineSeries "$titulo")
+			if [[ "$id" == "" ]]; then
 				#No existe, la creamos
 				series.add "$titulo"
 				id="$ROWID"

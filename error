@@ -84,4 +84,4 @@ die() {
     #fi
 }
 
-trap 'error ${LINENO}' ERR
+#trap 'error ${LINENO}' ERR
