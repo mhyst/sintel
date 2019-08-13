@@ -82,3 +82,7 @@ function checkArgs() {
 	return 0
     fi
 }
+
+function pause() {
+    read -n1 -r -p "Pulse una tecla para continuar..." key
+}
