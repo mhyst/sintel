@@ -143,98 +143,99 @@ function ver.serieOld.info() {
 function ver.cache() {
     [[ $# != 3 ]] && ( die $(iargs 3 "id, título y n. episodios") )
     
-	local idserie="$1"
-	local titulo="$2"
-	local nepisodios="$3"
+    local idserie="$1"
+    local titulo="$2"
+    local nepisodios="$3"
 
-	local basefn=""
+    local basefn=""
 
-	clear > /dev/tty
+    clear > /dev/tty	
 
-	echo -e "\e[92mSerie:\e[0m  \e[1m$titulo\e[0m - $nepisodios episodios" > /dev/tty
-	echo > /dev/tty
-	echo > /dev/tty
-	local next=$(head.next "$idserie")
-	local backup="$next"
+    echo -e "\e[92mSerie:\e[0m  \e[1m$titulo\e[0m - $nepisodios episodios" > /dev/tty
+    echo > /dev/tty
+    echo > /dev/tty
+    local next=$(head.next "$idserie")
+    local backup="$next"
 
-	#echo "ver.cache next: >$next<" > /dev/tty
+    #echo "ver.cache next: >$next<" > /dev/tty
 
-	if [[ "$next" == "-1" ]]; then
-		echo "No hay episodios" > /dev/tty
-		exit
-	fi 
+    if [[ "$next" == "-1" ]]; then
+	echo "No hay episodios" > /dev/tty
+	exit
+    fi 
 
-	local datos=$(db.executeQuery "select * from episodio where idmedio=$idserie order by temporada, episodio")
+    local datos=$(db.executeQuery "select * from episodio where idmedio=$idserie order by temporada, episodio")
 
-	if [[ "$datos" == "" ]]; then
-		echo "Error: se supone que hay episodios pero no son accesibles" > /dev/tty
-		exit
-	fi
-	#echo "Datos: $datos" > /dev/tty
+    if [[ "$datos" == "" ]]; then
+	echo "Error: se supone que hay episodios pero no son accesibles" > /dev/tty
+	exit
+    fi
+    #echo "Datos: $datos" > /dev/tty
 
-	declare -a datosa
-	IFS=$'\n'
-	read -a datosa <<< "$datos"
-	unset IFS
+    declare -a datosa
+    IFS=$'\n'
+    readarray -t datosa <<< "$datos"
+    unset IFS
+    #echo "Episodios: ${#datosa[@]}" > /dev/tty
 
-	local i=0
-	local ini=-1
-	local fin=-1
-	for episodio in "${datosa[@]}"; do
-		series.parseEpisodio "$episodio"
-		#series.screenEpisodio
-		if [[ "${EPISODIO[id]}" == "$next" ]]; then
-			#echo "El id de episodio coincide!" > /dev/tty
-			((ini=i-5))
-			if (( ini < 0 )); then
-				ini=0
-			fi
-			((fin=i+5))
-			if (( fin-ini < 10 )); then
-				((count=fin-ini))
-				((inc=10-count))
-				((fin=fin+inc))
-			fi
-			#if (( fin >= ${#datosa[@]} )); then
-			#	(( fin = ${#datosa[@]}-1 ))
-			#fi
-			break
-		fi
-		((i=i+1))
-	done
-
-	#echo "ini: $ini, fin: $fin" > /dev/tty
-	if [[ ini == -1 ]] || [[ fin == -1 ]]; then
-		echo "ERROR: No se pudo establecer un rango de episodios" > /dev/tty
-		exit
-	fi
-
-	#echo "Ahora los 10 episodios cercanos al que toca!" > /dev/tty
-	#echo "Los datos contienen: $datos"
-
-	echo
-	echo
-	IFS=$'\n'
-	readarray -t datosa <<< "$datos"
-	unset IFS
-	local i=0
-	for episodio in "${datosa[@]}"; do
-	    if (( i >= ini )) && (( i <= fin )); then
-		#echo "Entra ini-fin" > /dev/tty
-		series.parseEpisodio "$episodio"
-		#series.screenEpisodio
-		if [[ "${EPISODIO[id]}" == "$next" ]]; then
-			echo -e -n "> \e[38;5;196m\e[47m" > /dev/tty
-		else
-			echo -n "  " > /dev/tty
-		fi
-		basefn="$(basename "${EPISODIO[fichero]}")"
-		echo -e "${EPISODIO[temporada]}x${EPISODIO[episodio]}:\t$basefn\e[0m" > /dev/tty
+    local i=0
+    local ini=-1
+    local fin=-1
+    for episodio in "${datosa[@]}"; do
+	series.parseEpisodio "$episodio"
+	#series.screenEpisodio
+	if [[ "${EPISODIO[id]}" == "$next" ]]; then
+	    #echo "El id de episodio coincide!" > /dev/tty
+	    ((ini=i-5))
+	    if (( ini < 0 )); then
+		ini=0
 	    fi
-	    ((i=i+1))
-	done
+	    ((fin=i+5))
+	    if (( fin-ini < 10 )); then
+		((count=fin-ini))
+		((inc=10-count))
+		((fin=fin+inc))
+	    fi
+	    #if (( fin >= ${#datosa[@]} )); then
+	    #	(( fin = ${#datosa[@]}-1 ))
+	    #fi
+	    break
+	fi
+	((i=i+1))
+    done
 
-	echo "$backup"
+    #echo "ini: $ini, fin: $fin" > /dev/tty
+    if [[ ini == -1 ]] || [[ fin == -1 ]]; then
+	echo "ERROR: No se pudo establecer un rango de episodios" > /dev/tty
+	exit
+    fi
+
+    #echo "Ahora los 10 episodios cercanos al que toca!" > /dev/tty
+    #echo "Los datos contienen: $datos"
+
+    echo
+    echo
+    IFS=$'\n'
+    readarray -t datosa <<< "$datos"
+    unset IFS
+    local i=0
+    for episodio in "${datosa[@]}"; do
+	if (( i >= ini )) && (( i <= fin )); then
+	    #echo "Entra ini-fin" > /dev/tty
+	    series.parseEpisodio "$episodio"
+	    #series.screenEpisodio
+	    if [[ "${EPISODIO[id]}" == "$next" ]]; then
+		echo -e -n "> \e[38;5;196m\e[47m" > /dev/tty
+	    else
+		echo -n "  " > /dev/tty
+	    fi
+	    basefn="$(basename "${EPISODIO[fichero]}")"
+	    echo -e "${EPISODIO[temporada]}x${EPISODIO[episodio]}:\t$basefn\e[0m" > /dev/tty
+	fi
+	((i=i+1))
+    done
+
+    echo "$backup"
 }
 
 function ver.cache.info() {

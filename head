@@ -191,13 +191,18 @@ function head.next() {
 		exit
 	fi
 	
-	local id=$(db.executeQuery "select min(id) from episodio where idmedio = $idmedio and temporada = $t and esvisto = 0")
+	local episodio=$(db.executeQuery "select min(episodio) from episodio where idmedio = $idmedio and temporada = $t and esvisto = 0")
 	#echo "head.next Next: $id" > /dev/tty
 
-	if [[ "$id" == "" ]]; then
+	if [[ "$episodio" == "" ]]; then
 		echo "-1"
 	else
-		echo "$id"
+		local id=$(db.executeQuery "select id from episodio where idmedio=$idmedio and temporada=$t and episodio=$episodio")
+		if [[ "$id" == "" ]]; then
+		    echo "-1"
+		else
+		  echo "$id"
+		fi
 	fi
 }
 
