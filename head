@@ -107,8 +107,8 @@ function head.forth() {
 	local t=$(db.executeQuery "select min(temporada) from episodio where idmedio=$idmedio and esvisto=0")
 	#echo "Temporada: $t" > /dev/tty
 	local episodio=$(db.executeQuery "select min(episodio) from episodio where idmedio = $idmedio and temporada = $t and esvisto = 0")
-	local id=$(db.executeQuery "select id from episodio where idmedio=$idmedio and temporada=$t and episodio=$episodio")
-	db.executeUpdate "update episodio set esvisto = 1 where id = $id"
+	#local id=$(db.executeQuery "select id from episodio where idmedio=$idmedio and temporada=$t and episodio=$episodio limit 1")
+	db.executeUpdate "update episodio set esvisto = 1 where temporada = $t and episodio = $episodio and idmedio = $idmedio"
 }
 
 function head.forth.info() {
@@ -126,8 +126,8 @@ function head.back() {
 
 	local t=$(db.executeQuery "select max(temporada) from episodio where idmedio=$idmedio and esvisto>0")
 	local episodio=$(db.executeQuery "select max(episodio) from episodio where idmedio = $idmedio and temporada = $t and esvisto > 0")
-	local id=$(db.executeQuery "select id from episodio where idmedio=$idmedio and temporada=$t and episodio=$episodio")
-	db.executeUpdate "update episodio set esvisto = 0 where id = $id"
+	#local id=$(db.executeQuery "select id from episodio where idmedio=$idmedio and temporada=$t and episodio=$episodio limit 1")
+	db.executeUpdate "update episodio set esvisto = 0 where idmedio = $idmedio and temporada = $t and episodio = $episodio"
 }
 
 function head.back.info() {
@@ -186,7 +186,7 @@ function head.next() {
     [[ $# != 1 ]] && ( die $(iargs 1 "id") )
 	local idmedio="$1"
 
-	local t=$(db.executeQuery "select min(temporada) from episodio where idmedio=$idmedio and esvisto=0")
+	local t=$(db.executeQuery "select min(temporada) from episodio where idmedio=$idmedio and esvisto=0 limit 1")
 
 	if [[ "$t" == "" ]]; then
 		echo "-1"
@@ -199,7 +199,7 @@ function head.next() {
 	if [[ "$episodio" == "" ]]; then
 		echo "-1"
 	else
-		local id=$(db.executeQuery "select id from episodio where idmedio=$idmedio and temporada=$t and episodio=$episodio")
+		local id=$(db.executeQuery "select id from episodio where idmedio=$idmedio and temporada=$t and episodio=$episodio limit 1")
 		if [[ "$id" == "" ]]; then
 		    echo "-1"
 		else

@@ -171,9 +171,23 @@ function series.getId.info() {
 
 function series.remove() {
     [[ $# != 1 ]] && ( die $(iargs 1 "id") )
-	local id="$1"
+    local id="$1"
 
-	db.executeUpdate "delete from medio where esserie = 1 and id = $id"
+    local titulo=$(db.executeQuery "select titulo from medio where esserie=1 and id=$id")
+    if [[ "$titulo" == "" ]]; then
+	echo "No hay ninguna serie con el id: $id"
+	exit
+    fi
+    local n=$(db.executeQuery "select count(id) from episodio where idmedio=$id")
+    echo "Esta acción borrará la serie '$titulo' junto con sus $n episodios. " > /dev/tty
+    local res=$(askYesNo "¿Está seguro?" false)
+    if [[ "$res" == true ]]; then
+	if (( n > 0 )); then
+	   db.executeUpdate "delete from episodio where idmedio=$id"
+	fi
+	db.executeUpdate "delete from medio where id = $id"
+	echo "Operación de borrado completada." > /dev/tty
+    fi
 }
 
 function series.remove.info() {

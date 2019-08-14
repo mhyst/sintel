@@ -18,10 +18,10 @@
 #Módulo de ayuda de sintel
 
 function help() {
-	echo "sintel (Inteligencia sobre series) @Copyleft Julio Serrano 2017"
+	echo "sintel versión $VERSION @Copyright GPL(3) Julio Serrano 2017 - 2019"
+	echo "(Inteligencia sobre series)" 
 	echo
-	echo "sintel -i | sintel -init"
-	echo "	Inicializar la base de datos"
+	echo "Consulte la página del manual."
 }
 
 

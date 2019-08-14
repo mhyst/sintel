@@ -86,3 +86,25 @@ function checkArgs() {
 function pause() {
     read -n1 -r -p "Pulse una tecla para continuar..." key
 }
+
+function askYesNo() {
+        local QUESTION=$1
+        local DEFAULT=$2
+	local OPTIONS=""
+
+        if [ "$DEFAULT" = true ]; then
+                OPTIONS="[S/n]"
+                DEFAULT="s"
+            else
+                OPTIONS="[s/N]"
+                DEFAULT="n"
+        fi
+        read -p "$QUESTION $OPTIONS " -n 1 -s -r INPUT
+        INPUT=${INPUT:-${DEFAULT}}
+        echo ${INPUT} > /dev/tty
+        if [[ "$INPUT" =~ ^[sS]$ ]]; then
+            echo true
+        else
+            echo false
+        fi
+}
