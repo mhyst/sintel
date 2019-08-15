@@ -20,6 +20,34 @@
 # Por ejemplo una para borrar múltiples ficheros al tiempo que
 # de paso borre de la base de datos todas las referencias a 
 # esos ficheros.
+
+key_input () {
+IFS=;
+local key
+
+read -rsN 100 -t 0.001
+
+while true; do
+  read -rsN 1 # Read first byte of key
+  key=$REPLY
+
+  if [[ "$key" == $'\n' ]]; then echo "enter"; break; fi
+  if [[ "$key" == $'\t' ]]; then echo "tab"; break; fi
+  if [[ "$key" == $'\b' ]]; then echo "backspace"; break; fi
+  if [[ "$key" == "${ESC}" ]]; then
+    # Read 2 more bytes if it's an escape sequence, or nothing if it's just Esc.
+    read -rsN 2 -t 0.001
+    
+    [[ "$REPLY" != "" ]] && key+="$REPLY"
+    if [[ "$key" == "${ESC}[A" ]]; then echo "up"; break; fi
+    if [[ "$key" == "${ESC}[B" ]]; then echo "down"; break; fi
+    if [[ "$key" == "${ESC}" ]]; then echo "esc"; break; fi
+
+    key=;
+  fi
+done
+}
+
 function files.browse() {
     local cols=$(tput cols)
     local rows=$(tput lines)
@@ -31,6 +59,11 @@ function files.browse() {
     tput bold
     local files=( * )
     echo "Navegador de ficheros - ${#files[@]} ficheros"
+
+    while true; do
+	local key=$(key_input)
+	sleep 1
+    done
     tput sgr0
     tput cup $(tput lines) 0
     #tput cup $erow 0
