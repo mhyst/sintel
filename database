@@ -57,7 +57,7 @@ function db.executeQuery() {
 	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
-	local tmpfn=$(tempfile)
+	local tmpfn=$(mktemp)
 	$database_SQLITE "BEGIN; $sql; END TRANSACTION" > $tmpfn
 	if [[ $? != 0 ]]; then
 		echo "SQL ERROR: $sql" >> /tmp/sintel.txt
@@ -91,7 +91,7 @@ function db.executeUpdate() {
 	local sql="$1"
 
 	$DEBUG && echo "SQL: $sql" >> /tmp/sintel.txt
-	local tmpfn=$(tempfile)
+	local tmpfn=$(mktemp)
 	if [[ "${sql,,}" == "insert"* ]]; then
 		$database_SQLITE "BEGIN; $sql; select last_insert_rowid(); END TRANSACTION" > $tmpfn
 		if [[ $? != 0 ]]; then
