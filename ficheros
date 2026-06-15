@@ -1,0 +1,98 @@
+#!/bin/bash
+# This file is part of Sintel.
+#
+# Sintel is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Sintel is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Sintel.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+# Control de ficheros
+# Se pretende crear algunas funciones de gestión de ficheros.
+# Por ejemplo una para borrar múltiples ficheros al tiempo que
+# de paso borre de la base de datos todas las referencias a 
+# esos ficheros.
+
+key_input () {
+IFS=;
+local key
+
+read -rsN 100 -t 0.001
+
+while true; do
+  read -rsN 1 # Read first byte of key
+  key=$REPLY
+
+  if [[ "$key" == $'\n' ]]; then echo "enter"; break; fi
+  if [[ "$key" == $'\t' ]]; then echo "tab"; break; fi
+  if [[ "$key" == $'\b' ]]; then echo "backspace"; break; fi
+  if [[ "$key" == "${ESC}" ]]; then
+    # Read 2 more bytes if it's an escape sequence, or nothing if it's just Esc.
+    read -rsN 2 -t 0.001
+    
+    [[ "$REPLY" != "" ]] && key+="$REPLY"
+    if [[ "$key" == "${ESC}[A" ]]; then echo "up"; break; fi
+    if [[ "$key" == "${ESC}[B" ]]; then echo "down"; break; fi
+    if [[ "$key" == "${ESC}" ]]; then echo "esc"; break; fi
+
+    key=;
+  fi
+done
+}
+
+files.browse() {
+    local cols=$(tput cols)
+    local rows=$(tput lines)
+    local brow=4
+    local erow=$((rows-2))
+    local limit=$((brow-erow+1))
+    local offset=0
+
+    tput clear
+    tput cup 2 5
+    tput bold
+    local files=( * )
+    local nfiles="${#files[@]}"
+    echo "Navegador de ficheros - ${#files[@]} ficheros"
+
+    idx=0
+    selected=0
+    while true; do
+	for (( fila=brow; fila <= erow; fila++ )); do
+	    #echo "Fila: $fila"
+	    local id=$((fila-4+offset))
+	    #echo "Id: $id"
+	    if (( id > nfiles-1 )); then
+		break
+	    fi
+	    tput cup "$fila" 0
+	    if [[ $selected == $id ]]; then
+		tput rev
+	    else
+		tput sgr0
+	    fi
+    	    echo "${files[$id]}"
+	done
+	case `key_input` in
+	up)
+	    echo "Entra"
+	    ((selected--))
+	    if [ $selected -lt 0 ]; then selected=$(($limit-1)); fi;;
+	down)
+	    ((selected++));
+	    if [ $selected -ge $((limit-1)) ]; then selected=0; fi;;
+	esac
+    done
+    tput sgr0
+    tput cup $(tput lines) 0
+}
+
+files.browse
